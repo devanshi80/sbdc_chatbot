@@ -1,0 +1,23 @@
+{
+    "functional_areas": [
+      "Financials",
+      "Operations",
+      "Employees",
+      "Customers_Marketing",
+      "Products_Services",
+      "Leadership"
+    ],
+    "tier_boundaries": {
+      "Responding": [0.0, 0.33],
+      "Building": [0.34, 0.66],
+      "Optimizing": [0.67, 1.0]
+    },
+    "whole_business_summaries": {
+      "Mostly Responding": "Your business is in a rebuilding or early-stage phase. Let's focus on stabilizing core systems.",
+      "Mix of Responding and Building": "You've built a partial foundation. We'll work on strengthening weak spots and building consistency.",
+      "Mostly Building": "You have a solid operational base. Now is the time to systematize and prepare for growth.",
+      "Mix of Building and Optimizing": "Your systems are functioning well. You're ready to refine, delegate, and focus on strategic growth.",
+      "Mostly Optimizing": "Your business is highly structured and ready for next-level opportunities, innovation, or scaling."
+    }
+  }
+  

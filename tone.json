@@ -1,0 +1,131 @@
+{
+    "tier_ranges": {
+      "Responding": [0.00, 0.33],
+      "Building": [0.34, 0.66],
+      "Optimizing": [0.67, 1.00]
+    },
+    "Responding": {
+      "Crisis": [
+        "You may be dealing with a sudden disruption or crisis. These steps are designed to help you stabilize operations, reduce immediate risk, and take back a sense of control.",
+        "In moments like this, quick and focused action matters. These recommendations offer a starting point to help you respond decisively without burning out or freezing up.",
+        "You're navigating something urgent or unexpected. These are clear, manageable actions to help you move forward one step at a time."
+      ],
+      "Economic Uncertainty": [
+        "Uncertainty in the economy can make planning difficult, especially when conditions are changing rapidly. These recommendations will help you prioritize stability and avoid common missteps.",
+        "Now is the time to protect your business from external volatility. The following steps are designed to improve resilience and reduce vulnerability to shifting conditions.",
+        "When the broader environment feels unpredictable, it's smart to double down on the essentials. These are high-impact actions to help you stay grounded."
+      ],
+      "New Opportunity": [
+        "You may be moving quickly to pursue a time-sensitive opportunity. These steps are designed to help you act decisively---without compromising quality or creating rework later.",
+        "New opportunities can be exciting---but also distracting. These focused recommendations will help you respond quickly while protecting your capacity and priorities.",
+        "Let's make sure your foundation can support this next move. These immediate actions are meant to help you evaluate and seize the opportunity with intention."
+      ],
+      "Steady Growth": [
+        "You may be growing steadily overall, but this area appears to be lagging behind. These actions can help you close the gap and keep growth on track.",
+        "Your business is moving forward, but this part of the operation needs some shoring up. Let's focus on getting it caught up quickly.",
+        "As the rest of your business scales, this area needs extra attention to stay aligned. These are high-impact actions to stabilize and support continued growth."
+      ],
+      "Lifestyle Change": [
+        "If your personal circumstances are shifting, this area may feel overwhelming. These simple, focused steps are designed to help you regain control without overcommitting.",
+        "This area likely needs attention, but your capacity may be limited right now. These are streamlined, practical actions to reduce stress and prevent future headaches.",
+        "Your business may be absorbing pressure from recent changes in your life. These suggestions are about stabilizing operations so you can move forward with more balance."
+      ],
+      "Operational Adjustments": [
+        "As you adjust your operations, this area may need to catch up quickly. These steps are designed to help you reduce confusion and strengthen execution.",
+        "Operational changes often reveal weak spots. These recommendations will help you respond efficiently and bring this area into alignment with your new direction.",
+        "You're likely in the middle of implementing change. These are tactical actions to support smoother transitions and minimize disruption."
+      ],
+      "general_intros": [
+        "This area may need your immediate attention, but it's also one of the easiest places to create positive change.",
+        "Your responses suggest there are some foundational gaps here---very common for growing businesses. Let's focus on a few high-impact steps to build momentum.",
+        "You may be in the early stages of developing structure in this area. These recommendations are designed to help you respond with clarity and confidence.",
+        "This is a great time to stabilize this part of your business. Let's start with the basics that will reduce stress and create more control.",
+        "You're likely dealing with some challenges here, but the good news is that targeted improvements can make a real difference quickly."
+      ]
+    },
+    "Building": {
+      "Crisis": [
+        "You've taken some key steps in this area, but the current disruption may be testing those systems. These recommendations will help you strengthen what's in place and respond more effectively.",
+        "In a time of crisis, structure matters. These suggestions are designed to reinforce your progress and improve your ability to adapt quickly.",
+        "You're not starting from scratch---but this area still needs shoring up to handle urgent demands. Let's build on what's already working."
+      ],
+      "Economic Uncertainty": [
+        "You've made a good start here, but the uncertain economic climate makes it even more important to strengthen your foundation. These recommendations focus on improving consistency and control.",
+        "Now is a great time to move from partial progress to stronger systems. These steps will help you prepare for volatility and manage risk.",
+        "Your systems are underway but may not be fully reliable yet. Let's focus on turning good habits into repeatable processes."
+      ],
+      "New Opportunity": [
+        "You've got a functional base here---now let's make sure it can support the opportunity in front of you. These recommendations will help you move from 'in progress' to 'ready.'",
+        "As you prepare to seize a new opportunity, solidifying this area will give you more confidence and less friction.",
+        "These next steps will help you systematize your progress and reduce the risk of things falling through the cracks as you expand."
+      ],
+      "Steady Growth": [
+        "You're growing steadily---and this area is keeping up, but just barely. These recommendations focus on building structure to support your next stage of growth.",
+        "Now's the time to build more consistency. These steps will help your systems scale alongside your business.",
+        "To keep up with your momentum, this part of your business needs stronger scaffolding. Let's focus on that next level of structure."
+      ],
+      "Lifestyle Change": [
+        "You've taken steps here already, which is great. Now let's simplify and systematize so this area can run more smoothly without needing as much of your time.",
+        "As your personal priorities shift, these recommendations will help you firm up what's already in place and reduce stress over time.",
+        "You're not starting from scratch---which means small adjustments here can go a long way in creating more breathing room."
+      ],
+      "Operational Adjustments": [
+        "You've made progress in this area, and now your operational changes are putting that to the test. These recommendations help you adjust and strengthen without losing traction.",
+        "As your operations shift, this area needs to catch up. These next steps help bring your systems into alignment.",
+        "You're in motion---and this area is almost there. Let's build it out fully so it can support the rest of your adjustments."
+      ],
+      "general_intros": [
+        "You've made progress in this area, and now it's time to build more consistency and structure.",
+        "You're on the right track. These recommendations will help you tighten your systems and prepare for what's next.",
+        "You've laid a partial foundation. With a few intentional upgrades, you can reduce friction and increase efficiency.",
+        "This area is functioning, but there's still room to strengthen your approach. Let's focus on formalizing what's already working.",
+        "You're making progress. These steps can help turn day-to-day efforts into repeatable, scalable systems."
+      ]
+    },
+    "Optimizing": {
+      "Crisis": [
+        "You've built strength in this area---which gives you more flexibility to adapt under pressure. These recommendations are focused on fine-tuning for stability and speed.",
+        "Because this area is strong, you can use it as a stabilizing force during this disruption. Let's focus on refining your response and identifying efficiencies.",
+        "You have a solid foundation. Now's the time to make strategic adjustments that help you weather the storm without overreacting."
+      ],
+      "Economic Uncertainty": [
+        "This area is a strength---which gives you room to plan smartly. These steps focus on sharpening strategy and preparing for long-term resilience.",
+        "You're in a strong position here. The following refinements will help you navigate uncertainty while continuing to build capacity.",
+        "With this area already working well, you can focus on stress-testing and scenario planning to stay ahead of change."
+      ],
+      "New Opportunity": [
+        "This part of your business is ready for what's next. These recommendations focus on scaling, innovation, and strategic use of your strengths.",
+        "You have the systems in place---now let's explore how to leverage them to pursue your new opportunity with confidence.",
+        "Because this area is running smoothly, you can focus on expansion and refinement. These steps are about building on that momentum."
+      ],
+      "Steady Growth": [
+        "This area is already functioning well, and you're in a great position to refine, delegate, or innovate. Let's explore how to take it to the next level.",
+        "You're growing---and this part of the business is keeping pace. These steps focus on sustainability, efficiency, and long-term planning.",
+        "Now that you have a strong foundation here, it's time to think about optimization and scalability."
+      ],
+      "Lifestyle Change": [
+        "With a strong system in place, you can now focus on making this area more self-sustaining. These steps support your ability to step back without losing quality.",
+        "You've done the work to build this up---now let's look at ways to simplify or delegate, so your business works better for your life.",
+        "This is a high-functioning part of your business. These suggestions focus on reducing your personal load while keeping performance high."
+      ],
+      "Operational Adjustments": [
+        "You've got a solid system here---now it's time to fine-tune it to support your operational changes.",
+        "This area is well developed, which means you can focus on optimization and alignment as other parts of your operation shift.",
+        "Because this part of the business is already working, these next steps are about integration, efficiency, and future-proofing."
+      ],
+      "general_intros": [
+        "You've built a strong foundation in this area. These recommendations focus on refinement, delegation, and next-level strategies.",
+        "This appears to be one of your business strengths. Let's explore ways to optimize what's working and prepare for growth.",
+        "You're ready to shift from managing to leading in this area. These steps focus on sustainability and scalability.",
+        "You've likely mastered the essentials. Now it's about streamlining, innovating, or empowering others to lead.",
+        "This area is functioning well. These recommendations are about increasing impact and creating room for strategic growth."
+      ]
+    },
+    "whole_business_summaries": {
+      "Mostly Responding": "Your business is in a rebuilding or early-stage phase. Let's focus on stabilizing core systems.",
+      "Mix of Responding and Building": "You've built a partial foundation. We'll work on strengthening weak spots and building consistency.",
+      "Mostly Building": "You have a solid operational base. Now is the time to systematize and prepare for growth.",
+      "Mix of Building and Optimizing": "Your systems are functioning well. You're ready to refine, delegate, and focus on strategic growth.",
+      "Mostly Optimizing": "Your business is highly structured and ready for next-level opportunities, innovation, or scaling."
+    }
+  }
