@@ -1,0 +1,1556 @@
+{
+  "Responding": {
+    "Crisis": {
+      "Financials": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ]
+    },
+    "Steady Growth": {
+      "Financials": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ]
+    },
+    "Lifestyle Change": {
+      "Financials": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ]
+    },
+    "Economic Uncertainty": {
+      "Financials": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ]
+    },
+    "New Opportunity": {
+      "Financials": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ]
+    },
+    "Operational Adjustments": {
+      "Financials": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ]
+    }
+  },
+  "Building": {
+    "Crisis": {
+      "Financials": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ]
+    },
+    "Steady Growth": {
+      "Financials": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ]
+    },
+    "Lifestyle Change": {
+      "Financials": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ]
+    },
+    "Economic Uncertainty": {
+      "Financials": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ]
+    },
+    "New Opportunity": {
+      "Financials": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ]
+    },
+    "Operational Adjustments": {
+      "Financials": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ]
+    }
+  },
+  "Optimizing": {
+    "Crisis": {
+      "Financials": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ]
+    },
+    "Steady Growth": {
+      "Financials": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Production": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling."
+        }
+      ]
+    },
+    "Lifestyle Change": {
+      "Financials": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff."
+        }
+      ]
+    },
+    "Economic Uncertainty": {
+      "Financials": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ]
+    },
+    "New Opportunity": {
+      "Financials": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ]
+    },
+    "Operational Adjustments": {
+      "Financials": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ]
+    }
+  }
+}

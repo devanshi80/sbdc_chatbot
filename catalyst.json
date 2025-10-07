@@ -1,0 +1,148 @@
+{
+    "Economic Uncertainty": {
+      "definition": "Navigating external market shifts that impact costs, customer behavior, or revenue predictability. The future feels uncertain, requiring a careful balance of defensive and opportunistic actions.",
+      "common_triggers": [
+        "Rising supplier costs",
+        "Inflation",
+        "Volatile demand",
+        "Shifting customer spending habits",
+        "Industry downturns",
+        "Changes in trade policies or regulations"
+      ],
+      "primary_focus_areas": [
+        "Strengthening financial reserves and improving cash flow management",
+        "Reducing unnecessary expenses and renegotiating contracts for better terms",
+        "Diversifying revenue streams to reduce dependency on a single market or client segment",
+        "Monitoring key economic indicators and adjusting plans proactively",
+        "Maintaining strong relationships with customers, suppliers, and lenders to preserve flexibility"
+      ],
+      "typical_constraints": [
+        "Limited ability to forecast accurately",
+        "Heightened pressure on margins",
+        "Potential for sudden customer or supplier changes"
+      ],
+      "tone_time_horizon": "Cautious but proactive. Recommendations should focus on protecting stability while positioning for a quick pivot when conditions improve. Most actions should be achievable within 1–6 months."
+    },
+    "Crisis or Setback": {
+      "definition": "An urgent, often unexpected disruption that significantly affects business operations, revenue, staffing, or reputation, requiring immediate stabilization.",
+      "common_triggers": [
+        "Cash flow crisis",
+        "Loss of a major customer",
+        "Key staff departure",
+        "Major equipment failure",
+        "Data breach",
+        "Public relations crisis",
+        "Natural disaster"
+      ],
+      "primary_focus_areas": [
+        "Financial triage: freeze or defer nonessential spending and explore relief options",
+        "Prioritize high-margin or stable-demand offerings",
+        "Explore flexible staffing before permanent cuts",
+        "Identify essential processes and pause or streamline the rest",
+        "Transparent customer communication"
+      ],
+      "typical_constraints": [
+        "Extremely limited time",
+        "High stress",
+        "Resource scarcity",
+        "Potential reputational damage"
+      ],
+      "tone_time_horizon": "Urgent, direct, and highly focused. Recommendations should produce visible results within days or weeks, prioritizing short-term survival and stabilization before long-term recovery."
+    },
+    "New Opportunity": {
+      "definition": "A potential project, partnership, market, or funding source that could create meaningful growth or impact if pursued wisely.",
+      "common_triggers": [
+        "New product or service idea",
+        "Grant or funding availability",
+        "Request for proposal (RFP)",
+        "Strategic partnership offer",
+        "Favorable market shift"
+      ],
+      "primary_focus_areas": [
+        "Assess feasibility before committing",
+        "Run financial projections (best, worst, most-likely)",
+        "Evaluate strategic alignment and customer fit",
+        "Consider operational adjustments for delivery",
+        "Set measurable milestones"
+      ],
+      "typical_constraints": [
+        "Limited window to decide",
+        "Risk of overextending resources",
+        "Potential diversion from priorities"
+      ],
+      "tone_time_horizon": "Optimistic but disciplined. Help the owner act quickly without skipping due diligence. Actions typically fall within a 1–3 month decision and ramp-up period."
+    },
+    "Steady Growth": {
+      "definition": "The business is performing well, and the owner wants to expand, increase profitability, or enhance efficiency without disrupting momentum.",
+      "common_triggers": [
+        "Consistent revenue growth",
+        "Strong customer demand",
+        "Positive cash flow",
+        "Stable staffing",
+        "Market expansion opportunities"
+      ],
+      "primary_focus_areas": [
+        "Strengthen systems and processes",
+        "Invest in marketing, tech, or staffing to scale",
+        "Monitor quality and customer experience",
+        "Diversify offerings or markets",
+        "Track key metrics for sustainable growth"
+      ],
+      "typical_constraints": [
+        "Risk of growing too fast",
+        "Need for upfront investment",
+        "Maintaining culture and quality"
+      ],
+      "tone_time_horizon": "Strategic and forward-looking. Recommendations focus on efficiency, scalability, and resilience, with timelines spanning 6–18 months."
+    },
+    "Lifestyle Change": {
+      "definition": "A personal shift in circumstances that changes the owner’s available time, energy, or focus — either increasing or decreasing capacity.",
+      "common_triggers": [
+        "Birth or adoption of a child",
+        "Personal illness or injury",
+        "Caring for a family member",
+        "Burnout",
+        "Desire to reduce work hours",
+        "Children leaving home",
+        "Spouse retiring"
+      ],
+      "primary_focus_areas": [
+        "Assess available time, money, energy, and resources",
+        "Adjust commitments to match capacity",
+        "Mentor staff and delegate responsibilities",
+        "Systematize and document processes",
+        "If capacity increases, take on high-value work or projects"
+      ],
+      "typical_constraints": [
+        "Unpredictable availability",
+        "Energy limitations",
+        "Risk of overcommitting after increases"
+      ],
+      "tone_time_horizon": "Realistic, empathetic, and capacity-focused. For reduced capacity, stabilize and protect workload. For increased capacity, plan longer-term growth."
+    },
+    "Operational Adjustments": {
+      "definition": "Intentional changes to systems, staffing, or processes to improve efficiency, quality, or capacity.",
+      "common_triggers": [
+        "Implementing new software",
+        "Restructuring teams",
+        "Relocating facilities",
+        "Upgrading equipment",
+        "Changing suppliers",
+        "Adjusting workflows"
+      ],
+      "primary_focus_areas": [
+        "Map transition process to minimize disruption",
+        "Train staff and document new procedures",
+        "Test and refine before rollout",
+        "Monitor metrics for improvement",
+        "Communicate changes clearly"
+      ],
+      "typical_constraints": [
+        "Temporary productivity dips",
+        "Staff learning curves",
+        "Risk of resistance to change"
+      ],
+      "tone_time_horizon": "Methodical and change-ready. Focus on careful planning, phased implementation, and early issue detection, typically over 1–6 months."
+    }
+  }
+  
