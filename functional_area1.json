@@ -1,0 +1,1556 @@
+{
+  "Responding": {
+    "Crisis": {
+      "Financials": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate quickly and clearly with customers—update hours, policies, and delivery options everywhere."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Reach out to your best customers personally to reassure them and maintain loyalty."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Simplify offers and messaging to highlight reliability, safety, and value right now."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify critical dependencies (suppliers, technology, staff) and secure immediate backups."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Create and communicate immediate response procedures for core staff."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Prioritize mission-critical processes only; pause everything else."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Immediately pause non-essential product development, updates, or launches."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Reduce the complexity of your core offering to ensure reliable delivery."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Document and communicate which services are still available and which are paused."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Prioritize immediate business survival over long-term vision."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Act decisively and with high visibility to reassure staff and stakeholders."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Focus on the most experienced leadership members to make triage decisions."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate decisions immediately and clearly, even if the news is difficult."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Prioritize staff safety and mental health support (e.g., flexible hours, clear boundaries)."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Assign core survival tasks to key individuals and trust them to execute."
+        }
+      ]
+    },
+    "Steady Growth": {
+      "Financials": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Catch Up Documentation. Create clear specs, instructions, or descriptions for all offerings to maintain consistency as volume grows."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Standardize Quality Controls. Establish checkpoints to ensure delivery stays reliable with increased output."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Identify Gaps. Assess whether your current product or service lineup still supports your business goals."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Document existing processes. Standardize how work gets done before increasing volume."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Automate repetitive tasks. Implement technology to handle increased transaction or production loads."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Identify bottlenecks. Pinpoint areas that will break first under higher volume and invest in fixing them."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Catch Up Documentation. Create clear specs, instructions, or descriptions for all offerings to maintain consistency as volume grows."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Standardize Quality Controls. Establish checkpoints to ensure delivery stays reliable with increased output."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Identify Gaps. Assess whether your current product or service lineup still supports your business goals."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Re-evaluate company structure. Determine if current roles, teams, and hierarchy can support expansion."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Define Key Performance Indicators (KPIs) for scaling. Focus on measurable metrics related to growth and efficiency."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Formalize the company vision and values. Ensure new hires and existing staff are aligned with the mission."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Standardize training and onboarding. Create repeatable processes for quickly and effectively bringing new staff up to speed."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in mid-level manager development. Prepare existing staff for leadership roles as teams grow."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Formalize performance review processes. Tie compensation and growth plans to business objectives."
+        }
+      ]
+    },
+    "Lifestyle Change": {
+      "Financials": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources. This is essential for financials in a lifestyle change scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: realistic, empathetic, and capacity-focused."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity. This is essential for financials in a lifestyle change scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: realistic, empathetic, and capacity-focused."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff. This is essential for financials in a lifestyle change scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: realistic, empathetic, and capacity-focused."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Audit marketing efforts. Determine which activities deliver the most profit for the least effort."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Focus on customer retention. It is cheaper and requires less effort than acquiring new customers."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Automate communication. Use scheduled emails or social media posts to reduce daily manual effort."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Document tasks currently performed solely by you. Create a list of all your recurring activities."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Identify 3-5 tasks that can be fully delegated or outsourced immediately."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Cross-train existing staff on key processes so work doesn't stop if one person is unavailable."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Audit your offerings. Identify the 20% that deliver 80% of your revenue and the 20% that take up 80% of your time."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Stop offering low-margin or high-effort products/services that do not align with capacity."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Package services into simple, standardized tiers to reduce customization needs and streamline delivery."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Set clear boundaries. Determine non-negotiable personal time blocks and schedule them first."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Identify key staff for delegation. Empower them with decision-making authority for routine tasks."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Define 'success' in terms of personal freedom and sustainability, not just growth."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Communicate the shift to a sustainable pace. Set expectations for reduced urgency in non-essential areas."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Invest in systems that enable staff autonomy (e.g., clear playbooks, updated technology)."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Prioritize retaining valuable staff by ensuring work-life balance is a company value."
+        }
+      ]
+    },
+    "Economic Uncertainty": {
+      "Financials": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Review all customer-facing communications for tone; emphasize stability, value, and dependability."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Double down on communication with existing customers to maintain loyalty and recurring revenue."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Track customer purchasing behavior closely to spot early trends in discretionary spending drops."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Audit vendor and supplier contracts to identify renegotiation opportunities or less costly alternatives."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Increase inventory (if costs are low) or reduce lead times (if demand is volatile) to hedge against supply chain uncertainty."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Cross-train staff extensively to maximize flexibility in case of necessary staffing changes."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Prioritize offerings that offer clear, immediate value or cost savings to the customer."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Avoid major, resource-intensive product launches; focus on minor improvements to existing cash cows."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Create flexible payment plans or subscription options to maintain customer access."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Increase frequency of financial reporting and performance reviews (e.g., weekly or bi-weekly)."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Model multiple scenarios (e.g., 10% revenue drop, 30% revenue drop) and establish clear trigger points for specific actions."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Focus on transparent, reassuring, and realistic communication to maintain confidence."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Communicate openly about the financial health of the business and what is being done to stabilize it."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Focus staff attention on high-ROI, mission-critical tasks; minimize distractions."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Reinforce team collaboration and morale, as uncertainty can lead to internal friction."
+        }
+      ]
+    },
+    "New Opportunity": {
+      "Financials": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run small, targeted tests (e.g., social media ads, landing pages) to gauge market interest before major investment."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Conduct interviews or surveys with ideal customers to validate assumptions about the opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Establish clear 'Go/No-Go' metrics (e.g., cost-per-lead, conversion rate) and stick to them."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Identify 3-5 key resources (staff, equipment, software) needed to execute the opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Develop a Minimum Viable Product (MVP) or process for testing the core assumption of the opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Establish a short, fixed timeline (e.g., 30-90 days) for the testing phase."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Define the minimal set of features or service elements required to deliver the core value of the opportunity (MVP)."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Ensure the MVP can be delivered with existing internal knowledge/staff to limit initial risk."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Create a fast feedback loop with early adopters to iterate quickly based on real-world use."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Appoint an 'Opportunity Champion' with clear authority to lead the exploratory phase."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Commit a specific, limited budget and resource pool that won't disrupt current operations."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Define success metrics for the test phase that are separate from existing business KPIs."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Staff the opportunity team with highly adaptable, resourceful employees."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Clearly separate the opportunity team from daily operations to maintain focus and prevent disruption."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Communicate that the opportunity is a 'test' and that failure to launch is a learning outcome, not a personal failure."
+        }
+      ]
+    },
+    "Operational Adjustments": {
+      "Financials": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Communicate changes clearly to customers well in advance, explaining the 'why' (e.g., 'to serve you better')."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Update all customer-facing documentation, websites, and FAQs to reflect new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Monitor customer feedback closely during and immediately after the adjustment to catch pain points."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Create a phased rollout plan, starting with a small test group (e.g., one department or one region)."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Document new operational procedures using simple checklists, flowcharts, or videos."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Assign a transition manager to oversee the change and act as the single point of contact for issues."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Communicate changes clearly to customers well in advance, explaining the 'why' (e.g., 'to serve you better')."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Update all customer-facing documentation, websites, and FAQs to reflect new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Monitor customer feedback closely during and immediately after the adjustment to catch pain points."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Lead by example by fully committing to the new systems or processes being introduced."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Over-communicate the benefits and rationale for the change to reduce staff resistance."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Allocate time and resources specifically for training and learning the new ways of working."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Conduct thorough training sessions and provide one-on-one coaching for staff using the new systems."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Establish a clear channel for staff to provide feedback and report bugs or inefficiencies during the transition."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Recognize and reward staff who champion the change and help their peers adapt."
+        }
+      ]
+    }
+  },
+  "Building": {
+    "Crisis": {
+      "Financials": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Rebuild visibility through consistent online updates and customer check-ins."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Focus on your highest-value segments—those most likely to buy during disruption."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Collect short feedback surveys to understand immediate customer needs and adjust offerings."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify critical dependencies (suppliers, technology, staff) and secure immediate backups."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Create and communicate immediate response procedures for core staff."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Prioritize mission-critical processes only; pause everything else."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ]
+    },
+    "Steady Growth": {
+      "Financials": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Segment your audience. Define which customers are most valuable and focus marketing resources there."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Systematize follow-up. Create automated sales pipelines or customer service triggers to handle increased volume efficiently."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Test new channels. Experiment with a new marketing channel (e.g., LinkedIn ads, email newsletter) that can reach a scalable audience."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Implement Standard Operating Procedures (SOPs). Document step-by-step instructions for all key tasks."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in CRM or ERP software. Centralize data and processes to manage complexity."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Begin relationship building with backup or alternative suppliers to de-risk the supply chain for higher volume."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Systematize Development. Use a repeatable process for updating or adding offerings to avoid ad hoc changes."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Ensure Scalability. Verify that pricing, materials, and delivery models still work as you expand."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Review Product Lifecycle. Phase out older or lower-margin offerings to make room for new growth opportunities."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Develop a formal strategic plan (e.g., 3-5 year roadmap) to guide resource allocation and scaling efforts."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Formalize the management team. Delegate major functional areas to trusted individuals."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Start documenting the company culture, mission, and values to preserve them during rapid growth."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Formalize job descriptions and organizational structure. Clarify roles and reporting lines."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Implement a structured hiring process. Define competencies and interview standards to ensure quality hires."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Develop internal communication channels (e.g., internal newsletter, monthly meetings) to keep staff aligned."
+        }
+      ]
+    },
+    "Lifestyle Change": {
+      "Financials": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources. This is essential for financials in a lifestyle change scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: realistic, empathetic, and capacity-focused."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity. This is essential for financials in a lifestyle change scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: realistic, empathetic, and capacity-focused."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff. This is essential for financials in a lifestyle change scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: realistic, empathetic, and capacity-focused."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Identify your 'easy wins'—customers who buy frequently with minimal sales effort; focus resources here."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Create simple marketing templates or content calendars that can be executed quickly by delegated staff."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Introduce a simplified customer feedback system (e.g., one simple question) that is easy to manage."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Audit your tech stack. Eliminate redundant or overly complex software tools."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Create simple, visual Standard Operating Procedures (SOPs) for the next round of delegation."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Invest in training staff who have shown interest and aptitude for taking on management or oversight tasks."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Review your product mix to identify offerings that require excessive customization or manual effort; plan to simplify or eliminate them."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Create a clear process for staff to handle common service requests without needing owner input."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Design 'standard' versions of your most popular offerings that can be delivered efficiently."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Identify key staff for delegation. Empower them with decision-making authority for routine tasks."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Define 'success' in terms of personal freedom and sustainability, not just growth."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Formally document core business processes that you currently handle, preparing them for handover."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Identify staff members with an aptitude for leadership or cross-training and begin mentorship."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Implement clear, documented processes for staff promotion, raises, and bonuses to manage expectations."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Host 'knowledge transfer' sessions where you teach key staff the details of tasks you plan to delegate."
+        }
+      ]
+    },
+    "Economic Uncertainty": {
+      "Financials": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Identify customers who are the most vulnerable to economic shifts and proactively address their concerns."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Create marketing collateral focused purely on the Return on Investment (ROI) or value proposition of your offering."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Develop a 'down-sell' option or flexible package that allows customers to retain service at a lower cost/level."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Implement lean principles to eliminate waste, unnecessary steps, and excess inventory."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Analyze technology costs; evaluate software subscriptions and hardware leases for reduction or cancellation."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Review all major contracts and commitments (leases, long-term vendor agreements) for exit clauses or renegotiation points."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Focus development/improvement resources exclusively on products that generate high profit margins and reliable revenue."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Conduct pricing sensitivity analysis to understand how a small price cut/increase affects demand and revenue."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Explore adding complementary services that offer additional, low-cost value to customers without major R&D."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Appoint a task force to specifically monitor economic indicators, customer behavior, and competitor moves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Increase frequency of financial reporting and performance reviews (e.g., weekly or bi-weekly)."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Define a 'war chest' target for cash reserves and prioritize building it over other investments."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Communicate openly about the financial health of the business and what is being done to stabilize it."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Focus staff attention on high-ROI, mission-critical tasks; minimize distractions."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Reinforce team collaboration and morale, as uncertainty can lead to internal friction."
+        }
+      ]
+    },
+    "New Opportunity": {
+      "Financials": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run small, targeted tests (e.g., social media ads, landing pages) to gauge market interest before major investment."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Conduct interviews or surveys with ideal customers to validate assumptions about the opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Establish clear 'Go/No-Go' metrics (e.g., cost-per-lead, conversion rate) and stick to them."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Identify 3-5 key resources (staff, equipment, software) needed to execute the opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Develop a Minimum Viable Product (MVP) or process for testing the core assumption of the opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Establish a short, fixed timeline (e.g., 30-90 days) for the testing phase."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Define the minimal set of features or service elements required to deliver the core value of the opportunity (MVP)."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Ensure the MVP can be delivered with existing internal knowledge/staff to limit initial risk."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Create a fast feedback loop with early adopters to iterate quickly based on real-world use."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Appoint an 'Opportunity Champion' with clear authority to lead the exploratory phase."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Commit a specific, limited budget and resource pool that won't disrupt current operations."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Define success metrics for the test phase that are separate from existing business KPIs."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Staff the opportunity team with highly adaptable, resourceful employees."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Clearly separate the opportunity team from daily operations to maintain focus and prevent disruption."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Communicate that the opportunity is a 'test' and that failure to launch is a learning outcome, not a personal failure."
+        }
+      ]
+    },
+    "Operational Adjustments": {
+      "Financials": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Communicate changes clearly to customers well in advance, explaining the 'why' (e.g., 'to serve you better')."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Update all customer-facing documentation, websites, and FAQs to reflect new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Monitor customer feedback closely during and immediately after the adjustment to catch pain points."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Create a phased rollout plan, starting with a small test group (e.g., one department or one region)."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Document new operational procedures using simple checklists, flowcharts, or videos."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Assign a transition manager to oversee the change and act as the single point of contact for issues."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan the service transition to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Maintain Service Quality. Monitor for any quality drops or customer confusion as new systems roll out."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Communicate Internally. Ensure everyone involved in production or delivery understands the updates."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Lead by example by fully committing to the new systems or processes being introduced."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Over-communicate the benefits and rationale for the change to reduce staff resistance."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Allocate time and resources specifically for training and learning the new ways of working."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Conduct thorough training sessions and provide one-on-one coaching for staff using the new systems."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Establish a clear channel for staff to provide feedback and report bugs or inefficiencies during the transition."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Recognize and reward staff who champion the change and help their peers adapt."
+        }
+      ]
+    }
+  },
+  "Optimizing": {
+    "Crisis": {
+      "Financials": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Analyze customer behavior changes during the crisis to refine future marketing and service delivery."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Strengthen crisis communication plans and customer databases for faster outreach next time."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Recognize loyal customers publicly and offer retention perks or early access to re-engage them."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify critical dependencies (suppliers, technology, staff) and secure immediate backups."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Create and communicate immediate response procedures for core staff."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Prioritize mission-critical processes only; pause everything else."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Identify immediate threats to survival."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Implement quick fixes to stop bleeding."
+        },
+        {
+          "tone_focus": "Act Fast, Triage Systems",
+          "recommendation": "Communicate transparently with stakeholders."
+        }
+      ]
+    },
+    "Steady Growth": {
+      "Financials": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Build customer loyalty programs. Reward high-value customers to ensure long-term retention during expansion."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Integrate marketing automation. Use sophisticated tools for segmentation, personalization, and A/B testing to maximize efficiency."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Create a referral system. Leverage existing happy customers to generate new leads cheaply and reliably."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Conduct time-in-motion studies. Analyze key processes to squeeze out final inefficiencies."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in specialized automation technology (e.g., Robotics Process Automation, advanced AI tools)."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Implement a full Business Continuity Plan (BCP) to protect scaled operations from disruption."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Innovate from Strength. Introduce improvements or upgrades that increase efficiency or customer satisfaction."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Diversify Strategically. Add complementary products or services that deepen customer relationships."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Tie Offerings to Long-Term Strategy. Align your mix with business goals and document how each contributes to your broader plan."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Strengthen systems for higher volume. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in marketing, technology, or staffing. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Monitor quality control during scaling. This is essential for financials in a steady growth scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: strategic and forward-looking, with a 6–18 month horizon."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Standardize training and onboarding. Create repeatable processes for quickly and effectively bringing new staff up to speed."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Invest in mid-level manager development. Prepare existing staff for leadership roles as teams grow."
+        },
+        {
+          "tone_focus": "Structure and Scale",
+          "recommendation": "Formalize performance review processes. Tie compensation and growth plans to business objectives."
+        }
+      ]
+    },
+    "Lifestyle Change": {
+      "Financials": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Assess current time, money, energy resources. This is essential for financials in a lifestyle change scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: realistic, empathetic, and capacity-focused."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Adjust commitments to match capacity. This is essential for financials in a lifestyle change scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: realistic, empathetic, and capacity-focused."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate and mentor staff. This is essential for financials in a lifestyle change scenario. Implement by breaking the process into steps you can complete within the timeframe suggested by the tone: realistic, empathetic, and capacity-focused."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Systematize proactive check-ins. Implement a light-touch, automated schedule for engaging key customers."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Refine audience focus. Eliminate marketing efforts aimed at low-conversion or high-maintenance customer profiles."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Finalize all documentation and process training so staff can handle 90% of marketing and sales without owner intervention."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Review all systems for 100% owner-independence. Ensure all processes can run without your direct involvement."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Implement a quarterly operational audit process led by delegated staff to monitor efficiency."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Finalize staff empowerment by granting necessary administrative and purchasing authority to key managers."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Systematize product/service retirement. Create an annual review to phase out high-effort, low-return offerings."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Build 'self-service' knowledge bases, online portals, or automated support tools to reduce staff load."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Finalize packaging and pricing models to achieve maximum standardization and profit."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Audit your weekly calendar. Identify 80% of tasks to delegate or eliminate entirely, keeping only high-impact strategic roles."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Establish a clear, passive income/profit goal that is separate from active working hours."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Implement a formal reporting structure where you receive only summarized data, not raw details, to reduce cognitive load."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Implement a staff-led operational improvement committee focused on reducing process complexity and increasing efficiency."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Finalize a comprehensive staff manual or playbook that covers all procedures, policies, and expected behaviors."
+        },
+        {
+          "tone_focus": "Simplify and Delegate",
+          "recommendation": "Delegate all staff scheduling, hiring, and performance management to a trusted manager or HR system."
+        }
+      ]
+    },
+    "Economic Uncertainty": {
+      "Financials": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Protect cash flow and strengthen reserves."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Trim unnecessary expenses and renegotiate terms."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Diversify revenue streams."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Use data to precisely target marketing to customers with the highest lifetime value and lowest price sensitivity."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Systematize outreach to at-risk customers with highly personalized, value-focused retention offers."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Build detailed profiles of high-value customers to inform future product or service development that hedges against uncertainty."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Implement real-time monitoring of key operational metrics (e.g., waste, defect rate, lead time) to spot cost creep immediately."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Secure long-term contracts with key suppliers at favorable rates to lock in stability."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Finalize automation of all non-essential and repetitive tasks to reduce dependency on volatile labor costs."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Identify and eliminate all non-core products or services, fully consolidating resources around the most profitable offerings."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Design a 'crisis-proof' version of your core offering (e.g., higher value, lower cost to produce) for market fluctuations."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Create a formal, documented process for rapid, temporary price changes or bundling/unbundling services in response to market shifts."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Increase frequency of financial reporting and performance reviews (e.g., weekly or bi-weekly)."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Model multiple scenarios (e.g., 10% revenue drop, 30% revenue drop) and establish clear trigger points for specific actions."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Focus on transparent, reassuring, and realistic communication to maintain confidence."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Communicate openly about the financial health of the business and what is being done to stabilize it."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Focus staff attention on high-ROI, mission-critical tasks; minimize distractions."
+        },
+        {
+          "tone_focus": "Stabilize and Monitor",
+          "recommendation": "Reinforce team collaboration and morale, as uncertainty can lead to internal friction."
+        }
+      ]
+    },
+    "New Opportunity": {
+      "Financials": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Assess feasibility of pursuing opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run multi-scenario financial projections."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Check alignment with long-term goals."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Run small, targeted tests (e.g., social media ads, landing pages) to gauge market interest before major investment."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Conduct interviews or surveys with ideal customers to validate assumptions about the opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Establish clear 'Go/No-Go' metrics (e.g., cost-per-lead, conversion rate) and stick to them."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Identify 3-5 key resources (staff, equipment, software) needed to execute the opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Develop a Minimum Viable Product (MVP) or process for testing the core assumption of the opportunity."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Establish a short, fixed timeline (e.g., 30-90 days) for the testing phase."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Define the minimal set of features or service elements required to deliver the core value of the opportunity (MVP)."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Ensure the MVP can be delivered with existing internal knowledge/staff to limit initial risk."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Create a fast feedback loop with early adopters to iterate quickly based on real-world use."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Appoint an 'Opportunity Champion' with clear authority to lead the exploratory phase."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Commit a specific, limited budget and resource pool that won't disrupt current operations."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Define success metrics for the test phase that are separate from existing business KPIs."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Staff the opportunity team with highly adaptable, resourceful employees."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Clearly separate the opportunity team from daily operations to maintain focus and prevent disruption."
+        },
+        {
+          "tone_focus": "Validate and Move Quickly",
+          "recommendation": "Communicate that the opportunity is a 'test' and that failure to launch is a learning outcome, not a personal failure."
+        }
+      ]
+    },
+    "Operational Adjustments": {
+      "Financials": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan transitions to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Train staff and document new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Test before full rollout."
+        }
+      ],
+      "Customers_Marketing": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Communicate changes clearly to customers well in advance, explaining the 'why' (e.g., 'to serve you better')."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Update all customer-facing documentation, websites, and FAQs to reflect new processes."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Monitor customer feedback closely during and immediately after the adjustment to catch pain points."
+        }
+      ],
+      "Operations": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Create a phased rollout plan, starting with a small test group (e.g., one department or one region)."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Document new operational procedures using simple checklists, flowcharts, or videos."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Assign a transition manager to oversee the change and act as the single point of contact for issues."
+        }
+      ],
+      "Products_Services": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Plan the service transition to minimize disruption."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Maintain Service Quality. Monitor for any quality drops or customer confusion as new systems roll out."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Communicate Internally. Ensure everyone involved in production or delivery understands the updates."
+        }
+      ],
+      "Leadership": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Lead by example by fully committing to the new systems or processes being introduced."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Over-communicate the benefits and rationale for the change to reduce staff resistance."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Allocate time and resources specifically for training and learning the new ways of working."
+        }
+      ],
+      "Employees": [
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Conduct thorough training sessions and provide one-on-one coaching for staff using the new systems."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Establish a clear channel for staff to provide feedback and report bugs or inefficiencies during the transition."
+        },
+        {
+          "tone_focus": "Adapt Systems and People",
+          "recommendation": "Recognize and reward staff who champion the change and help their peers adapt."
+        }
+      ]
+    }
+  }
+}
