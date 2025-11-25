@@ -18,9 +18,11 @@
     const resetBtn = document.getElementById("resetBtn");
 
     const storageKey = "assessment_answers_v1";
+
     function saveLocal() {
         localStorage.setItem(storageKey, JSON.stringify(answers));
     }
+
     function loadLocal() {
         try {
             return JSON.parse(localStorage.getItem(storageKey) || "{}");
@@ -28,6 +30,7 @@
             return {};
         }
     }
+
     function clamp(n, min, max) {
         return Math.max(min, Math.min(max, n));
     }
@@ -78,8 +81,6 @@
 
         questionArea.innerHTML = `
             <article class="question-card" data-qid="${q.id}">
-                <div class="question-meta">
-                </div>
                 <div class="question-text">${q.question}</div>
                 <div class="tile-grid" role="group" aria-label="Answer choices for ${q.id}">
                     ${tiles}
@@ -123,10 +124,12 @@
         currentIndex = clamp(currentIndex - 1, 0, data.flat.length - 1);
         updateUI();
     });
+
     nextBtn.addEventListener("click", () => {
         currentIndex = clamp(currentIndex + 1, 0, data.flat.length - 1);
         updateUI();
     });
+
     resetBtn.addEventListener("click", () => {
         if (confirm("Erase all answers?")) {
             answers = {};
@@ -135,28 +138,86 @@
         }
     });
 
+    // ⭐ NEW: display results nicely on screen
+    function showResults(out) {
+        const resultsEl = document.getElementById("results");
+        resultsEl.classList.remove("hidden");
+
+        // Build recommendations block
+        let recommendationsHTML = "";
+        if (Array.isArray(out.recommendations)) {
+            recommendationsHTML = out.recommendations
+                .map(rec => `<div class="recommendation">${rec}</div>`)
+                .join("");
+        } else {
+            recommendationsHTML = `<p>${out.recommendations}</p>`;
+        }
+
+        const prioritiesHTML = out.priority_categories
+            .map(cat => `<li>${cat}</li>`)
+            .join("");
+
+        resultsEl.innerHTML = `
+            <h2>Assessment Results</h2>
+
+            <div class="result-block">
+                <h3>Overall Tier</h3>
+                <p><strong>${out.overall_tier}</strong></p>
+            </div>
+
+            <div class="result-block">
+                <h3>Overall Score</h3>
+                <p>${out.overall_score}</p>
+            </div>
+
+            <div class="result-block">
+                <h3>Priority Categories</h3>
+                <ul>${prioritiesHTML}</ul>
+            </div>
+
+            <div class="result-block">
+                <h3>Recommendations</h3>
+                ${recommendationsHTML}
+            </div>
+
+            <div class="result-block">
+                <h3>Tier Distribution</h3>
+                <pre>${JSON.stringify(out.tier_distribution, null, 2)}</pre>
+            </div>
+        `;
+    }
+
     submitBtn.addEventListener("click", async () => {
         submitStatus.textContent = "Submitting…";
         submitBtn.disabled = true;
         try {
             const payload = {
-                answers,
-                meta: {
-                    completedCount: Object.keys(answers).length,
-                    totalCount: data.flat.length,
-                    submittedAt: new Date().toISOString(),
-                    userAgent: navigator.userAgent
-                }
+                catalyst: document.getElementById("catalystSelect").value,
+                answers: Object.entries(answers).map(([question_id, value]) => ({
+                    question_id,
+                    score: parseInt(value),
+                    notes: null
+                }))
             };
+
             const res = await fetch(cfg.submitUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
+
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
             const out = await res.json().catch(() => ({}));
+
+            // Log to console
+            console.log("Assessment response:", out);
+
             submitStatus.textContent = "Saved ✓";
-            if (out && out.redirect) window.location.assign(out.redirect);
+
+            // ⭐ Show results in UI
+            showResults(out);
+
         } catch (err) {
             console.error(err);
             submitStatus.textContent = "Could not submit";
@@ -173,7 +234,7 @@
 
     async function boot() {
         try {
-            const [questions, funcAreas] = await Promise.all([
+            const [questions] = await Promise.all([
                 fetchJSON(cfg.dataPaths.questions),
                 fetchJSON(cfg.dataPaths.functionalAreas)
             ]);
@@ -201,6 +262,7 @@
             data.flat = flat;
 
             answers = loadLocal();
+
             if (cfg.prefillUrl) {
                 try {
                     const res = await fetch(cfg.prefillUrl);
