@@ -223,7 +223,7 @@ function showResults(out) {
             Download Results
         </button>
 
-        <button type="button">
+        <button id="bookCall type="button">
             Book a Call
         </button>
 
@@ -245,42 +245,45 @@ function showResults(out) {
 
     
 
-    submitBtn.addEventListener("click", async () => {
-        submitStatus.textContent = "Submitting…";
-        submitBtn.disabled = true;
-        try {
-            const payload = {
-                catalyst: document.getElementById("catalystSelect").value,
-                answers: Object.entries(answers).map(([question_id, value]) => ({
-                    question_id,
-                    score: parseInt(value),
-                    notes: null
-                }))
-            };
+submitBtn.addEventListener("click", async () => {
+    submitStatus.textContent = "Submitting…";
+    submitBtn.disabled = true;
 
-            const res = await fetch(cfg.submitUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
+    try {
+        const filteredAnswers = Object.entries(answers)
+            .filter(([_, value]) => value !== "N/A")
+            .map(([question_id, value]) => ({
+                question_id,
+                score: parseInt(value, 10),
+                notes: null
+            }));
 
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const payload = {
+            catalyst: document.getElementById("catalystSelect").value,
+            answers: filteredAnswers
+        };
 
-            const out = await res.json().catch(() => ({}));
+        const res = await fetch(cfg.submitUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
 
-            console.log("Assessment response:", out);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-            submitStatus.textContent = "Saved ✓";
+        const out = await res.json().catch(() => ({}));
 
-            showResults(out);
+        submitStatus.textContent = "Saved ✓";
+        showResults(out);
 
-        } catch (err) {
-            console.error(err);
-            submitStatus.textContent = "Could not submit";
-        } finally {
-            
-        }
-    });
+    } catch (err) {
+        console.error(err);
+        submitStatus.textContent = "Could not submit";
+    } finally {
+        submitBtn.disabled = false;
+    }
+});
+
 
     async function fetchJSON(path) {
         const res = await fetch(path);
