@@ -40,7 +40,7 @@
         const done = Object.keys(answers).length;
         const pct = total ? Math.round((done / total) * 100) : 0;
         progressBar.style.width = pct + "%";
-        progressLabel.textContent = `${pct}% complete (${done}/${total})`;
+        progressLabel.textContent = `${pct}% complete`;
     }
 
     function renderSections() {
@@ -159,12 +159,32 @@
         if (confirm("Erase all answers?")) {
             answers = {};
             saveLocal();
+    
+            setAssessmentDisabled(false);
+            questionArea.classList.remove("hidden");
+            document.getElementById("results").classList.add("hidden");
+    
             updateUI();
         }
     });
+    
+
+    function setAssessmentDisabled(disabled) {
+        prevBtn.disabled = disabled;
+        nextBtn.disabled = disabled;
+    
+        sectionList.querySelectorAll("button").forEach(btn => {
+            btn.disabled = disabled;
+        });
+    }
 
 function showResults(out) {
+    setAssessmentDisabled(true);
+
     const resultsEl = document.getElementById("results");
+    questionArea.innerHTML = "";
+    questionArea.classList.add("hidden");
+
     resultsEl.classList.remove("hidden");
 
     let recommendationsHTML = "";
@@ -191,29 +211,34 @@ function showResults(out) {
 
 
         resultsEl.innerHTML = `
-        <h2>Assessment Results</h2>
+        
+    <h2 style="text-align: center;">
+        Congrats on taking the next step to move your business forward!
+    </h2>
 
+    <div class="action-buttons"
+         style="display: flex; justify-content: center; gap: 12px; margin: 16px 0;">
+        
         <button id="downloadPdfBtn" type="button">
-            Download PDF
+            Download Results
         </button>
 
-        <div class="result-block">
-            <h3>Overall Tier</h3>
-            <p><strong>${out.overall_tier}</strong></p>
-        </div>
+        <button type="button">
+            Book a Call
+        </button>
 
-        <div class="result-block">
-            <h3>Overall Score</h3>
-            <p>${out.overall_score}</p>
-        </div>
+        <button type="button">
+            View More Resources
+        </button>
+        
+    </div>
 
+    <div class="result-block">
+        <h3>Recommendations</h3>
+        ${recommendationsHTML}
+    </div>
+`;
 
-        <div class="result-block">
-            <h3>Recommendations</h3>
-            ${recommendationsHTML}
-        </div>
-
-    `;
 
 }
 
@@ -253,7 +278,7 @@ function showResults(out) {
             console.error(err);
             submitStatus.textContent = "Could not submit";
         } finally {
-            submitBtn.disabled = false;
+            
         }
     });
 
