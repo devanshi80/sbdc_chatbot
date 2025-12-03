@@ -170,11 +170,20 @@ function showResults(out) {
     let recommendationsHTML = "";
     if (Array.isArray(out.recommendations)) {
         recommendationsHTML = out.recommendations
-            .map(rec => `<div class="recommendation">${rec}</div>`)
+            .map(rec => `
+                <div class="recommendation">
+                    ${marked.parse(rec)}
+                </div>
+            `)
             .join("");
     } else {
-        recommendationsHTML = `<p>${out.recommendations}</p>`;
+        recommendationsHTML = `
+            <div class="recommendation">
+                ${marked.parse(out.recommendations)}
+            </div>
+        `;
     }
+    
 
     const prioritiesHTML = out.priority_categories
         .map(cat => `<li>${cat}</li>`)
