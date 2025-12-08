@@ -54,3 +54,50 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/export-pdf")
+async def export_pdf(conversation: Dict[str, Any]):
+    """
+    Expected input structure:
+    {
+        "messages": [
+            {"role": "user", "content": "text..."},
+            {"role": "ai", "content": "text..."}
+        ]
+    }
+    """
+
+    try:
+        buffer = BytesIO()
+        pdf = canvas.Canvas(buffer, pagesize=letter)
+        pdf.setFont("Helvetica", 11)
+
+        x, y = 40, 750
+
+        for msg in conversation["messages"]:
+            text = f"{msg['role'].upper()}: {msg['content']}"
+
+            for line in text.split("\n"):
+                pdf.drawString(x, y, line)
+                y -= 15
+
+                # Create new page if we run out of space
+                if y < 50:
+                    pdf.showPage()
+                    pdf.setFont("Helvetica", 11)
+                    y = 750
+
+        pdf.save()
+        buffer.seek(0)
+
+        return Response(
+            content=buffer.getvalue(),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": "attachment; filename=conversation.pdf"
+            }
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
