@@ -6,6 +6,7 @@
     let currentIndex = 0;
     let answers = {};
     let prefilled = null;
+    let lastAssessmentResult = null; 
 
     const sectionList = document.getElementById("sectionList");
     const questionArea = document.getElementById("questionArea");
@@ -59,30 +60,51 @@
         });
     }
 
-    async function downloadPDF(conversation) {
-        const response = await fetch("http://localhost:8000/export-pdf", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ messages: conversation })
-        });
-      
-        if (!response.ok) {
-          console.error("Failed to download PDF");
-          return;
+    async function downloadPDF() {
+        if (!lastAssessmentResult) {
+            alert("No assessment results available. Please complete and submit the assessment first.");
+            return;
         }
-      
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-      
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "conversation.pdf";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      }
+
+        try {
+            const catalyst = document.getElementById("catalystSelect").value;
+            
+            const pdfData = {
+                catalyst: catalyst,
+                overall_score: lastAssessmentResult.overall_score,
+                overall_tier: lastAssessmentResult.overall_tier,
+                priority_categories: lastAssessmentResult.priority_categories,
+                category_details: lastAssessmentResult.category_details,
+                recommendations: lastAssessmentResult.recommendations
+            };
+
+            const response = await fetch("http://127.0.0.1:8000/export-pdf", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(pdfData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `SBDC_Assessment_Results_${new Date().toISOString().split('T')[0]}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error("Failed to download PDF:", err);
+            alert("Failed to download PDF. Please try again.");
+        }
+    }
 
     function renderQuestion() {
         const q = data.flat[currentIndex];
@@ -159,6 +181,7 @@
         if (confirm("Erase all answers?")) {
             answers = {};
             saveLocal();
+            lastAssessmentResult = null;
     
             setAssessmentDisabled(false);
             questionArea.classList.remove("hidden");
@@ -167,7 +190,6 @@
             updateUI();
         }
     });
-    
 
     function setAssessmentDisabled(disabled) {
         prevBtn.disabled = disabled;
@@ -178,112 +200,102 @@
         });
     }
 
-function showResults(out) {
-    setAssessmentDisabled(true);
+    function showResults(out) {
+        lastAssessmentResult = out; 
+        setAssessmentDisabled(true);
 
-    const resultsEl = document.getElementById("results");
-    questionArea.innerHTML = "";
-    questionArea.classList.add("hidden");
+        const resultsEl = document.getElementById("results");
+        questionArea.innerHTML = "";
+        questionArea.classList.add("hidden");
 
-    resultsEl.classList.remove("hidden");
+        resultsEl.classList.remove("hidden");
 
-    let recommendationsHTML = "";
-    if (Array.isArray(out.recommendations)) {
-        recommendationsHTML = out.recommendations
-            .map(rec => `
+        let recommendationsHTML = "";
+        if (Array.isArray(out.recommendations)) {
+            recommendationsHTML = out.recommendations
+                .map(rec => `
+                    <div class="recommendation">
+                        ${marked.parse(rec)}
+                    </div>
+                `)
+                .join("");
+        } else {
+            recommendationsHTML = `
                 <div class="recommendation">
-                    ${marked.parse(rec)}
+                    ${marked.parse(out.recommendations)}
                 </div>
-            `)
-            .join("");
-    } else {
-        recommendationsHTML = `
-            <div class="recommendation">
-                ${marked.parse(out.recommendations)}
-            </div>
-        `;
-    }
-    
-
-    const prioritiesHTML = out.priority_categories
-        .map(cat => `<li>${cat}</li>`)
-        .join("");
-
+            `;
+        }
 
         resultsEl.innerHTML = `
-        
-    <h2 style="text-align: center;">
-        Congrats on taking the next step to move your business forward!
-    </h2>
+            <h2 style="text-align: center;">
+                Congrats on taking the next step to move your business forward!
+            </h2>
 
-    <div class="action-buttons"
-         style="display: flex; justify-content: center; gap: 12px; margin: 16px 0;">
-        
-        <button id="downloadPdfBtn" type="button">
-            Download Results
-        </button>
+            <div class="action-buttons"
+                 style="display: flex; justify-content: center; gap: 12px; margin: 16px 0;">
+                
+                <button id="downloadPdfBtn" type="button">
+                    Download Results
+                </button>
 
-        <button id="bookCall type="button">
-            Book a Call
-        </button>
+                <button id="bookCall" type="button">
+                    Book a Call
+                </button>
 
-        <button type="button">
-            View More Resources
-        </button>
-        
-    </div>
+                <button type="button">
+                    View More Resources
+                </button>
+                
+            </div>
 
-    <div class="result-block">
-        <h3>Recommendations</h3>
-        ${recommendationsHTML}
-    </div>
-`;
+            <div class="result-block">
+                <h3>Recommendations</h3>
+                ${recommendationsHTML}
+            </div>
+        `;
 
-
-}
-
-
-    
-
-submitBtn.addEventListener("click", async () => {
-    submitStatus.textContent = "Submitting…";
-    submitBtn.disabled = true;
-
-    try {
-        const filteredAnswers = Object.entries(answers)
-            .filter(([_, value]) => value !== "N/A")
-            .map(([question_id, value]) => ({
-                question_id,
-                score: parseInt(value, 10),
-                notes: null
-            }));
-
-        const payload = {
-            catalyst: document.getElementById("catalystSelect").value,
-            answers: filteredAnswers
-        };
-
-        const res = await fetch(cfg.submitUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-        const out = await res.json().catch(() => ({}));
-
-        submitStatus.textContent = "Saved ✓";
-        showResults(out);
-
-    } catch (err) {
-        console.error(err);
-        submitStatus.textContent = "Could not submit";
-    } finally {
-        submitBtn.disabled = false;
+        document.getElementById("downloadPdfBtn").addEventListener("click", downloadPDF);
     }
-});
 
+    submitBtn.addEventListener("click", async () => {
+        submitStatus.textContent = "Submitting…";
+        submitBtn.disabled = true;
+
+        try {
+            const filteredAnswers = Object.entries(answers)
+                .filter(([_, value]) => value !== "N/A")
+                .map(([question_id, value]) => ({
+                    question_id,
+                    score: parseInt(value, 10),
+                    notes: null
+                }));
+
+            const payload = {
+                catalyst: document.getElementById("catalystSelect").value,
+                answers: filteredAnswers
+            };
+
+            const res = await fetch(cfg.submitUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+            const out = await res.json().catch(() => ({}));
+
+            submitStatus.textContent = "Saved ✓";
+            showResults(out);
+
+        } catch (err) {
+            console.error(err);
+            submitStatus.textContent = "Could not submit";
+        } finally {
+            submitBtn.disabled = false;
+        }
+    });
 
     async function fetchJSON(path) {
         const res = await fetch(path);
