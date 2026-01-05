@@ -2,7 +2,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict, Any
 from schema import AssessmentResponse, AssessmentReport
-
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from fastapi import Response
 from services import AssessmentService
 from config import config
 
@@ -56,17 +59,7 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/export-pdf")
-async def export_pdf(conversation: Dict[str, Any]):
-    """
-    Expected input structure:
-    {
-        "messages": [
-            {"role": "user", "content": "text..."},
-            {"role": "ai", "content": "text..."}
-        ]
-    }
-    """
-
+async def export_pdf(payload: Dict[str, Any]):
     try:
         buffer = BytesIO()
         pdf = canvas.Canvas(buffer, pagesize=letter)
@@ -74,18 +67,39 @@ async def export_pdf(conversation: Dict[str, Any]):
 
         x, y = 40, 750
 
-        for msg in conversation["messages"]:
-            text = f"{msg['role'].upper()}: {msg['content']}"
-
-            for line in text.split("\n"):
-                pdf.drawString(x, y, line)
+        def write_line(s: str):
+            nonlocal y
+            for line in str(s).split("\n"):
+                pdf.drawString(x, y, line[:110])  
                 y -= 15
-
-                # Create new page if we run out of space
                 if y < 50:
                     pdf.showPage()
                     pdf.setFont("Helvetica", 11)
                     y = 750
+
+        # Header
+        write_line("SBDC Assessment Results")
+        write_line("-" * 60)
+        write_line(f"Catalyst: {payload.get('catalyst', '')}")
+        write_line(f"Overall Score: {payload.get('overall_score', '')}")
+        write_line(f"Overall Tier: {payload.get('overall_tier', '')}")
+        write_line("")
+
+        cats = payload.get("category_scores") or payload.get("category_details") or {}
+        if isinstance(cats, dict) and cats:
+            write_line("Category Scores:")
+            for name, info in cats.items():
+                write_line(f"- {name}: {info}")
+            write_line("")
+
+        recs = payload.get("recommendations", [])
+        write_line("Recommendations:")
+        if isinstance(recs, list):
+            for i, r in enumerate(recs, 1):
+                write_line(f"{i}. {r}")
+                write_line("")
+        else:
+            write_line(str(recs))
 
         pdf.save()
         buffer.seek(0)
@@ -93,9 +107,7 @@ async def export_pdf(conversation: Dict[str, Any]):
         return Response(
             content=buffer.getvalue(),
             media_type="application/pdf",
-            headers={
-                "Content-Disposition": "attachment; filename=conversation.pdf"
-            }
+            headers={"Content-Disposition": "attachment; filename=results.pdf"},
         )
 
     except Exception as e:
