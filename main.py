@@ -69,6 +69,14 @@ async def export_pdf(payload: Dict[str, Any]):
         
         def write_line(text: str, font="Helvetica", size=11, indent=0, bold=False):
             nonlocal y
+                        
+            # ✨ NEW: Check if line starts with ### (markdown heading)
+            original_text = str(text)
+            if original_text.strip().startswith("###"):
+                # Remove the ### and make it bold
+                text = original_text.strip()[3:].strip()  # Remove ### and whitespace
+                bold = True
+                
             if bold:
                 font = "Helvetica-Bold"
             pdf.setFont(font, size)
