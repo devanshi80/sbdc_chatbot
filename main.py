@@ -24,6 +24,11 @@ app.add_middleware(
 
 service = AssessmentService()
 
+@app.get("/")
+async def root():
+    """Health check endpoint for Render"""
+    return {"status": "ok", "message": "SBDC Assessment API is running"}
+
 @app.get("/questions")
 async def get_questions() -> Dict[str, Any]:
     return config.questions
