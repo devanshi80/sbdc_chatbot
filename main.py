@@ -9,6 +9,7 @@ from fastapi import Response
 from services import AssessmentService
 from config import config
 from datetime import datetime
+import re
 
 app = FastAPI()
 
@@ -67,117 +68,125 @@ async def export_pdf(payload: Dict[str, Any]):
         width, height = letter
         x, y = 50, height - 60
         
-        def write_line(text: str, font="Helvetica", size=11, indent=0, bold=False):
-            nonlocal y
-                        
-            # ✨ NEW: Check if line starts with ### (markdown heading)
-            original_text = str(text)
-            if original_text.strip().startswith("###"):
-                # Remove the ### and make it bold
-                text = original_text.strip()[3:].strip()  # Remove ### and whitespace
-                bold = True
-                
-            if bold:
-                font = "Helvetica-Bold"
-            pdf.setFont(font, size)
+        def parse_markdown_line(text: str):
+            """Parse a line and return segments with formatting info"""
+            segments = []
             
-            # Handle multi-line text and word wrapping
-            lines = str(text).split("\n")
-            for line in lines:
-                # Word wrap for long lines
-                words = line.split()
-                current_line = ""
-                for word in words:
-                    test_line = current_line + (" " if current_line else "") + word
-                    if pdf.stringWidth(test_line, font, size) < (width - 100 - indent):
-                        current_line = test_line
-                    else:
-                        if current_line:
-                            pdf.drawString(x + indent, y, current_line)
-                            y -= size + 4
-                            if y < 60:
-                                pdf.showPage()
-                                y = height - 60
-                                pdf.setFont(font, size)
-                            current_line = word
-                        else:
-                            # Single word too long, just print it
-                            pdf.drawString(x + indent, y, word)
-                            y -= size + 4
-                            if y < 60:
-                                pdf.showPage()
-                                y = height - 60
-                                pdf.setFont(font, size)
-                            current_line = ""
+            # Check if line starts with ### (heading)
+            is_heading = text.strip().startswith("###")
+            if is_heading:
+                text = text.strip()[3:].strip()
+                # Entire line is bold
+                segments.append({"text": text, "bold": True})
+                return segments, is_heading
+            
+            # Parse **bold** markers
+            parts = re.split(r'(\*\*.*?\*\*)', text)
+            for part in parts:
+                if part.startswith("**") and part.endswith("**"):
+                    # Bold text
+                    segments.append({"text": part[2:-2], "bold": True})
+                elif part:
+                    # Regular text
+                    segments.append({"text": part, "bold": False})
+            
+            return segments, is_heading
+        
+        def write_formatted_line(text: str, base_size=11, indent=0, force_bold=False):
+            """Write a line with inline bold formatting"""
+            nonlocal y
+            
+            segments, is_heading = parse_markdown_line(text)
+            
+            # Use larger font for headings
+            size = base_size + 1 if is_heading else base_size
+            
+            current_x = x + indent
+            
+            for segment in segments:
+                content = segment["text"]
+                is_bold = segment["bold"] or force_bold
+                font = "Helvetica-Bold" if is_bold else "Helvetica"
                 
-                if current_line:
-                    pdf.drawString(x + indent, y, current_line)
-                    y -= size + 4
-                    if y < 60:
-                        pdf.showPage()
-                        y = height - 60
+                pdf.setFont(font, size)
+                
+                # Word wrap
+                words = content.split()
+                for word in words:
+                    word_width = pdf.stringWidth(word + " ", font, size)
+                    
+                    # Check if we need to wrap
+                    if current_x + word_width > width - 50:
+                        # Move to next line
+                        y -= size + 4
+                        current_x = x + indent
+                        
+                        if y < 60:
+                            pdf.showPage()
+                            y = height - 60
+                            current_x = x + indent
+                        
                         pdf.setFont(font, size)
-
-        def clean_markdown(text: str) -> str:
-            """Remove markdown formatting from text"""
-            import re
-            # Remove ### headers
-            text = re.sub(r'^###\s+', '', text, flags=re.MULTILINE)
-            # Remove ** bold markers
-            text = re.sub(r'\*\*([^*]+)\*\*', r'\1', text)
-            return text
+                    
+                    pdf.drawString(current_x, y, word)
+                    current_x += word_width
+            
+            # Move to next line after finishing this one
+            y -= size + 4
+            if y < 60:
+                pdf.showPage()
+                y = height - 60
         
         def add_spacing(pixels=10):
             nonlocal y
             y -= pixels
         
         # Header
-        write_line("SBDC Assessment Results", size=18, bold=True)
-        add_spacing(5)
+        pdf.setFont("Helvetica-Bold", 18)
+        pdf.drawString(x, y, "SBDC Assessment Results")
+        y -= 25
+        
         pdf.setLineWidth(1)
         pdf.line(50, y, width - 50, y)
         add_spacing(20)
         
         # Overview Section
-        write_line(f"Catalyst: {payload.get('catalyst', 'N/A')}", size=12, bold=True)
-        add_spacing(15)
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(x, y, f"Catalyst: {payload.get('catalyst', 'N/A')}")
+        y -= 20
         
-        write_line(f"Overall Score: {payload.get('overall_score', 'N/A')}", size=12)
-        write_line(f"Overall Tier: {payload.get('overall_tier', 'N/A')}", size=12)
-        add_spacing(20)
-        
-        # Category Scores Section
-        cats = payload.get("category_scores") or payload.get("category_details") or {}
-        if isinstance(cats, dict) and cats:
-            write_line("Category Scores", size=14, bold=True)
-            add_spacing(10)
-            
-            for name, info in cats.items():
-                write_line(f"• {name}", size=11, bold=True, indent=10)
-                write_line(f"  {info}", size=10, indent=20)
-                add_spacing(8)
-            
-            add_spacing(15)
+        pdf.setFont("Helvetica", 12)
+        pdf.drawString(x, y, f"Overall Score: {payload.get('overall_score', 'N/A')}")
+        y -= 18
+        pdf.drawString(x, y, f"Overall Tier: {payload.get('overall_tier', 'N/A')}")
+        add_spacing(25)
         
         # Recommendations Section
-        write_line("Recommendations", size=14, bold=True)
-        add_spacing(10)
+        pdf.setFont("Helvetica-Bold", 14)
+        pdf.drawString(x, y, "Recommendations")
+        add_spacing(15)
 
-        recs = payload.get("recommendations", [])
-        if isinstance(recs, list) and recs:
-            for i, r in enumerate(recs, 1):
-                cleaned_rec = clean_markdown(r)  # Add this line
-                write_line(f"{i}. ", size=11, bold=True, indent=10)
-                y += 15
-                write_line(cleaned_rec, size=11, indent=25)  # Use cleaned version
-                add_spacing(12)
-        else:
-            write_line(str(recs), indent=10)
+        # Handle recommendations (comes as a single string with markdown)
+        recs_text = payload.get("recommendations", "")
+        
+        if isinstance(recs_text, str) and recs_text:
+            # Split by lines
+            lines = recs_text.split("\n")
+            
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    # Empty line - add small spacing
+                    add_spacing(8)
+                    continue
+                
+                # Write the line with formatting
+                write_formatted_line(line, base_size=11, indent=0)
         
         # Footer
         y = 40
         pdf.setFont("Helvetica", 8)
-        pdf.drawString(50, y, f"Generated on {payload.get('catalyst', '')} - {str(datetime.now().date())}")
+        pdf.drawString(50, y, f"Generated {str(datetime.now().strftime('%B %d, %Y'))}")
         
         pdf.save()
         buffer.seek(0)
