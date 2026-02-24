@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from typing import Dict, Any
 from schema import AssessmentResponse, AssessmentReport
 from io import BytesIO
@@ -23,6 +24,11 @@ app.add_middleware(
 )
 
 service = AssessmentService()
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Render"""
+    return {"status": "ok", "message": "SBDC Assessment API is running"}
 
 @app.get("/questions")
 async def get_questions() -> Dict[str, Any]:
@@ -67,6 +73,12 @@ async def export_pdf(payload: Dict[str, Any]):
         pdf = canvas.Canvas(buffer, pagesize=letter)
         width, height = letter
         x, y = 50, height - 60
+        
+        # Get user's answers from payload
+        answers_dict = {}
+        if "answers" in payload:
+            for answer in payload["answers"]:
+                answers_dict[answer["question_id"]] = answer["score"]
         
         def parse_markdown_line(text: str):
             """Parse a line and return segments with formatting info"""
@@ -161,6 +173,54 @@ async def export_pdf(payload: Dict[str, Any]):
         pdf.drawString(x, y, f"Overall Tier: {payload.get('overall_tier', 'N/A')}")
         add_spacing(25)
         
+        # Detailed Responses Section
+        pdf.setFont("Helvetica-Bold", 14)
+        pdf.drawString(x, y, "Your Responses by Category")
+        add_spacing(15)
+        
+        # Iterate through each functional area
+        for area_name, questions in config.questions["assessment"].items():
+            # Area header
+            pdf.setFont("Helvetica-Bold", 12)
+            display_name = area_name.replace("_", " & ")
+            pdf.drawString(x, y, display_name)
+            add_spacing(12)
+            
+            # Questions for this area
+            for q in questions:
+                q_id = q["id"]
+                q_text = q["question"]
+                
+                # Get user's answer
+                user_score = answers_dict.get(q_id, "N/A")
+                
+                # Get the label for the score
+                score_label = "Not Answered"
+                if user_score != "N/A" and str(user_score) in q["scoring_scale"]:
+                    score_label = q["scoring_scale"][str(user_score)]
+                
+                # Question text (wrapped)
+                pdf.setFont("Helvetica", 10)
+                write_formatted_line(f"**{q_id}:** {q_text}", base_size=10, indent=5)
+                
+                # Answer
+                pdf.setFont("Helvetica-Oblique", 10)
+                pdf.drawString(x + 10, y, f"Your answer: {user_score} - {score_label}")
+                add_spacing(18)
+                
+                # Check if we need a new page
+                if y < 100:
+                    pdf.showPage()
+                    y = height - 60
+            
+            # Add space between areas
+            add_spacing(15)
+            
+            # Check if we need a new page
+            if y < 150:
+                pdf.showPage()
+                y = height - 60
+        
         # Recommendations Section
         pdf.setFont("Helvetica-Bold", 14)
         pdf.drawString(x, y, "Recommendations")
@@ -199,4 +259,6 @@ async def export_pdf(payload: Dict[str, Any]):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
+
+app.mount("/", StaticFiles(directory=".", html=True), name="static")
 
