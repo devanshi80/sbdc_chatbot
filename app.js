@@ -37,9 +37,19 @@
     }
 
     function computeProgress() {
-        const total = data.flat.length;
-        const done = Object.keys(answers).length;
+        const total = data.flat.length - 1; // Exclude catalyst question from total
+        const done = Object.keys(answers).filter(id => id !== "CATALYST-001").length; // Exclude catalyst from count
         const pct = total ? Math.round((done / total) * 100) : 0;
+
+        // Debug logging
+        console.log("Progress Debug:", {
+            totalQuestions: data.flat.length,
+            totalExcludingCatalyst: total,
+            answeredExcludingCatalyst: done,
+            allAnswers: Object.keys(answers),
+            percentage: pct
+        });
+
         progressBar.style.width = pct + "%";
         progressLabel.textContent = `${pct}% complete`;
     }
@@ -51,7 +61,10 @@
             const pill = document.createElement("button");
             pill.className = "section-pill" + (sec.containsIndex(currentIndex) ? " active" : "");
             pill.type = "button";
-            pill.innerHTML = `<span>${sec.name}</span><span class="count">${doneInSec}/${sec.items.length}</span>`;
+
+            // Exclude catalyst section from showing counts
+            const displayCount = sec.name === "Assessment Focus" ? "" : `<span class="count">${doneInSec}/${sec.items.length}</span>`;
+            pill.innerHTML = `<span>${sec.name}</span>${displayCount}`;
             pill.addEventListener("click", () => {
                 currentIndex = indexById.get(sec.items[0].id);
                 updateUI();
@@ -67,13 +80,15 @@
         }
 
         try {
-            const catalyst = document.getElementById("catalystSelect").value;
-            
+            const catalyst = answers["CATALYST-001"] || "Steady Growth";
+
             // Prepare answers in the format needed for the PDF
-            const formattedAnswers = Object.entries(answers).map(([question_id, value]) => ({
-                question_id: question_id,
-                score: parseInt(value, 10)
-            }));
+            const formattedAnswers = Object.entries(answers)
+                .filter(([question_id, value]) => question_id !== "CATALYST-001" && value !== "N/A")
+                .map(([question_id, value]) => ({
+                    question_id: question_id,
+                    score: parseInt(value, 10)
+                }));
             
             const pdfData = {
                 catalyst: catalyst,
@@ -146,6 +161,7 @@
             btn.addEventListener("click", () => {
                 const val = btn.getAttribute("data-value");
                 answers[q.id] = val;
+                console.log("Answer saved:", q.id, "=", val, "Total answers:", Object.keys(answers));
                 saveLocal();
                 questionArea.querySelectorAll(".tile").forEach((b) => {
                     const sel = b === btn;
@@ -156,7 +172,7 @@
                     currentIndex += 1;
                     updateUI();
                 } else {
-                    computeProgress();
+                    updateUI(); // Update everything including section counts
                 }
             });
         });
@@ -271,7 +287,7 @@
 
         try {
             const filteredAnswers = Object.entries(answers)
-                .filter(([_, value]) => value !== "N/A")
+                .filter(([question_id, value]) => value !== "N/A" && question_id !== "CATALYST-001")
                 .map(([question_id, value]) => ({
                     question_id,
                     score: parseInt(value, 10),
@@ -279,7 +295,7 @@
                 }));
 
             const payload = {
-                catalyst: document.getElementById("catalystSelect").value,
+                catalyst: answers["CATALYST-001"] || "Steady Growth",
                 answers: filteredAnswers
             };
 
@@ -317,6 +333,21 @@
                 fetchJSON(cfg.dataPaths.functionalAreas)
             ]);
 
+            // Create catalyst question as the first question
+            const catalystQuestion = {
+                id: "CATALYST-001",
+                question: "What best describes the current driving force behind your business assessment needs?",
+                type: "Catalyst Selection",
+                scoring_scale: {
+                    "Crisis": "Crisis",
+                    "Economic Uncertainty": "Economic Uncertainty",
+                    "New Opportunity": "New Opportunity",
+                    "Steady Growth": "Steady Growth",
+                    "Lifestyle Change": "Lifestyle Change",
+                    "Operational Adjustments": "Operational Adjustments"
+                }
+            };
+
             const sections = Object.keys(questions.assessment).map((name) => {
                 const items = questions.assessment[name];
                 return {
@@ -332,6 +363,13 @@
                 };
             });
 
+            // Add catalyst section as first section
+            sections.unshift({
+                name: "Assessment Focus",
+                items: [catalystQuestion],
+                containsIndex: (idx) => idx === 0
+            });
+
             const flat = [];
             sections.forEach((sec) => sec.items.forEach((q) => flat.push(q)));
             flat.forEach((q, i) => indexById.set(q.id, i));
@@ -340,6 +378,11 @@
             data.flat = flat;
 
             answers = loadLocal();
+
+            // Set default catalyst answer if not already set
+            if (!answers["CATALYST-001"]) {
+                answers["CATALYST-001"] = "Steady Growth";
+            }
 
             if (cfg.prefillUrl) {
                 try {
