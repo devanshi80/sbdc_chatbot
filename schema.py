@@ -40,8 +40,8 @@ class AssessmentResponse(BaseModel):
 class CategoryScore(BaseModel):
     name: str
     raw_score: float
-    normalized_score: float
-    tier: str
+    normalized_score: Optional[float]
+    tier: Optional[str]
     questions_answered: int
     total_questions: int
 

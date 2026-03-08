@@ -180,6 +180,9 @@ async def export_pdf(payload: Dict[str, Any]):
         
         # Iterate through each functional area
         for area_name, questions in config.questions["assessment"].items():
+            area_details = payload.get("category_details", {}).get(area_name, {})
+            if area_details.get("score") is None:
+                continue
             # Area header
             pdf.setFont("Helvetica-Bold", 12)
             display_name = area_name.replace("_", " & ")
