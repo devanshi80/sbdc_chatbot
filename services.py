@@ -152,11 +152,9 @@ class AssessmentService:
 
         # Sort areas by priority (lowest scores first)
         sorted_areas = sorted(result.category_scores.values(), key=lambda c: c.normalized_score if c.normalized_score is not None else -1)
-        print(f"DEBUG: sorted_areas = {[(c.name, c.normalized_score) for c in sorted_areas]}")
         for i, cat in enumerate(sorted_areas, 1):
             if cat.normalized_score is None:
                 continue
-            print(f"DEBUG: Processing {cat.name} (score={cat.normalized_score})")
             tier = cat.tier
             area = cat.name
             
