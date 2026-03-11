@@ -6,11 +6,11 @@
           "question": "I review key financial reports (P&L, balance sheet, cash flow) at least once a month",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
@@ -20,11 +20,11 @@
           "question": "I maintain an up-to-date budget that reflects changes (increased costs, economic disruptions, loss of grants or subsidies, desire to add new employees or assets, etc.)",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
@@ -34,11 +34,11 @@
           "question": "I use accounting software or another organized system for tracking income and expenses",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
@@ -48,11 +48,11 @@
           "question": "I know my current break-even point and the point at which I did/will reach profitability",
           "type": "Confidence",
           "scoring_scale": {
-            "0": "No exposure/knowledge",
-            "1": "Some knowledge, not confident",
-            "2": "Some confidence, need more learning",
-            "3": "Confident, but unsure of next steps",
-            "4": "Confident & know how to apply my knowledge",
+            "0": "I’m not familiar with this topic",
+            "1": "I know this is important, but I need to do more learning or research for specifics",
+            "2": "I know the basics, but I need help figuring out how to apply this to my business",
+            "3": " I understand this topic, but I can improve on its application in my business",
+            "4": "I feel confident in both my knowledge on this topic and how I’ve applied it in my business",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
@@ -62,11 +62,11 @@
           "question": "I have built a financial reserve/I have cash on hand to buffer against rising or unexpected costs",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
@@ -76,25 +76,25 @@
           "question": "I have a clear, up-to-date budget that guides my decision-making",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
         },
         {
           "id": "FIN-007",
-          "question": "I understand and consistently monitor my cash flow",
+          "question": "I consistently monitor my cash flow",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
@@ -104,11 +104,11 @@
           "question": "I have taken steps to improve my creditworthiness for financing options",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
@@ -118,11 +118,11 @@
           "question": "I know my current debt obligations and have a repayment plan",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
@@ -132,11 +132,11 @@
           "question": "I work with a financial professional (e.g., bookkeeper or accountant) for financial insight",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
@@ -146,25 +146,25 @@
           "question": "I use financial data to guide decisions",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
         },
         {
           "id": "FIN-012",
-          "question": "My level of confidence in my financial knowledge is…",
+          "question": "I know my business' financials well and can articulate them clearly",
           "type": "Confidence",
           "scoring_scale": {
-            "0": "No exposure/knowledge",
-            "1": "Some knowledge, not confident",
-            "2": "Some confidence, need more learning",
-            "3": "Confident, but unsure of next steps",
-            "4": "Confident & know how to apply my knowledge",
+            "0": "I’m not familiar with this topic",
+            "1": "I know this is important, but I need to do more learning or research for specifics",
+            "2": "I know the basics, but I need help figuring out how to apply this to my business",
+            "3": " I understand this topic, but I can improve on its application in my business",
+            "4": "I feel confident in both my knowledge on this topic and how I’ve applied it in my business",
             "N/A": "Not Applicable"
           },
           "reflection": "What financial decisions were hardest this year, and why? Are there financial metrics you feel unclear or unconfident about? Are you pleased with your professional partners (accountant, bookkeeper, banking partner, etc.)? If yes, why? If not, why not?"
@@ -176,11 +176,11 @@
           "question": "I have written policies or procedures for core processes",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What part of your day-to-day operations causes the most stress? Have supply chain or tech issues affected your work?"
@@ -190,39 +190,39 @@
           "question": "I have protected my business data and use technology (cloud storage/backups, software, cybersecurity tools) to securely manage my operations",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What part of your day-to-day operations causes the most stress? Have supply chain or tech issues affected your work?"
         },
         {
           "id": "OPS-003",
-          "question": "I have a clear snapshot of my business assets and lifecycle (inventory, equipment maintenance)",
-          "type": "Planning Status",
+          "question": "I monitor my business assets and lifecycle (inventory, equipment maintenance)",
+          "type": "Frequency",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What part of your day-to-day operations causes the most stress? Have supply chain or tech issues affected your work?"
         },
         {
           "id": "OPS-004",
-          "question": "My business data is organized and easy to find (vendor contact information, equipment service records)",
-          "type": "Planning Status",
+          "question": "I have a clear and consistnet system for organizing my customer contracts, vendor contact information, equipment service records, etc",
+          "type": "Frequency",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What part of your day-to-day operations causes the most stress? Have supply chain or tech issues affected your work?"
@@ -232,25 +232,25 @@
           "question": "I can maintain core business functions during a disruption",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What part of your day-to-day operations causes the most stress? Have supply chain or tech issues affected your work?"
         },
         {
           "id": "OPS-006",
-          "question": "I implemented scenario planning to anticipate and react to economic uncertainty",
-          "type": "Frequency",
+          "question": "I implemented scenario planning to anticipate and react to uncertainty",
+          "type": "Planning Status",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What part of your day-to-day operations causes the most stress? Have supply chain or tech issues affected your work?"
@@ -260,25 +260,25 @@
           "question": "I reassess my policies annually (insurance, compliance, etc.)",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What part of your day-to-day operations causes the most stress? Have supply chain or tech issues affected your work?"
         },
         {
           "id": "OPS-008",
-          "question": "I have adjusted my processes based on lessons learned or changes in the business",
+          "question": "I make adjustments to my business based on lessons learned or changes I've experienced",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What part of your day-to-day operations causes the most stress? Have supply chain or tech issues affected your work?"
@@ -290,25 +290,25 @@
           "question": "I maintain up-to-date job descriptions and an updated organizational chart",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
         },
         {
           "id": "EMP-002",
-          "question": "I provide onboarding and regular cross-training",
+          "question": "I provide onboarding and regular cross-training for my team",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
@@ -318,11 +318,11 @@
           "question": "I have a documented employee handbook or policy guide",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
@@ -332,11 +332,11 @@
           "question": "I adjusted compensation or perks to retain talent during labor shortages",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
@@ -346,11 +346,11 @@
           "question": "I gather employee feedback regularly",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
@@ -360,11 +360,11 @@
           "question": "I understand key human resources laws and best practices (FMLA, overtime, exempt vs. nonexempt employee status, unemployment, etc.)",
           "type": "Confidence",
           "scoring_scale": {
-            "0": "No exposure/knowledge",
-            "1": "Some knowledge, not confident",
-            "2": "Some confidence, need more learning",
-            "3": "Confident, but unsure of next steps",
-            "4": "Confident & know how to apply my knowledge",
+            "0": "I’m not familiar with this topic",
+            "1": "I know this is important, but I need to do more learning or research for specifics",
+            "2": "I know the basics, but I need help figuring out how to apply this to my business",
+            "3": " I understand this topic, but I can improve on its application in my business",
+            "4": "I feel confident in both my knowledge on this topic and how I’ve applied it in my business",
             "N/A": "Not Applicable"
           },
           "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
@@ -374,25 +374,25 @@
           "question": "I regularly identify and address skill gaps in my team",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
         },
         {
           "id": "EMP-008",
-          "question": "I have—and use!—a process for regular performance evaluations",
+          "question": "I provide employee performance evaluations",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -402,25 +402,25 @@
           "question": "I have an established hiring process and employee pipeline",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": null
         },
         {
           "id": "EMP-010",
-          "question": "I have thought about my employee brand",
-          "type": "Planning Status",
+          "question": "I have a strong employee brand",
+          "type": "Confidence",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I’m not familiar with this topic",
+            "1": "I know this is important, but I need to do more learning or research for specifics",
+            "2": "I know the basics, but I need help figuring out how to apply this to my business",
+            "3": " I understand this topic, but I can improve on its application in my business",
+            "4": "I feel confident in both my knowledge on this topic and how I’ve applied it in my business",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -432,11 +432,11 @@
           "question": "I communicate with my customers consistently through website/email/social",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "How do most customers find you—and is that still working? What kind of customer feedback have you received recently?"
@@ -446,11 +446,11 @@
           "question": "I adjust my messaging to reflect current customer concerns (e.g., value-oriented marketing)",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "How do most customers find you—and is that still working? What kind of customer feedback have you received recently?"
@@ -460,11 +460,11 @@
           "question": "I track the success of marketing efforts (leads, conversions, customer acquisition cost, etc.)",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "How do most customers find you—and is that still working? What kind of customer feedback have you received recently?"
@@ -474,11 +474,11 @@
           "question": "I have systems in place to retain customers",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -488,11 +488,11 @@
           "question": "I have a marketing/communications plan in place",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -502,11 +502,11 @@
           "question": "I know and can communicate a clear brand identity, story, and unique value proposition",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -516,11 +516,11 @@
           "question": "I have clearly defined customer segment(s), including customer demographics and psychographics",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -530,11 +530,11 @@
           "question": "I have reassessed my product/service formats to align with shifts in consumer demand (e.g., in-person vs. online, value-tiered, delivery options, etc.)",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -544,11 +544,11 @@
           "question": "I understand what my best customers value—and I communicate that consistently",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -558,11 +558,11 @@
           "question": "I have reassessed my product/service relevance and demand",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -574,11 +574,11 @@
           "question": "I track and regularly reassess my margins and customer demand by product or service category",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What changes have you made to your offerings that helped the success of your business? Are any offerings misaligned with customer demand now?"
@@ -588,11 +588,11 @@
           "question": "I've added, removed, or updated offerings in response to market needs",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What changes have you made to your offerings that helped the success of your business? Are any offerings misaligned with customer demand now?"
@@ -602,11 +602,11 @@
           "question": "I monitor trends in my industry and have a clear understanding of competitor offerings",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What changes have you made to your offerings that helped the success of your business? Are any offerings misaligned with customer demand now?"
@@ -616,25 +616,25 @@
           "question": "I've built relationships with new or alternate suppliers",
           "type": "Planning Status",
           "scoring_scale": {
-            "0": "Haven't considered/No planning begun",
-            "1": "Broad ideas only",
-            "2": "Evaluating options",
-            "3": "A plan has been drafted, or this is in progress",
-            "4": "Implemented",
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
           },
           "reflection": "What changes have you made to your offerings that helped the success of your business? Are any offerings misaligned with customer demand now?"
         },
         {
           "id": "PDS-005",
-          "question": "I am aware of the risks or liabilities tied to my offerings",
+          "question": "I am aware of the risks or liabilities tied to my offerings and have taken steps to reduce those risks",
           "type": "Confidence",
           "scoring_scale": {
-            "0": "No exposure/knowledge",
-            "1": "Some knowledge, not confident",
-            "2": "Some confidence, need more learning",
-            "3": "Confident, but unsure of next steps",
-            "4": "Confident & know how to apply my knowledge",
+            "0": "I’m not familiar with this topic",
+            "1": "I know this is important, but I need to do more learning or research for specifics",
+            "2": "I know the basics, but I need help figuring out how to apply this to my business",
+            "3": " I understand this topic, but I can improve on its application in my business",
+            "4": "I feel confident in both my knowledge on this topic and how I’ve applied it in my business",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -644,11 +644,11 @@
           "question": "I track margins by product or service category",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What changes have you made to your offerings that helped the success of your business? Are any offerings misaligned with customer demand now?"
@@ -658,11 +658,11 @@
           "question": "I regularly review industry trends and use this information to guide innovation",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What changes have you made to your offerings that helped the success of your business? Are any offerings misaligned with customer demand now?"
@@ -672,11 +672,11 @@
           "question": "My offerings are aligned with customer demand and my profitability goals",
           "type": "Confidence",
           "scoring_scale": {
-            "0": "No exposure/knowledge",
-            "1": "Some knowledge, not confident",
-            "2": "Some confidence, need more learning",
-            "3": "Confident, but unsure of next steps",
-            "4": "Confident & know how to apply my knowledge",
+            "0": "I’m not familiar with this topic",
+            "1": "I know this is important, but I need to do more learning or research for specifics",
+            "2": "I know the basics, but I need help figuring out how to apply this to my business",
+            "3": " I understand this topic, but I can improve on its application in my business",
+            "4": "I feel confident in both my knowledge on this topic and how I’ve applied it in my business",
             "N/A": "Not Applicable"
           },
           "reflection": "What changes have you made to your offerings that helped the success of your business? Are any offerings misaligned with customer demand now?"
@@ -686,11 +686,11 @@
           "question": "I understand my key competitors and how I compare",
           "type": "Confidence",
           "scoring_scale": {
-            "0": "No exposure/knowledge",
-            "1": "Some knowledge, not confident",
-            "2": "Some confidence, need more learning",
-            "3": "Confident, but unsure of next steps",
-            "4": "Confident & know how to apply my knowledge",
+            "0": "I’m not familiar with this topic",
+            "1": "I know this is important, but I need to do more learning or research for specifics",
+            "2": "I know the basics, but I need help figuring out how to apply this to my business",
+            "3": " I understand this topic, but I can improve on its application in my business",
+            "4": "I feel confident in both my knowledge on this topic and how I’ve applied it in my business",
             "N/A": "Not Applicable"
           },
           "reflection": "What changes have you made to your offerings that helped the success of your business? Are any offerings misaligned with customer demand now?"
@@ -702,11 +702,11 @@
           "question": "I make decisions based on data, input, and reflection—not just emotion or instinct",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
@@ -716,25 +716,25 @@
           "question": "I regularly share the vision for the future of the business, which guides day-to-day priorities",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
         },
         {
           "id": "LDR-003",
-          "question": "I seek feedback and professional support as needed",
+          "question": "I seek customer and stakeholder feedback consistently",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
@@ -744,11 +744,11 @@
           "question": "I regularly identify and work to address my own skill or knowledge gaps",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -758,11 +758,11 @@
           "question": "I gather employee feedback regularly",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": null
@@ -772,11 +772,11 @@
           "question": "I delegate tasks effectively and support delegatee autonomy",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
@@ -786,11 +786,11 @@
           "question": "I reflect on past decisions to improve future ones",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
@@ -800,11 +800,11 @@
           "question": "I support employee well-being and workload balance",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
@@ -814,11 +814,11 @@
           "question": "I communicate regularly and transparently with my team, especially in times of change",
           "type": "Frequency",
           "scoring_scale": {
-            "0": "Not at all",
-            "1": "Rarely",
-            "2": "Sometimes",
-            "3": "Often",
-            "4": "Regularly",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker"
@@ -828,11 +828,11 @@
             "question": "I stay informed on trends, policies, and other happenings that may impact my business",
             "type": "Frequency",
             "scoring_scale": {
-              "0": "Not at all",
-              "1": "Rarely",
-              "2": "Sometimes",
-              "3": "Often",
-              "4": "Regularly",
+              "0": "I do not do this",
+              "1": "This is rarely my focus",
+              "2": "I do this when I have time",
+              "3": "I do this fairly consistently",
+              "4": "This is a regular process for me",
               "N/A": "Not Applicable"
             },
             "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
@@ -842,11 +842,11 @@
             "question": "I can identify and adjust my leadership style to meet changing needs",
             "type": "Confidence",
             "scoring_scale": {
-              "0": "No exposure/knowledge",
-              "1": "Some knowledge, not confident",
-              "2": "Some confidence, need more learning",
-              "3": "Confident, but unsure of next steps",
-              "4": "Confident & know how to apply my knowledge",
+              "0": "I’m not familiar with this topic",
+              "1": "I know this is important, but I need to do more learning or research for specifics",
+              "2": "I know the basics, but I need help figuring out how to apply this to my business",
+              "3": " I understand this topic, but I can improve on its application in my business",
+              "4": "I feel confident in both my knowledge on this topic and how I’ve applied it in my business",
               "N/A": "Not Applicable"
             },
             "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
@@ -854,28 +854,28 @@
           {
             "id": "LDR-011",
             "question": "I prepare contingency or crisis plans proactively",
-            "type": "Frequency",
+            "type": "Planning Status",
             "scoring_scale": {
-              "0": "Not at all",
-              "1": "Rarely",
-              "2": "Sometimes",
-              "3": "Often",
-              "4": "Regularly",
-              "N/A": "Not Applicable"
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
+            "N/A": "Not Applicable"
             },
             "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
           },
           {
             "id": "LDR-012",
             "question": "I’ve taken steps to avoid burnout and sustain my own well-being.",
-            "type": "Frequency",
+            "type": "Planning Status",
             "scoring_scale": {
-              "0": "Not at all",
-              "1": "Rarely",
-              "2": "Sometimes",
-              "3": "Often",
-              "4": "Regularly",
-              "N/A": "Not Applicable"
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
+            "N/A": "Not Applicable"
             },
             "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
           }
