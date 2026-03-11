@@ -96,6 +96,7 @@
                 overall_tier: lastAssessmentResult.overall_tier,
                 priority_categories: lastAssessmentResult.priority_categories,
                 category_scores: lastAssessmentResult.category_scores,
+                category_details: lastAssessmentResult.category_details,
                 recommendations: lastAssessmentResult.recommendations,
                 answers: formattedAnswers  // Add answers to the payload
             };
