@@ -146,7 +146,7 @@ class AssessmentService:
             "- Keep total length: 150-200 words per functional area",
             "",
             "## FUNCTIONAL AREA RECOMMENDATIONS:",
-            "You must provide recommendations ONLY for the functional areas listed below, in the exact order they appear. If a section is not listed (e.g., sections where all responses were N/A), skip it entirely and do not mention it.",
+            "You must provide recommendations for ALL 6 functional areas in this exact order: Customers_Marketing, Employees, Financials, Leadership, Operations, Products_Services ",
             ""
         ])
 
