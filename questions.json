@@ -215,7 +215,7 @@
         },
         {
           "id": "OPS-004",
-          "question": "I have a clear and consistnet system for organizing my customer contracts, vendor contact information, equipment service records, etc",
+          "question": "I have a clear and consistent system for organizing my customer contracts, vendor contact information, equipment service records, etc",
           "type": "Frequency",
           "scoring_scale": {
             "0": "I do not do this",
