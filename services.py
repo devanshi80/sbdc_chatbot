@@ -151,10 +151,13 @@ class AssessmentService:
         ])
 
         # Sort areas by priority (lowest scores first)
-        sorted_areas = sorted(result.category_scores.values(), key=lambda c: c.normalized_score if c.normalized_score is not None else -1)
-        for i, cat in enumerate(sorted_areas, 1):
-            if cat.normalized_score is None and cat.name == "Employees":
-                continue
+        sorted_areas = sorted(
+            [c for c in result.category_scores.values() if not (c.normalized_score is None and c.name == "Employees")],
+            key=lambda c: c.normalized_score if c.normalized_score is not None else -1
+        )       
+        i = 0
+        for cat in sorted_areas:
+            i += 1
             tier = cat.tier if cat.tier is not None else result.overall_tier
             area = cat.name
             
