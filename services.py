@@ -146,16 +146,16 @@ class AssessmentService:
             "- Keep total length: 150-200 words per functional area",
             "",
             "## FUNCTIONAL AREA RECOMMENDATIONS:",
-            "You must provide recommendations for ALL 6 functional areas in this exact order: Customers_Marketing, Employees, Financials, Leadership, Operations, Products_Services ",
+            "You must provide recommendations for all functional areas included in this prompt. Do not add any areas not listed below.",
             ""
         ])
 
         # Sort areas by priority (lowest scores first)
         sorted_areas = sorted(result.category_scores.values(), key=lambda c: c.normalized_score if c.normalized_score is not None else -1)
         for i, cat in enumerate(sorted_areas, 1):
-            if cat.normalized_score is None:
+            if cat.normalized_score is None and cat.name == "Employees":
                 continue
-            tier = cat.tier
+            tier = cat.tier if cat.tier is not None else result.overall_tier
             area = cat.name
             
             # Get tone introduction
