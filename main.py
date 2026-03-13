@@ -71,8 +71,9 @@ async def export_pdf(payload: Dict[str, Any]):
     try:
         buffer = BytesIO()
         pdf = canvas.Canvas(buffer, pagesize=letter)
+        pdf.setTitle("SBDC Assessment Results")
         width, height = letter
-        x, y = 50, height - 60
+        x, y = 50, height - 10
         
         # Get user's answers from payload
         answers_dict = {}
@@ -154,6 +155,15 @@ async def export_pdf(payload: Dict[str, Any]):
             y -= pixels
         
         # Header
+        try:
+            logo_width = 300
+            logo_height = 150
+            logo_x = (width - logo_width) / 2  
+            pdf.drawImage("image3.png", logo_x, y - logo_height, width=logo_width, height=logo_height, preserveAspectRatio=True, mask='auto')
+        except:
+            pass  # If logo not found, skip silently
+
+        y -= 150
         pdf.setFont("Helvetica-Bold", 18)
         pdf.drawString(x, y, "SBDC Assessment Results")
         y -= 25
@@ -165,13 +175,70 @@ async def export_pdf(payload: Dict[str, Any]):
         # Overview Section
         pdf.setFont("Helvetica-Bold", 12)
         pdf.drawString(x, y, f"Catalyst: {payload.get('catalyst', 'N/A')}")
-        y -= 20
-        
-        pdf.setFont("Helvetica", 12)
-        pdf.drawString(x, y, f"Overall Score: {payload.get('overall_score', 'N/A')}")
-        y -= 18
-        pdf.drawString(x, y, f"Overall Tier: {payload.get('overall_tier', 'N/A')}")
         add_spacing(25)
+
+        pdf.setFont("Helvetica-Bold", 14)
+        pdf.drawString(x, y, "Recommendations")
+        add_spacing(15)
+
+        recs_text = payload.get("recommendations", "")
+        if isinstance(recs_text, str) and recs_text:
+            lines = recs_text.split("\n")
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    add_spacing(8)
+                    continue
+                write_formatted_line(line, base_size=11, indent=0)
+
+        # ── DISCLAIMER ───────────────────────────────────────────────────────
+        add_spacing(20)
+        pdf.setLineWidth(0.5)
+        pdf.line(50, y, width - 50, y)
+        add_spacing(15)
+
+        pdf.setFont("Helvetica-Bold", 11)
+        pdf.drawString(x, y, "About This Tool")
+        add_spacing(12)
+
+        disclaimer_paragraphs = [
+            (
+                "This tool uses artificial intelligence (AI) to generate personalized planning insights "
+                "based on your responses. The system was developed through a collaboration between the "
+                "Wisconsin Small Business Development Center (SBDC) and the UW–Madison Tech Exploration Lab."
+            ),
+            (
+                "The guidance and examples provided by this tool are based on best practices developed "
+                "through more than 45 years of SBDC experience supporting small businesses and entrepreneurs. "
+                "These practices were translated into structured prompts and frameworks that the AI uses to "
+                "generate tailored recommendations."
+            ),
+            (
+                "The technology behind this tool was built using Google's Gemini AI platform (2.0) and "
+                "developed with technical support from the UW–Madison Tech Exploration Lab. The Lab is a "
+                "collaboration between the Wisconsin Institute for Discovery, the Wisconsin School of Business, "
+                "and other campus partners, and connects organizations with talented students to solve "
+                "real-world problems."
+            ),
+            (
+                "While this tool is designed to provide helpful ideas and structured guidance, AI-generated "
+                "content can occasionally contain errors, omissions, or misinterpretations. The recommendations "
+                "are intended to support reflection and planning—not to replace professional advice."
+            ),
+            (
+                "For deeper discussion, interpretation of results, or personalized strategy support, we "
+                "encourage you to connect with an SBDC consultant for confidential, one-on-one advising."
+            ),
+        ]
+
+        for para in disclaimer_paragraphs:
+            write_formatted_line(para, base_size=9)
+            add_spacing(8)
+
+        # ── PAGE BREAK BEFORE RESPONSES ──────────────────────────────────────
+        pdf.showPage()
+        y = height - 60
+
         
         # Detailed Responses Section
         pdf.setFont("Helvetica-Bold", 14)
@@ -223,28 +290,6 @@ async def export_pdf(payload: Dict[str, Any]):
             if y < 150:
                 pdf.showPage()
                 y = height - 60
-        
-        # Recommendations Section
-        pdf.setFont("Helvetica-Bold", 14)
-        pdf.drawString(x, y, "Recommendations")
-        add_spacing(15)
-
-        # Handle recommendations (comes as a single string with markdown)
-        recs_text = payload.get("recommendations", "")
-        
-        if isinstance(recs_text, str) and recs_text:
-            # Split by lines
-            lines = recs_text.split("\n")
-            
-            for line in lines:
-                line = line.strip()
-                if not line:
-                    # Empty line - add small spacing
-                    add_spacing(8)
-                    continue
-                
-                # Write the line with formatting
-                write_formatted_line(line, base_size=11, indent=0)
         
         # Footer
         y = 40
