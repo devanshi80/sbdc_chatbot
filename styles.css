@@ -132,6 +132,56 @@ body {
 
 .action-buttons button {
     white-space: nowrap;
+    padding: 12px 24px;
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+    color: var(--primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+}
+
+.action-buttons button:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.action-buttons button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.action-buttons button#downloadPdfBtn {
+    background: var(--primary);
+    color: white;
+}
+
+.action-buttons button#downloadPdfBtn:hover {
+    background: var(--primary-700);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.4);
+}
+
+.action-buttons button#bookCall {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.action-buttons button#bookCall:hover {
+    background: #15803d;
+    border-color: #15803d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
 }
 
 .question-card .tile:disabled {
