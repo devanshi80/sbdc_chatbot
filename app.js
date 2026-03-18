@@ -264,7 +264,7 @@
                 </button>
 
                 <button id="bookCall" type="button">
-                    Book a Call
+                    Request SBDC Consultation
                 </button>
 
                 <button type="button">
@@ -280,6 +280,9 @@
         `;
 
         document.getElementById("downloadPdfBtn").addEventListener("click", downloadPDF);
+        document.getElementById("bookCall").addEventListener("click", () => {
+            window.open("https://sbdc.wisc.edu/about-us/free-small-business-consulting/", "_blank");
+        });
     }
 
     submitBtn.addEventListener("click", async () => {
