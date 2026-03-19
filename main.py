@@ -43,7 +43,7 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
     try:
         result: AssessmentReport = service.calculate_scores(response)
 
-        recommendations = service.generate_recommendations(result, response.catalyst)
+        recommendations = service.generate_recommendations(result, response.catalyst, response.answers)
         
         response_data = {
             "overall_score": result.overall_score,
