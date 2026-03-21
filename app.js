@@ -7,7 +7,7 @@
     let answers = {};
     let prefilled = null;
     let lastAssessmentResult = null; 
-
+    let catalystData = {};
     const sectionList = document.getElementById("sectionList");
     const questionArea = document.getElementById("questionArea");
     const progressBar = document.getElementById("progressBar");
@@ -64,7 +64,8 @@
 
             // Exclude catalyst section from showing counts
             const displayCount = sec.name === "Assessment Focus" ? "" : `<span class="count">${doneInSec}/${sec.items.length}</span>`;
-            pill.innerHTML = `<span>${sec.name}</span>${displayCount}`;
+            const cleanName = sec.name.replace('Customers_Marketing', 'Customers & Marketing').replace('Products_Services', 'Products & Services');
+            pill.innerHTML = `<span>${cleanName}</span>${displayCount}`;    
             pill.addEventListener("click", () => {
                 currentIndex = indexById.get(sec.items[0].id);
                 updateUI();
@@ -142,9 +143,15 @@
         const tiles = entries
             .map(([value, label]) => {
                 const isSel = selected === value;
+                const isCatalyst = q.id === "CATALYST-001";
+                let desc = "";
+                if (isCatalyst && catalystData[label]) {
+                    desc = `<p style="font-size:12px;color:#666;margin-top:4px;">${catalystData[label].definition}</p>`;
+                }
+                
                 return `<button class="tile ${isSel ? "selected" : ""}" data-value="${value}" aria-pressed="${isSel}">
-                    <div class="value">${value}</div>
-                    <div class="label">${label}</div>
+                    ${label}
+                    ${desc}
                 </button>`;
             })
             .join("");
@@ -329,10 +336,12 @@
 
     async function boot() {
         try {
-            const [questions] = await Promise.all([
+            const [questions, functionalAreas, catalysts] = await Promise.all([
                 fetchJSON(cfg.dataPaths.questions),
-                fetchJSON(cfg.dataPaths.functionalAreas)
+                fetchJSON(cfg.dataPaths.functionalAreas),
+                fetchJSON('catalyst.json').catch(() => ({}))
             ]);
+            catalystData = catalysts;
 
             // Create catalyst question as the first question
             const catalystQuestion = {
