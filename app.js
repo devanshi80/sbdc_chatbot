@@ -285,9 +285,56 @@
         });
     }
 
+    function showLoadingScreen() {
+        let loading = document.getElementById("loadingScreen");
+        if (!loading) {
+            loading = document.createElement("div");
+            loading.id = "loadingScreen";
+            loading.innerHTML = `
+                <div class="loading-inner">
+                    <div class="loading-logo">
+                        <img src="image 2.png" alt="SBDC logo" style="max-width:260px; margin-bottom:24px;">
+                    </div>
+                    <div class="loading-spinner">
+                        <div class="spinner-ring"></div>
+                        <div class="spinner-ring spinner-ring--delay1"></div>
+                        <div class="spinner-ring spinner-ring--delay2"></div>
+                    </div>
+                    <p class="loading-headline">Analyzing your responses…</p>
+                    <p class="loading-sub" id="loadingSubtext">Building your personalized business report</p>
+                </div>
+            `;
+            document.body.appendChild(loading);
+        }
+        loading.classList.add("visible");
+
+        // Cycle through messages
+        const messages = [
+            "Building your personalized business report",
+            "Identifying priority areas for improvement",
+            "Crafting tailored recommendations",
+            "Almost ready…"
+        ];
+        let msgIndex = 0;
+        const subEl = document.getElementById("loadingSubtext");
+        loading._msgInterval = setInterval(() => {
+            msgIndex = (msgIndex + 1) % messages.length;
+            if (subEl) subEl.textContent = messages[msgIndex];
+        }, 3000);
+    }
+
+    function hideLoadingScreen() {
+        const loading = document.getElementById("loadingScreen");
+        if (loading) {
+            clearInterval(loading._msgInterval);
+            loading.classList.remove("visible");
+        }
+    }
+
     submitBtn.addEventListener("click", async () => {
         submitStatus.textContent = "Submitting…";
         submitBtn.disabled = true;
+        showLoadingScreen();
 
         try {
             const filteredAnswers = Object.entries(answers)
@@ -314,10 +361,12 @@
             const out = await res.json().catch(() => ({}));
 
             submitStatus.textContent = "Saved ✓";
+            hideLoadingScreen();
             showResults(out);
 
         } catch (err) {
             console.error(err);
+            hideLoadingScreen();
             submitStatus.textContent = "Could not submit";
         } finally {
             submitBtn.disabled = false;
