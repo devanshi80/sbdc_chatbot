@@ -23,7 +23,7 @@
       ],
       "tone_time_horizon": "Cautious but proactive. Recommendations should focus on protecting stability while positioning for a quick pivot when conditions improve. Most actions should be achievable within 1–6 months."
     },
-    "Crisis or Setback": {
+    "Crisis": {
       "definition": "An urgent, often unexpected disruption that significantly affects business operations, revenue, staffing, or reputation, requiring immediate stabilization.",
       "common_triggers": [
         "Cash flow crisis",
