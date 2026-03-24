@@ -274,7 +274,7 @@
                     Request SBDC Consultation
                 </button>
 
-                <button type="button">
+                <button id="viewResources" type="button">
                     View More Resources
                 </button>
                 
@@ -289,6 +289,9 @@
         document.getElementById("downloadPdfBtn").addEventListener("click", downloadPDF);
         document.getElementById("bookCall").addEventListener("click", () => {
             window.open("https://sbdc.wisc.edu/about-us/free-small-business-consulting/", "_blank");
+        });
+        document.getElementById("viewResources").addEventListener("click", () => {
+            window.open("https://sbdc.wisc.edu/resources/", "_blank");
         });
     }
 
