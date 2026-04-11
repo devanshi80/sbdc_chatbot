@@ -7,7 +7,14 @@
     let answers = {};
     let prefilled = null;
     let lastAssessmentResult = null; 
-    let catalystData = {};
+    const assessmentFocusDefinitions = {
+        "Economic Uncertainty": "The economy or market conditions are changing, and I’m unsure how it will impact my business.",
+        "Crisis or Setback": "Something urgent or unexpected happened, and I need to stabilize my business quickly.",
+        "New Opportunity": "I have a new idea or opportunity and want to evaluate or pursue it thoughtfully.",
+        "Steady Growth": "Business is going well, and I want to grow or scale in a sustainable way.",
+        "Lifestyle Change": "Something in my personal life has changed, and I need my business to adapt.",
+        "Operational Adjustments": "I’m making changes to systems, processes, or tools and want to manage the transition well."
+    };
     const sectionList = document.getElementById("sectionList");
     const questionArea = document.getElementById("questionArea");
     const progressBar = document.getElementById("progressBar");
@@ -145,8 +152,8 @@
                 const isSel = selected === value;
                 const isCatalyst = q.id === "CATALYST-001";
                 let desc = "";
-                if (isCatalyst && catalystData[label]) {
-                    desc = `<p style="font-size:12px;color:#666;margin-top:4px;">${catalystData[label].definition}</p>`;
+                if (isCatalyst && assessmentFocusDefinitions[label]) {
+                    desc = `<p style="font-size:12px;color:#666;margin-top:4px;">${assessmentFocusDefinitions[label]}</p>`;
                 }
                 
                 return `<button class="tile ${isSel ? "selected" : ""}" data-value="${value}" aria-pressed="${isSel}">
@@ -391,12 +398,10 @@
 
     async function boot() {
         try {
-            const [questions, functionalAreas, catalysts] = await Promise.all([
+            const [questions, functionalAreas] = await Promise.all([
                 fetchJSON(cfg.dataPaths.questions),
-                fetchJSON(cfg.dataPaths.functionalAreas),
-                fetchJSON('catalyst.json').catch(() => ({}))
+                fetchJSON(cfg.dataPaths.functionalAreas)
             ]);
-            catalystData = catalysts;
 
             // Create catalyst question as the first question
             const catalystQuestion = {
@@ -404,8 +409,8 @@
                 question: "What best describes the current driving force behind your business assessment needs?",
                 type: "Catalyst Selection",
                 scoring_scale: {
-                    "Crisis": "Crisis",
                     "Economic Uncertainty": "Economic Uncertainty",
+                    "Crisis": "Crisis or Setback",
                     "New Opportunity": "New Opportunity",
                     "Steady Growth": "Steady Growth",
                     "Lifestyle Change": "Lifestyle Change",
