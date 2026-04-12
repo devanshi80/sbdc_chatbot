@@ -95,7 +95,16 @@ class AssessmentService:
 
 
     # RECOMMENDATION GENERATION
-    def generate_recommendations(self, result: AssessmentReport, catalyst: str, answers: list = []) -> str:
+    def generate_recommendations(
+        self,
+        result: AssessmentReport,
+        catalyst: str,
+        answers: list | None = None,
+        area_notes: Dict[str, str] | None = None
+    ) -> str:
+        answers = answers or []
+        area_notes = area_notes or {}
+
         # Normalize catalyst name to match JSON keys
         catalyst_key = catalyst.replace(" ", "_")
         
@@ -164,7 +173,14 @@ class AssessmentService:
 
         # Sort areas by priority (lowest scores first), exclude Employees if all N/A
         sorted_areas = sorted(
-            [c for c in result.category_scores.values() if not (c.normalized_score is None and c.name == "Employees")],
+            [
+                c for c in result.category_scores.values()
+                if not (
+                    c.normalized_score is None
+                    and c.name == "Employees"
+                    and not area_notes.get("Employees", "").strip()
+                )
+            ],
             key=lambda c: c.normalized_score if c.normalized_score is not None else -1
         )
 
@@ -197,6 +213,15 @@ class AssessmentService:
                     + "\n"
                 )
 
+            area_note = area_notes.get(area, "").strip()
+            area_note_text = ""
+            if area_note:
+                area_note_text = (
+                    f"\n**Additional Context from the Business Owner for this Area:**\n"
+                    f"{area_note}\n"
+                    f"Use this context directly to tailor your advice for this area.\n"
+                )
+
             # Format recommendations
             if detailed_data:
                 recommendations_text = "\n".join([
@@ -216,11 +241,13 @@ class AssessmentService:
                     f"**Base Your Advice On These Core Recommendations:**\n"
                     f"{recommendations_text}\n"
                     f"{weak_text}"
+                    f"{area_note_text}"
                     f"\n"
                     f"**Instructions:** Expand each recommendation above into a 3-4 sentence paragraph. "
                     f"Each paragraph should naturally explain the specific action, its business impact, "
                     f"and a concrete first step — without using those as headings. "
                     f"If specific gaps are listed above, address them directly within the relevant paragraphs. "
+                    f"If additional context is provided above, incorporate it directly and concretely. "
                     f"Write in a conversational but professional tone.\n"
                     f"{'─' * 80}\n"
                 )
@@ -233,9 +260,11 @@ class AssessmentService:
                     f"**Catalyst Context:** This business is experiencing '{catalyst}' — {catalyst_definition} "
                     f"Frame all advice specifically through that lens.\n"
                     f"{weak_text}"
+                    f"{area_note_text}"
                     f"\n"
                     f"Provide 3 practical recommendations for this area based on the {tier} tier "
-                    f"and {catalyst} context. Each recommendation should be a 3-4 sentence paragraph.\n"
+                    f"and {catalyst} context. Each recommendation should be a 3-4 sentence paragraph. "
+                    f"If additional context is provided above, incorporate it directly and concretely.\n"
                     f"{'─' * 80}\n"
                 )
 

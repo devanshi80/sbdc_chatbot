@@ -5,6 +5,7 @@
     const indexById = new Map();
     let currentIndex = 0;
     let answers = {};
+    let areaNotes = {};
     let prefilled = null;
     let lastAssessmentResult = null; 
     const assessmentFocusDefinitions = {
@@ -14,6 +15,15 @@
         "Steady Growth": "Business is going well, and I want to grow or scale in a sustainable way.",
         "Lifestyle Change": "Something in my personal life has changed, and I need my business to adapt.",
         "Operational Adjustments": "I’m making changes to systems, processes, or tools and want to manage the transition well."
+    };
+    const areaNoteIntro = "Share as much or as little detail as you'd like. You can skip this if you're unsure or if you do not have anything to add.";
+    const areaNotePrompts = {
+        Financials: "What feels most unclear, challenging, or important in your business finances right now?",
+        Operations: "What part of your day-to-day operations is currently the most difficult, time-consuming, or inefficient?",
+        Employees: "What’s working well with your team—and where could additional support, clarity, or capacity help?",
+        Customers_Marketing: "How are customers currently finding and experiencing your business—and what seems to be working or not working?",
+        Products_Services: "How well do your current (or planned) products or services align with customer demand right now?",
+        Leadership: "What feels most challenging or important about your role as a business owner or decision-maker right now?"
     };
     const sectionList = document.getElementById("sectionList");
     const questionArea = document.getElementById("questionArea");
@@ -28,14 +38,21 @@
     const storageKey = "assessment_answers_v1";
 
     function saveLocal() {
-        localStorage.setItem(storageKey, JSON.stringify(answers));
+        localStorage.setItem(storageKey, JSON.stringify({ answers, areaNotes }));
     }
 
     function loadLocal() {
         try {
-            return JSON.parse(localStorage.getItem(storageKey) || "{}");
+            const parsed = JSON.parse(localStorage.getItem(storageKey) || "{}");
+            if (parsed && typeof parsed === "object" && ("answers" in parsed || "areaNotes" in parsed)) {
+                return {
+                    answers: parsed.answers || {},
+                    areaNotes: parsed.areaNotes || {}
+                };
+            }
+            return { answers: parsed || {}, areaNotes: {} };
         } catch {
-            return {};
+            return { answers: {}, areaNotes: {} };
         }
     }
 
@@ -44,8 +61,8 @@
     }
 
     function computeProgress() {
-        const total = data.flat.length - 1; // Exclude catalyst question from total
-        const done = Object.keys(answers).filter(id => id !== "CATALYST-001").length; // Exclude catalyst from count
+        const total = data.flat.filter((q) => q.id !== "CATALYST-001" && q.kind !== "area_note").length;
+        const done = Object.keys(answers).filter(id => id !== "CATALYST-001").length;
         const pct = total ? Math.round((done / total) * 100) : 0;
 
         // Debug logging
@@ -61,6 +78,21 @@
         progressLabel.textContent = `${pct}% complete`;
     }
 
+    function cleanAreaName(name) {
+        return name.replace('Customers_Marketing', 'Customers & Marketing').replace('Products_Services', 'Products & Services');
+    }
+
+    function buildAreaNoteQuestion(areaName) {
+        return {
+            id: `NOTE-${areaName}`,
+            type: "Area Note",
+            kind: "area_note",
+            areaName,
+            question: areaNotePrompts[areaName] || "",
+            helperText: areaNoteIntro
+        };
+    }
+
     function renderSections() {
         sectionList.innerHTML = "";
         data.sections.forEach((sec) => {
@@ -71,7 +103,7 @@
 
             // Exclude catalyst section from showing counts
             const displayCount = sec.name === "Assessment Focus" ? "" : `<span class="count">${doneInSec}/${sec.items.length}</span>`;
-            const cleanName = sec.name.replace('Customers_Marketing', 'Customers & Marketing').replace('Products_Services', 'Products & Services');
+            const cleanName = cleanAreaName(sec.name);
             pill.innerHTML = `<span>${cleanName}</span>${displayCount}`;    
             pill.addEventListener("click", () => {
                 currentIndex = indexById.get(sec.items[0].id);
@@ -97,6 +129,11 @@
                     question_id: question_id,
                     score: parseInt(value, 10)
                 }));
+            const formattedAreaNotes = Object.fromEntries(
+                Object.entries(areaNotes)
+                    .map(([area, note]) => [area, note.trim()])
+                    .filter(([, note]) => note)
+            );
             
             const pdfData = {
                 catalyst: catalyst,
@@ -106,7 +143,8 @@
                 category_scores: lastAssessmentResult.category_scores,
                 category_details: lastAssessmentResult.category_details,
                 recommendations: lastAssessmentResult.recommendations,
-                answers: formattedAnswers  // Add answers to the payload
+                answers: formattedAnswers,
+                area_notes: formattedAreaNotes
             };
 
             const response = await fetch("export-pdf", {
@@ -141,6 +179,30 @@
         const q = data.flat[currentIndex];
         if (!q) {
             questionArea.innerHTML = '<div class="loading">No questions found.</div>';
+            return;
+        }
+
+        if (q.kind === "area_note") {
+            const existingNote = areaNotes[q.areaName] || "";
+            questionArea.innerHTML = `
+                <article class="question-card question-card--note" data-qid="${q.id}">
+                    <div class="question-text">${cleanAreaName(q.areaName)}</div>
+                    <p class="note-intro">${q.helperText}</p>
+                    <label class="note-label" for="${q.id}">${q.question}</label>
+                    <textarea id="${q.id}" class="area-note-input" placeholder="Type here if you'd like to share more context..." rows="7">${existingNote}</textarea>
+                </article>
+            `;
+
+            const textarea = questionArea.querySelector(".area-note-input");
+            textarea.addEventListener("input", () => {
+                const trimmed = textarea.value.trim();
+                if (trimmed) {
+                    areaNotes[q.areaName] = textarea.value;
+                } else {
+                    delete areaNotes[q.areaName];
+                }
+                saveLocal();
+            });
             return;
         }
 
@@ -218,6 +280,7 @@
     resetBtn.addEventListener("click", () => {
         if (confirm("Erase all answers?")) {
             answers = {};
+            areaNotes = {};
             saveLocal();
             lastAssessmentResult = null;
     
@@ -361,10 +424,16 @@
                     score: parseInt(value, 10),
                     notes: null
                 }));
+            const filteredAreaNotes = Object.fromEntries(
+                Object.entries(areaNotes)
+                    .map(([area, note]) => [area, note.trim()])
+                    .filter(([, note]) => note)
+            );
 
             const payload = {
                 catalyst: answers["CATALYST-001"] || "Steady Growth",
-                answers: filteredAnswers
+                answers: filteredAnswers,
+                area_notes: filteredAreaNotes
             };
 
             const res = await fetch(cfg.submitUrl, {
@@ -418,36 +487,43 @@
                 }
             };
 
-            const sections = Object.keys(questions.assessment).map((name) => {
-                const items = questions.assessment[name];
-                return {
-                    name,
-                    items,
-                    containsIndex: (idx) => {
-                        const first = items[0]?.id;
-                        const last = items[items.length - 1]?.id;
-                        const firstIdx = indexById.get(first);
-                        const lastIdx = indexById.get(last);
-                        return idx >= firstIdx && idx <= lastIdx;
-                    }
-                };
-            });
-
-            // Add catalyst section as first section
-            sections.unshift({
+            const sections = [{
                 name: "Assessment Focus",
                 items: [catalystQuestion],
                 containsIndex: (idx) => idx === 0
+            }];
+
+            Object.keys(questions.assessment).forEach((name) => {
+                sections.push({
+                    name,
+                    items: questions.assessment[name],
+                    noteItem: buildAreaNoteQuestion(name),
+                    containsIndex: () => false
+                });
             });
 
             const flat = [];
-            sections.forEach((sec) => sec.items.forEach((q) => flat.push(q)));
+            sections.forEach((sec) => {
+                sec.items.forEach((q) => flat.push(q));
+                if (sec.noteItem) {
+                    flat.push(sec.noteItem);
+                }
+            });
             flat.forEach((q, i) => indexById.set(q.id, i));
+
+            sections.forEach((sec) => {
+                if (sec.name === "Assessment Focus") return;
+                const firstIdx = indexById.get(sec.items[0]?.id);
+                const lastIdx = indexById.get(sec.noteItem?.id ?? sec.items[sec.items.length - 1]?.id);
+                sec.containsIndex = (idx) => idx >= firstIdx && idx <= lastIdx;
+            });
 
             data.sections = sections;
             data.flat = flat;
 
-            answers = loadLocal();
+            const savedState = loadLocal();
+            answers = savedState.answers;
+            areaNotes = savedState.areaNotes;
 
             // Set default catalyst answer if not already set
             if (!answers["CATALYST-001"]) {

@@ -34,6 +34,7 @@ class AssessmentResponse(BaseModel):
         "Operational Adjustments"
     ]
     answers: List[Answer]
+    area_notes: Dict[str, str] = {}
 
 
 # Per-category computed score

@@ -43,7 +43,12 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
     try:
         result: AssessmentReport = service.calculate_scores(response)
 
-        recommendations = service.generate_recommendations(result, response.catalyst, response.answers)
+        recommendations = service.generate_recommendations(
+            result,
+            response.catalyst,
+            response.answers,
+            response.area_notes
+        )
         
         response_data = {
             "overall_score": result.overall_score,
@@ -80,6 +85,7 @@ async def export_pdf(payload: Dict[str, Any]):
         if "answers" in payload:
             for answer in payload["answers"]:
                 answers_dict[answer["question_id"]] = answer["score"]
+        area_notes = payload.get("area_notes", {})
         
         def parse_markdown_line(text: str):
             """Parse a line and return segments with formatting info"""
@@ -248,40 +254,47 @@ async def export_pdf(payload: Dict[str, Any]):
         # Iterate through each functional area
         for area_name, questions in config.questions["assessment"].items():
             area_details = payload.get("category_details", {}).get(area_name, {})
-            if area_details.get("questions_answered", 0) == 0:
+            area_note = area_notes.get(area_name, "").strip()
+            if area_details.get("questions_answered", 0) == 0 and not area_note:
                 continue
             # Area header
             pdf.setFont("Helvetica-Bold", 12)
             display_name = area_name.replace("_", " & ")
             pdf.drawString(x, y, display_name)
             add_spacing(12)
+
+            if area_note:
+                write_formatted_line("**Additional context shared:**", base_size=10, indent=5)
+                write_formatted_line(area_note, base_size=10, indent=10)
+                add_spacing(8)
             
-            # Questions for this area
-            for q in questions:
-                q_id = q["id"]
-                q_text = q["question"]
-                
-                # Get user's answer
-                user_score = answers_dict.get(q_id, "N/A")
-                
-                # Get the label for the score
-                score_label = "Not Answered"
-                if user_score != "N/A" and str(user_score) in q["scoring_scale"]:
-                    score_label = q["scoring_scale"][str(user_score)]
-                
-                # Question text (wrapped)
-                pdf.setFont("Helvetica", 10)
-                write_formatted_line(f"**{q_id}:** {q_text}", base_size=10, indent=5)
-                
-                # Answer
-                pdf.setFont("Helvetica-Oblique", 10)
-                pdf.drawString(x + 10, y, f"Your answer: {user_score} - {score_label}")
-                add_spacing(18)
-                
-                # Check if we need a new page
-                if y < 100:
-                    pdf.showPage()
-                    y = height - 60
+            if area_details.get("questions_answered", 0) > 0:
+                # Questions for this area
+                for q in questions:
+                    q_id = q["id"]
+                    q_text = q["question"]
+                    
+                    # Get user's answer
+                    user_score = answers_dict.get(q_id, "N/A")
+                    
+                    # Get the label for the score
+                    score_label = "Not Answered"
+                    if user_score != "N/A" and str(user_score) in q["scoring_scale"]:
+                        score_label = q["scoring_scale"][str(user_score)]
+                    
+                    # Question text (wrapped)
+                    pdf.setFont("Helvetica", 10)
+                    write_formatted_line(f"**{q_id}:** {q_text}", base_size=10, indent=5)
+                    
+                    # Answer
+                    pdf.setFont("Helvetica-Oblique", 10)
+                    pdf.drawString(x + 10, y, f"Your answer: {user_score} - {score_label}")
+                    add_spacing(18)
+                    
+                    # Check if we need a new page
+                    if y < 100:
+                        pdf.showPage()
+                        y = height - 60
             
             # Add space between areas
             add_spacing(15)
@@ -309,4 +322,3 @@ async def export_pdf(payload: Dict[str, Any]):
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
 
 app.mount("/", StaticFiles(directory=".", html=True), name="static")
-

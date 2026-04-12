@@ -72,6 +72,32 @@ body {
 .question-id { font-size: 12px; color: var(--muted); letter-spacing: .04em; }
 .type-badge { font-size: 12px; background: #ecfeff; color: #0e7490; padding: 2px 8px; border-radius: 999px; border: 1px solid #a5f3fc; }
 .question-text { font-size: 18px; font-weight: 600; margin: 10px 0 16px; }
+.note-intro {
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+.note-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.area-note-input {
+    width: 100%;
+    min-height: 180px;
+    resize: vertical;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    font: inherit;
+    color: #0f172a;
+    background: #f8fafc;
+}
+.area-note-input:focus {
+    outline: 2px solid rgba(37, 99, 235, 0.18);
+    border-color: var(--primary);
+}
 
 .tile-grid {
     display: grid;
