@@ -60,6 +60,153 @@
         return Math.max(min, Math.min(max, n));
     }
 
+    // Define which questions act as conditional gates for sections
+    const conditionalSections = {
+        "Employees": {
+            gateQuestion: "EMP-001", // First question about employees
+            skipAnswers: ["0", "N/A"], // If they answer "I do not do this" or "Not Applicable"
+            skipMessage: "I don't have employees"
+        },
+        "Products_Services": {
+            gateQuestion: "PDS-001", // First question about products/services
+            skipAnswers: ["0", "N/A"],
+            skipMessage: "I don't offer products or services"
+        }
+    };
+
+    function isConditionalGateQuestion(question) {
+        return Object.values(conditionalSections).some(section => section.gateQuestion === question.id);
+    }
+
+    function getConditionalSectionForQuestion(question) {
+        return Object.entries(conditionalSections).find(([, section]) => section.gateQuestion === question.id);
+    }
+
+    function shouldSkipSection(sectionName) {
+        const section = conditionalSections[sectionName];
+        if (!section) return false;
+
+        const gateAnswer = answers[section.gateQuestion];
+        return section.skipAnswers.includes(gateAnswer);
+    }
+
+    function skipSectionQuestions(sectionName) {
+        const sectionQuestions = data.flat.filter(q => {
+            // Find questions that belong to this section
+            for (const sec of data.sections) {
+                if (sec.name === sectionName) {
+                    return sec.items.includes(q) || (sec.noteItem && sec.noteItem === q);
+                }
+            }
+            return false;
+        });
+
+        // Mark all questions in this section as "N/A" except the gate question
+        sectionQuestions.forEach(q => {
+            if (q.id !== conditionalSections[sectionName].gateQuestion && q.kind !== "area_note") {
+                answers[q.id] = "N/A";
+            }
+        });
+
+        saveLocal();
+        computeProgress();
+        renderSections();
+    }
+
+    function renderConditionalQuestion(q) {
+        const [sectionName, section] = getConditionalSectionForQuestion(q);
+        const entries = Object.entries(q.scoring_scale);
+        const selected = answers[q.id];
+
+        // Add special options for skipping the entire section
+        const specialEntries = [...entries];
+        if (!specialEntries.some(([value]) => value === "N/A")) {
+            specialEntries.push(["SKIP_SECTION", section.skipMessage]);
+        }
+
+        const tiles = specialEntries
+            .map(([value, label]) => {
+                const isSel = selected === value || (value === "SKIP_SECTION" && shouldSkipSection(sectionName));
+                const isSkipOption = value === "SKIP_SECTION";
+
+                return `<button class="tile ${isSel ? "selected" : ""} ${isSkipOption ? "skip-option" : ""}"
+                                data-value="${value}"
+                                data-section="${isSkipOption ? sectionName : ''}"
+                                aria-pressed="${isSel}">
+                    ${label}
+                    ${isSkipOption ? '<div class="skip-explanation">This will mark all questions in this section as "Not Applicable"</div>' : ''}
+                </button>`;
+            })
+            .join("");
+
+        questionArea.innerHTML = `
+            <article class="question-card" data-qid="${q.id}">
+                <div class="question-text">${q.question}</div>
+                <div class="section-info">This question determines if the ${cleanAreaName(sectionName)} section applies to your business.</div>
+                <div class="tile-grid" role="group" aria-label="Answer choices for ${q.id}">
+                    ${tiles}
+                </div>
+            </article>
+        `;
+
+        questionArea.querySelectorAll(".tile").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const val = btn.getAttribute("data-value");
+                const sectionToSkip = btn.getAttribute("data-section");
+
+                if (val === "SKIP_SECTION") {
+                    // Set the gate question to "N/A" and skip the section
+                    answers[q.id] = "N/A";
+                    skipSectionQuestions(sectionToSkip);
+                } else {
+                    answers[q.id] = val;
+
+                    // If they chose a non-skip answer, clear any "N/A" answers in this section
+                    if (!section.skipAnswers.includes(val)) {
+                        clearSectionSkip(sectionName);
+                    } else {
+                        // If they chose a skip answer, skip the section
+                        skipSectionQuestions(sectionName);
+                    }
+                }
+
+                console.log("Conditional answer saved:", q.id, "=", answers[q.id]);
+                saveLocal();
+
+                questionArea.querySelectorAll(".tile").forEach((b) => {
+                    const sel = b === btn;
+                    b.classList.toggle("selected", sel);
+                    b.setAttribute("aria-pressed", sel ? "true" : "false");
+                });
+
+                if (currentIndex < data.flat.length - 1) {
+                    currentIndex += 1;
+                    updateUI();
+                } else {
+                    updateUI();
+                }
+            });
+        });
+    }
+
+    function clearSectionSkip(sectionName) {
+        const sectionQuestions = data.flat.filter(q => {
+            for (const sec of data.sections) {
+                if (sec.name === sectionName) {
+                    return sec.items.includes(q);
+                }
+            }
+            return false;
+        });
+
+        // Remove "N/A" answers from this section (except the gate question)
+        sectionQuestions.forEach(q => {
+            if (q.id !== conditionalSections[sectionName].gateQuestion && answers[q.id] === "N/A") {
+                delete answers[q.id];
+            }
+        });
+    }
+
     function computeProgress() {
         const total = data.flat.filter((q) => q.id !== "CATALYST-001" && q.kind !== "area_note").length;
         const done = Object.keys(answers).filter(id => id !== "CATALYST-001").length;
@@ -98,13 +245,26 @@
         data.sections.forEach((sec) => {
             const doneInSec = sec.items.filter((q) => answers[q.id] !== undefined).length;
             const pill = document.createElement("button");
-            pill.className = "section-pill" + (sec.containsIndex(currentIndex) ? " active" : "");
+
+            // Check if this section is skipped
+            const isSkipped = shouldSkipSection(sec.name);
+            const skippedClass = isSkipped ? " skipped" : "";
+
+            pill.className = "section-pill" + (sec.containsIndex(currentIndex) ? " active" : "") + skippedClass;
             pill.type = "button";
 
             // Exclude catalyst section from showing counts
-            const displayCount = sec.name === "Assessment Focus" ? "" : `<span class="count">${doneInSec}/${sec.items.length}</span>`;
+            let displayCount = "";
+            if (sec.name !== "Assessment Focus") {
+                if (isSkipped) {
+                    displayCount = `<span class="count skipped-count">Skipped</span>`;
+                } else {
+                    displayCount = `<span class="count">${doneInSec}/${sec.items.length}</span>`;
+                }
+            }
+
             const cleanName = cleanAreaName(sec.name);
-            pill.innerHTML = `<span>${cleanName}</span>${displayCount}`;    
+            pill.innerHTML = `<span>${cleanName}</span>${displayCount}`;
             pill.addEventListener("click", () => {
                 currentIndex = indexById.get(sec.items[0].id);
                 updateUI();
@@ -206,6 +366,31 @@
             return;
         }
 
+        // Check if this is a conditional section gate question
+        if (isConditionalGateQuestion(q)) {
+            renderConditionalQuestion(q);
+            return;
+        }
+
+        // Check if this question belongs to a skipped section
+        const questionSection = data.sections.find(sec => sec.items.includes(q));
+        if (questionSection && shouldSkipSection(questionSection.name)) {
+            // This question is in a skipped section, auto-answer and move on
+            if (answers[q.id] !== "N/A") {
+                answers[q.id] = "N/A";
+                saveLocal();
+            }
+
+            // Skip to next question
+            if (currentIndex < data.flat.length - 1) {
+                currentIndex += 1;
+                updateUI();
+            } else {
+                updateUI();
+            }
+            return;
+        }
+
         const entries = Object.entries(q.scoring_scale);
         const selected = answers[q.id];
 
@@ -217,7 +402,7 @@
                 if (isCatalyst && assessmentFocusDefinitions[label]) {
                     desc = `<p style="font-size:12px;color:#666;margin-top:4px;">${assessmentFocusDefinitions[label]}</p>`;
                 }
-                
+
                 return `<button class="tile ${isSel ? "selected" : ""}" data-value="${value}" aria-pressed="${isSel}">
                     ${label}
                     ${desc}
