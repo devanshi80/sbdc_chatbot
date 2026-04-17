@@ -37,7 +37,49 @@
 
     const storageKey = "assessment_answers_v1";
 
+    function escapeHTML(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+    }
+
+    function sanitizeUserTextInput(value) {
+        const input = String(value ?? "").replace(/\0/g, "");
+        if (window.DOMPurify) {
+            return window.DOMPurify.sanitize(input, {
+                ALLOWED_TAGS: [],
+                ALLOWED_ATTR: []
+            }).trim();
+        }
+        return input.trim();
+    }
+
+    function sanitizeLLMHtml(markdown) {
+        const rendered = window.marked ? marked.parse(String(markdown ?? "")) : escapeHTML(markdown);
+        if (window.DOMPurify) {
+            return window.DOMPurify.sanitize(rendered, {
+                USE_PROFILES: { html: true },
+                FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
+                FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "style"]
+            });
+        }
+        return rendered;
+    }
+
+    function sanitizeAreaNotesMap(notes) {
+        if (!notes || typeof notes !== "object") return {};
+        return Object.fromEntries(
+            Object.entries(notes)
+                .map(([area, note]) => [area, sanitizeUserTextInput(note)])
+                .filter(([, note]) => note)
+        );
+    }
+
     function saveLocal() {
+        areaNotes = sanitizeAreaNotesMap(areaNotes);
         localStorage.setItem(storageKey, JSON.stringify({ answers, areaNotes }));
     }
 
@@ -47,7 +89,7 @@
             if (parsed && typeof parsed === "object" && ("answers" in parsed || "areaNotes" in parsed)) {
                 return {
                     answers: parsed.answers || {},
-                    areaNotes: parsed.areaNotes || {}
+                    areaNotes: sanitizeAreaNotesMap(parsed.areaNotes || {})
                 };
             }
             return { answers: parsed || {}, areaNotes: {} };
@@ -124,17 +166,17 @@
                 const isSel = selected === value || (value === "SKIP_SECTION" && shouldSkipSection(sectionName));
 
                 return `<button class="tile ${isSel ? "selected" : ""}"
-                                data-value="${value}"
-                                data-section="${value === "SKIP_SECTION" ? sectionName : ''}"
+                                data-value="${escapeHTML(value)}"
+                                data-section="${value === "SKIP_SECTION" ? escapeHTML(sectionName) : ""}"
                                 aria-pressed="${isSel}">
-                    ${label}
+                    ${escapeHTML(label)}
                 </button>`;
             })
             .join("");
 
         questionArea.innerHTML = `
             <article class="question-card" data-qid="${q.id}">
-                <div class="question-text">${q.question}</div>
+                <div class="question-text">${escapeHTML(q.question)}</div>
                 <div class="tile-grid" role="group" aria-label="Answer choices for ${q.id}">
                     ${tiles}
                 </div>
@@ -278,7 +320,7 @@
                 }
             }
 
-            const cleanName = cleanAreaName(sec.name);
+            const cleanName = escapeHTML(cleanAreaName(sec.name));
             pill.innerHTML = `<span>${cleanName}</span>${displayCount}`;
             pill.addEventListener("click", () => {
                 currentIndex = indexById.get(sec.items[0].id);
@@ -379,18 +421,20 @@
             const existingNote = areaNotes[q.areaName] || "";
             questionArea.innerHTML = `
                 <article class="question-card question-card--note" data-qid="${q.id}">
-                    <div class="question-text">${cleanAreaName(q.areaName)}</div>
-                    <p class="note-intro">${q.helperText}</p>
-                    <label class="note-label" for="${q.id}">${q.question}</label>
-                    <textarea id="${q.id}" class="area-note-input" placeholder="Type here if you'd like to share more context..." rows="7">${existingNote}</textarea>
+                    <div class="question-text">${escapeHTML(cleanAreaName(q.areaName))}</div>
+                    <p class="note-intro">${escapeHTML(q.helperText)}</p>
+                    <label class="note-label" for="${q.id}">${escapeHTML(q.question)}</label>
+                    <textarea id="${q.id}" class="area-note-input" placeholder="Type here if you'd like to share more context..." rows="7"></textarea>
                 </article>
             `;
 
             const textarea = questionArea.querySelector(".area-note-input");
+            textarea.value = existingNote;
             textarea.addEventListener("input", () => {
-                const trimmed = textarea.value.trim();
+                const sanitizedNote = sanitizeUserTextInput(textarea.value);
+                const trimmed = sanitizedNote.trim();
                 if (trimmed) {
-                    areaNotes[q.areaName] = textarea.value;
+                    areaNotes[q.areaName] = sanitizedNote;
                 } else {
                     delete areaNotes[q.areaName];
                 }
@@ -414,11 +458,11 @@
                 const isCatalyst = q.id === "CATALYST-001";
                 let desc = "";
                 if (isCatalyst && assessmentFocusDefinitions[label]) {
-                    desc = `<p style="font-size:12px;color:#666;margin-top:4px;">${assessmentFocusDefinitions[label]}</p>`;
+                    desc = `<p style="font-size:12px;color:#666;margin-top:4px;">${escapeHTML(assessmentFocusDefinitions[label])}</p>`;
                 }
 
-                return `<button class="tile ${isSel ? "selected" : ""}" data-value="${value}" aria-pressed="${isSel}">
-                    ${label}
+                return `<button class="tile ${isSel ? "selected" : ""}" data-value="${escapeHTML(value)}" aria-pressed="${isSel}">
+                    ${escapeHTML(label)}
                     ${desc}
                 </button>`;
             })
@@ -426,7 +470,7 @@
 
         questionArea.innerHTML = `
             <article class="question-card" data-qid="${q.id}">
-                <div class="question-text">${q.question}</div>
+                <div class="question-text">${escapeHTML(q.question)}</div>
                 <div class="tile-grid" role="group" aria-label="Answer choices for ${q.id}">
                     ${tiles}
                 </div>
@@ -515,14 +559,14 @@
             recommendationsHTML = out.recommendations
                 .map(rec => `
                     <div class="recommendation">
-                        ${marked.parse(rec)}
+                        ${sanitizeLLMHtml(rec)}
                     </div>
                 `)
                 .join("");
         } else {
             recommendationsHTML = `
                 <div class="recommendation">
-                    ${marked.parse(out.recommendations)}
+                    ${sanitizeLLMHtml(out.recommendations)}
                 </div>
             `;
         }
@@ -623,11 +667,7 @@
                     score: parseInt(value, 10),
                     notes: null
                 }));
-            const filteredAreaNotes = Object.fromEntries(
-                Object.entries(areaNotes)
-                    .map(([area, note]) => [area, note.trim()])
-                    .filter(([, note]) => note)
-            );
+            const filteredAreaNotes = sanitizeAreaNotesMap(areaNotes);
 
             const payload = {
                 catalyst: answers["CATALYST-001"] || "Steady Growth",
@@ -733,7 +773,7 @@
 
             const savedState = loadLocal();
             answers = savedState.answers;
-            areaNotes = savedState.areaNotes;
+            areaNotes = sanitizeAreaNotesMap(savedState.areaNotes);
 
             // Set default catalyst answer if not already set
             if (!answers["CATALYST-001"]) {
