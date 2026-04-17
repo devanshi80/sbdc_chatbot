@@ -286,8 +286,22 @@
       ],
       "Employees": [
         {
+          "id": "EMP-000",
+          "question": "How many employees do you have?",
+          "type": "Demographic",
+          "exclude_from_scoring": true,
+          "scoring_scale": {
+            "0": "Just me",
+            "1": "1-7 employees",
+            "2": "8-14 employees",
+            "3": "15-49 employees",
+            "4": "50+ employees"
+          },
+          "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
+        },
+        {
           "id": "EMP-001",
-          "question": "I maintain up-to-date job descriptions and an updated organizational chart",
+          "question": "I communicate regularly and transparently with my team, especially in times of change",
           "type": "Frequency",
           "scoring_scale": {
             "0": "I do not do this",
@@ -301,7 +315,7 @@
         },
         {
           "id": "EMP-002",
-          "question": "I provide onboarding and regular cross-training for my team",
+          "question": "I delegate tasks effectively and support delegate autonomy",
           "type": "Frequency",
           "scoring_scale": {
             "0": "I do not do this",
@@ -315,35 +329,35 @@
         },
         {
           "id": "EMP-003",
-          "question": "I have a documented employee handbook or policy guide",
-          "type": "Planning Status",
+          "question": "I support employee well-being and workload balance",
+          "type": "Frequency",
           "scoring_scale": {
-            "0": "I haven't considered this yet",
-            "1": "I've thought about this but haven't taken action",
-            "2": "I'm assessing my options or considering how to apply this to my business",
-            "3": "I've started working on this",
-            "4": "This is consistently revisited and/or part of my business’ regular workflow",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
         },
         {
           "id": "EMP-004",
-          "question": "I adjusted compensation or perks to retain talent during labor shortages",
-          "type": "Planning Status",
+          "question": "I maintain up-to-date job descriptions and an updated organizational chart",
+          "type": "Frequency",
           "scoring_scale": {
-            "0": "I haven't considered this yet",
-            "1": "I've thought about this but haven't taken action",
-            "2": "I'm assessing my options or considering how to apply this to my business",
-            "3": "I've started working on this",
-            "4": "This is consistently revisited and/or part of my business’ regular workflow",
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
           "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
         },
         {
           "id": "EMP-005",
-          "question": "I gather employee feedback regularly",
+          "question": "I provide onboarding and regular cross-training for my team",
           "type": "Frequency",
           "scoring_scale": {
             "0": "I do not do this",
@@ -357,6 +371,48 @@
         },
         {
           "id": "EMP-006",
+          "question": "I have a documented employee handbook or policy guide",
+          "type": "Planning Status",
+          "scoring_scale": {
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
+            "N/A": "Not Applicable"
+          },
+          "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
+        },
+        {
+          "id": "EMP-007",
+          "question": "I adjusted compensation or perks to retain talent during labor shortages",
+          "type": "Planning Status",
+          "scoring_scale": {
+            "0": "I haven't considered this yet",
+            "1": "I've thought about this but haven't taken action",
+            "2": "I'm assessing my options or considering how to apply this to my business",
+            "3": "I've started working on this",
+            "4": "This is consistently revisited and/or part of my business’ regular workflow",
+            "N/A": "Not Applicable"
+          },
+          "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
+        },
+        {
+          "id": "EMP-008",
+          "question": "I gather employee feedback regularly",
+          "type": "Frequency",
+          "scoring_scale": {
+            "0": "I do not do this",
+            "1": "This is rarely my focus",
+            "2": "I do this when I have time",
+            "3": "I do this fairly consistently",
+            "4": "This is a regular process for me",
+            "N/A": "Not Applicable"
+          },
+          "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
+        },
+        {
+          "id": "EMP-009",
           "question": "I understand key human resources laws and best practices (FMLA, overtime, exempt vs. nonexempt employee status, unemployment, etc.)",
           "type": "Confidence",
           "scoring_scale": {
@@ -370,7 +426,7 @@
           "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
         },
         {
-          "id": "EMP-007",
+          "id": "EMP-010",
           "question": "I regularly identify and address skill gaps in my team",
           "type": "Frequency",
           "scoring_scale": {
@@ -384,7 +440,7 @@
           "reflection": "What helps your employees be successful? What are challenges? Are there employee roles or skill gaps that need addressed?"
         },
         {
-          "id": "EMP-008",
+          "id": "EMP-011",
           "question": "I provide employee performance evaluations",
           "type": "Frequency",
           "scoring_scale": {
@@ -398,7 +454,7 @@
           "reflection": null
         },
         {
-          "id": "EMP-009",
+          "id": "EMP-012",
           "question": "I have an established hiring process and employee pipeline",
           "type": "Planning Status",
           "scoring_scale": {
@@ -412,7 +468,7 @@
           "reflection": null
         },
         {
-          "id": "EMP-010",
+          "id": "EMP-013",
           "question": "I have a strong employee brand",
           "type": "Confidence",
           "scoring_scale": {
@@ -570,6 +626,18 @@
       ],
       "Products_Services": [
         {
+          "id": "PDS-000",
+          "question": "Are you a product-based business, or a service-based business?",
+          "type": "Demographic",
+          "exclude_from_scoring": true,
+          "scoring_scale": {
+            "1": "Product",
+            "2": "Service",
+            "3": "I offer both products and services"
+          },
+          "reflection": "What changes have you made to your offerings that helped the success of your business? Are any offerings misaligned with customer demand now?"
+        },
+        {
           "id": "PDS-001",
           "question": "I track and regularly reassess my margins and customer demand by product or service category",
           "type": "Frequency",
@@ -713,7 +781,7 @@
         },
         {
           "id": "LDR-002",
-          "question": "I regularly share the vision for the future of the business, which guides day-to-day priorities",
+          "question": "I have a clear vision for the future of my business that guides my day-to-day decisions",
           "type": "Frequency",
           "scoring_scale": {
             "0": "I do not do this",
@@ -727,7 +795,7 @@
         },
         {
           "id": "LDR-003",
-          "question": "I seek customer and stakeholder feedback consistently",
+          "question": "I seek feedback and professional support as needed",
           "type": "Frequency",
           "scoring_scale": {
             "0": "I do not do this",
@@ -751,11 +819,11 @@
             "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
-          "reflection": null
+          "reflection": "What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
         },
         {
           "id": "LDR-005",
-          "question": "I gather employee feedback regularly",
+          "question": "I gather feedback from employees, customers, or advisors",
           "type": "Frequency",
           "scoring_scale": {
             "0": "I do not do this",
@@ -765,11 +833,11 @@
             "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
-          "reflection": null
+          "reflection": "What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
         },
         {
           "id": "LDR-006",
-          "question": "I delegate tasks effectively and support delegatee autonomy",
+          "question": "I stay informed on trends, policies, and other happenings that may impact my business",
           "type": "Frequency",
           "scoring_scale": {
             "0": "I do not do this",
@@ -779,7 +847,7 @@
             "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
-          "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
+          "reflection": "What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
         },
         {
           "id": "LDR-007",
@@ -793,96 +861,51 @@
             "4": "This is a regular process for me",
             "N/A": "Not Applicable"
           },
-          "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
+          "reflection": "What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
         },
         {
-          "id": "LDR-008",
-          "question": "I support employee well-being and workload balance",
-          "type": "Frequency",
+          "id": "LDR-010",
+          "question": "I can adjust how I make decisions and manage my business as situations change",
+          "type": "Confidence",
           "scoring_scale": {
-            "0": "I do not do this",
-            "1": "This is rarely my focus",
-            "2": "I do this when I have time",
-            "3": "I do this fairly consistently",
-            "4": "This is a regular process for me",
+            "0": "I’m not familiar with this topic",
+            "1": "I know this is important, but I need to do more learning or research for specifics",
+            "2": "I know the basics, but I need help figuring out how to apply this to my business",
+            "3": " I understand this topic, but I can improve on its application in my business",
+            "4": "I feel confident in both my knowledge on this topic and how I’ve applied it in my business",
             "N/A": "Not Applicable"
           },
-          "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
+          "reflection": "What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
         },
         {
-          "id": "LDR-009",
-          "question": "I communicate regularly and transparently with my team, especially in times of change",
-          "type": "Frequency",
+          "id": "LDR-011",
+          "question": "I prepare contingency or crisis plans proactively",
+          "type": "Planning Status",
           "scoring_scale": {
-            "0": "I do not do this",
-            "1": "This is rarely my focus",
-            "2": "I do this when I have time",
-            "3": "I do this fairly consistently",
-            "4": "This is a regular process for me",
-            "N/A": "Not Applicable"
-          },
-          "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker"
-        },
-        {
-            "id": "LDR-009",
-            "question": "I stay informed on trends, policies, and other happenings that may impact my business",
-            "type": "Frequency",
-            "scoring_scale": {
-              "0": "I do not do this",
-              "1": "This is rarely my focus",
-              "2": "I do this when I have time",
-              "3": "I do this fairly consistently",
-              "4": "This is a regular process for me",
-              "N/A": "Not Applicable"
-            },
-            "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
-          },
-          {
-            "id": "LDR-010",
-            "question": "I can identify and adjust my leadership style to meet changing needs",
-            "type": "Confidence",
-            "scoring_scale": {
-              "0": "I’m not familiar with this topic",
-              "1": "I know this is important, but I need to do more learning or research for specifics",
-              "2": "I know the basics, but I need help figuring out how to apply this to my business",
-              "3": " I understand this topic, but I can improve on its application in my business",
-              "4": "I feel confident in both my knowledge on this topic and how I’ve applied it in my business",
-              "N/A": "Not Applicable"
-            },
-            "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
-          },
-          {
-            "id": "LDR-011",
-            "question": "I prepare contingency or crisis plans proactively",
-            "type": "Planning Status",
-            "scoring_scale": {
             "0": "I haven't considered this yet",
             "1": "I've thought about this but haven't taken action",
             "2": "I'm assessing my options or considering how to apply this to my business",
             "3": "I've started working on this",
             "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
-            },
-            "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
           },
-          {
-            "id": "LDR-012",
-            "question": "I’ve taken steps to avoid burnout and sustain my own well-being.",
-            "type": "Planning Status",
-            "scoring_scale": {
+          "reflection": "What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
+        },
+        {
+          "id": "LDR-012",
+          "question": "I’ve taken steps to avoid burnout and sustain my own well-being",
+          "type": "Planning Status",
+          "scoring_scale": {
             "0": "I haven't considered this yet",
             "1": "I've thought about this but haven't taken action",
             "2": "I'm assessing my options or considering how to apply this to my business",
             "3": "I've started working on this",
             "4": "This is consistently revisited and/or part of my business’ regular workflow",
             "N/A": "Not Applicable"
-            },
-            "reflection": "What kind of feedback do you receive from employees? What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
-          }
-
-
-        
-    ]
+          },
+          "reflection": "What did you learn about yourself as a decision-maker this year? Are there leadership skills you want to build?"
+        }
+      ]
 }
 }
 

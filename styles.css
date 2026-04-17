@@ -124,26 +124,6 @@ body {
 .tile .label { font-size: 13px; color: var(--muted); }
 
 
-.tile.skip-option {
-    border-color: #dc2626;
-    background: #fef2f2;
-    color: #dc2626;
-}
-.tile.skip-option:hover {
-    background: #fee2e2;
-}
-.tile.skip-option.selected {
-    border-color: #dc2626;
-    background: #fecaca;
-}
-
-.skip-explanation {
-    font-size: 12px;
-    color: #6b7280;
-    margin-top: 6px;
-    font-style: italic;
-}
-
 .section-info {
     background: #f1f5f9;
     border: 1px solid #cbd5e1;

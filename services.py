@@ -26,6 +26,11 @@ class AssessmentService:
             for area, questions in self.questions["assessment"].items()
             for q in questions
         }
+        self.questions_by_id = {
+            q["id"]: q
+            for questions in self.questions["assessment"].values()
+            for q in questions
+        }
 
         # Initialize Gemini model
         api_key = os.getenv("GEMINI_API_KEY")
@@ -33,6 +38,27 @@ class AssessmentService:
             raise ValueError("GEMINI_API_KEY environment variable not set.")
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel("models/gemini-2.5-pro")
+
+    def _is_scorable_question(self, question: Dict[str, Any]) -> bool:
+        return not question.get("exclude_from_scoring", False)
+
+    def _format_context_answers(self, answers: List[Any]) -> str:
+        context_question_ids = ["EMP-000", "PDS-000"]
+        context_lines = []
+
+        for answer in answers:
+            question = self.questions_by_id.get(answer.question_id)
+            if not question or answer.question_id not in context_question_ids:
+                continue
+
+            answer_value = str(answer.score)
+            answer_label = question.get("scoring_scale", {}).get(answer_value)
+            if not answer_label:
+                continue
+
+            context_lines.append(f"- {question['question']} {answer_label}")
+
+        return "\n".join(context_lines)
 
     def _load_config(self, path: str) -> Any:
         if not os.path.exists(path):
@@ -43,7 +69,11 @@ class AssessmentService:
     # SCORE CALCULATION
     def calculate_scores(self, response: AssessmentResponse) -> AssessmentReport:
         scores_by_area = {
-            area: {"total_score": 0, "answered": 0, "total": len(questions)}
+            area: {
+                "total_score": 0,
+                "answered": 0,
+                "total": sum(1 for q in questions if self._is_scorable_question(q)),
+            }
             for area, questions in self.questions["assessment"].items()
         }
 
@@ -51,6 +81,15 @@ class AssessmentService:
             if answer.score >= 0:
                 area = self.question_to_area_map.get(answer.question_id)
                 if area:
+                    question = next(
+                        (
+                            q for q in self.questions["assessment"].get(area, [])
+                            if q["id"] == answer.question_id
+                        ),
+                        None,
+                    )
+                    if question and not self._is_scorable_question(question):
+                        continue
                     scores_by_area[area]["total_score"] += answer.score
                     scores_by_area[area]["answered"] += 1
 
@@ -121,12 +160,15 @@ class AssessmentService:
         diagnosis = config.rules["whole_business_summaries"].get(
             f"Mostly {result.overall_tier}", "Your business is evolving."
         )
+        business_context = self._format_context_answers(answers)
 
         # Per-question weak spots per area
         weak_spots = {}
         for area, questions in self.questions["assessment"].items():
             area_weak = []
             for q in questions:
+                if not self._is_scorable_question(q):
+                    continue
                 for ans in answers:
                     if ans.question_id == q["id"] and 0 <= ans.score <= 2:
                         area_weak.append(q["question"])
@@ -141,9 +183,19 @@ class AssessmentService:
             f"**Current Situation:** {catalyst}",
             f"**What This Means:** {catalyst_definition}",
             f"**Overall Business State:** {diagnosis}",
+        ]
+
+        if business_context:
+            prompt_parts.extend([
+                "",
+                "## ADDITIONAL BUSINESS CONTEXT:",
+                business_context,
+            ])
+
+        prompt_parts.extend([
             "",
             "## KEY PRIORITIES FOR THIS SITUATION:",
-        ]
+        ])
         
         for i, focus in enumerate(focus_areas[:5], 1):
             prompt_parts.append(f"{i}. {focus}")

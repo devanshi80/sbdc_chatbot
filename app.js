@@ -63,14 +63,9 @@
     // Define which questions act as conditional gates for sections
     const conditionalSections = {
         "Employees": {
-            gateQuestion: "EMP-001", // First question about employees
+            gateQuestion: "EMP-000", // Employee count gate question
             skipAnswers: ["0", "N/A"], // If they answer "I do not do this" or "Not Applicable"
             skipMessage: "I don't have employees"
-        },
-        "Products_Services": {
-            gateQuestion: "PDS-001", // First question about products/services
-            skipAnswers: ["0", "N/A"],
-            skipMessage: "I don't offer products or services"
         }
     };
 
@@ -127,14 +122,12 @@
         const tiles = specialEntries
             .map(([value, label]) => {
                 const isSel = selected === value || (value === "SKIP_SECTION" && shouldSkipSection(sectionName));
-                const isSkipOption = value === "SKIP_SECTION";
 
-                return `<button class="tile ${isSel ? "selected" : ""} ${isSkipOption ? "skip-option" : ""}"
+                return `<button class="tile ${isSel ? "selected" : ""}"
                                 data-value="${value}"
-                                data-section="${isSkipOption ? sectionName : ''}"
+                                data-section="${value === "SKIP_SECTION" ? sectionName : ''}"
                                 aria-pressed="${isSel}">
                     ${label}
-                    ${isSkipOption ? '<div class="skip-explanation">This will mark all questions in this section as "Not Applicable"</div>' : ''}
                 </button>`;
             })
             .join("");
@@ -142,7 +135,6 @@
         questionArea.innerHTML = `
             <article class="question-card" data-qid="${q.id}">
                 <div class="question-text">${q.question}</div>
-                <div class="section-info">This question determines if the ${cleanAreaName(sectionName)} section applies to your business.</div>
                 <div class="tile-grid" role="group" aria-label="Answer choices for ${q.id}">
                     ${tiles}
                 </div>
@@ -223,6 +215,29 @@
 
         progressBar.style.width = pct + "%";
         progressLabel.textContent = `${pct}% complete`;
+    }
+
+    function getSectionForQuestion(q) {
+        return data.sections.find(sec => sec.items.includes(q) || sec.noteItem === q);
+    }
+
+    function isQuestionHiddenBySkip(q) {
+        const questionSection = getSectionForQuestion(q);
+        return Boolean(questionSection && shouldSkipSection(questionSection.name));
+    }
+
+    function findNavigableIndex(startIndex, direction) {
+        let idx = startIndex;
+
+        while (idx >= 0 && idx < data.flat.length) {
+            const q = data.flat[idx];
+            if (!isQuestionHiddenBySkip(q)) {
+                return idx;
+            }
+            idx += direction;
+        }
+
+        return clamp(startIndex, 0, data.flat.length - 1);
     }
 
     function cleanAreaName(name) {
@@ -342,6 +357,24 @@
             return;
         }
 
+        // Check if this question belongs to a skipped section, including area notes
+        if (isQuestionHiddenBySkip(q)) {
+            // This question is in a skipped section, auto-answer and move on
+            if (q.kind !== "area_note" && answers[q.id] !== "N/A") {
+                answers[q.id] = "N/A";
+                saveLocal();
+            }
+
+            // Skip to next question
+            if (currentIndex < data.flat.length - 1) {
+                currentIndex = findNavigableIndex(currentIndex + 1, 1);
+                updateUI();
+            } else {
+                updateUI();
+            }
+            return;
+        }
+
         if (q.kind === "area_note") {
             const existingNote = areaNotes[q.areaName] || "";
             questionArea.innerHTML = `
@@ -369,25 +402,6 @@
         // Check if this is a conditional section gate question
         if (isConditionalGateQuestion(q)) {
             renderConditionalQuestion(q);
-            return;
-        }
-
-        // Check if this question belongs to a skipped section
-        const questionSection = data.sections.find(sec => sec.items.includes(q));
-        if (questionSection && shouldSkipSection(questionSection.name)) {
-            // This question is in a skipped section, auto-answer and move on
-            if (answers[q.id] !== "N/A") {
-                answers[q.id] = "N/A";
-                saveLocal();
-            }
-
-            // Skip to next question
-            if (currentIndex < data.flat.length - 1) {
-                currentIndex += 1;
-                updateUI();
-            } else {
-                updateUI();
-            }
             return;
         }
 
@@ -441,8 +455,8 @@
     }
 
     function updateNavButtons() {
-        prevBtn.disabled = currentIndex <= 0;
-        nextBtn.disabled = currentIndex >= data.flat.length - 1;
+        prevBtn.disabled = currentIndex <= 0 || findNavigableIndex(currentIndex - 1, -1) === currentIndex;
+        nextBtn.disabled = currentIndex >= data.flat.length - 1 || findNavigableIndex(currentIndex + 1, 1) === currentIndex;
     }
 
     function updateUI() {
@@ -453,12 +467,12 @@
     }
 
     prevBtn.addEventListener("click", () => {
-        currentIndex = clamp(currentIndex - 1, 0, data.flat.length - 1);
+        currentIndex = findNavigableIndex(currentIndex - 1, -1);
         updateUI();
     });
 
     nextBtn.addEventListener("click", () => {
-        currentIndex = clamp(currentIndex + 1, 0, data.flat.length - 1);
+        currentIndex = findNavigableIndex(currentIndex + 1, 1);
         updateUI();
     });
 
@@ -672,16 +686,27 @@
                 }
             };
 
+            const employeeGateQuestion = questions.assessment.Employees.find((q) => q.id === "EMP-000");
+            const productsGateQuestion = questions.assessment.Products_Services.find((q) => q.id === "PDS-000");
+
+            const assessmentFocusItems = [catalystQuestion, employeeGateQuestion, productsGateQuestion].filter(Boolean);
+
             const sections = [{
                 name: "Assessment Focus",
-                items: [catalystQuestion],
-                containsIndex: (idx) => idx === 0
+                items: assessmentFocusItems,
+                containsIndex: (idx) => idx >= 0 && idx < assessmentFocusItems.length
             }];
 
             Object.keys(questions.assessment).forEach((name) => {
+                const sectionItems = questions.assessment[name].filter((q) => {
+                    if (name === "Employees") return q.id !== "EMP-000";
+                    if (name === "Products_Services") return q.id !== "PDS-000";
+                    return true;
+                });
+
                 sections.push({
                     name,
-                    items: questions.assessment[name],
+                    items: sectionItems,
                     noteItem: buildAreaNoteQuestion(name),
                     containsIndex: () => false
                 });
