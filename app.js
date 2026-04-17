@@ -58,15 +58,20 @@
     }
 
     function sanitizeLLMHtml(markdown) {
-        const rendered = window.marked ? marked.parse(String(markdown ?? "")) : escapeHTML(markdown);
-        if (window.DOMPurify) {
-            return window.DOMPurify.sanitize(rendered, {
-                USE_PROFILES: { html: true },
-                FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
-                FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "style"]
-            });
-        }
-        return rendered;
+    const rendered = window.marked
+        ? marked.parse(String(markdown ?? ""))
+        : escapeHTML(String(markdown ?? ""));
+
+    if (window.DOMPurify) {
+        return window.DOMPurify.sanitize(rendered, {
+            ALLOWED_TAGS: ["p", "ul", "ol", "li", "strong", "em", "br", "a", "code", "pre", "blockquote"],
+            ALLOWED_ATTR: ["href", "target", "rel"],
+            FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
+            FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "style"]
+        });
+    }
+
+    return escapeHTML(String(markdown ?? ""));
     }
 
     function sanitizeAreaNotesMap(notes) {
@@ -572,32 +577,32 @@
         }
 
         resultsEl.innerHTML = `
-            <h2 style="text-align: center;">
-                Congrats on taking the next step to move your business forward!
-            </h2>
-
-            <div class="action-buttons"
-                 style="display: flex; justify-content: center; gap: 12px; margin: 16px 0;">
-                
-                <button id="downloadPdfBtn" type="button">
-                    Download Results
-                </button>
-
-                <button id="bookCall" type="button">
-                    Request SBDC Consultation
-                </button>
-
-                <button id="viewResources" type="button">
-                    View More Resources
-                </button>
-                
-            </div>
-
-            <div class="result-block">
-                <h3>Recommendations</h3>
-                ${recommendationsHTML}
-            </div>
-        `;
+        <h2 style="text-align: center;">
+            Congrats on taking the next step to move your business forward!
+        </h2>
+    
+        <div class="action-buttons"
+             style="display: flex; justify-content: center; gap: 12px; margin: 16px 0;">
+            
+            <button id="downloadPdfBtn" type="button">
+                Download Results
+            </button>
+    
+            <button id="bookCall" type="button">
+                Request SBDC Consultation
+            </button>
+    
+            <button id="viewResources" type="button">
+                View More Resources
+            </button>
+            
+        </div>
+    
+        <div class="result-block">
+            <h3>Recommendations</h3>
+            ${recommendationsHTML}
+        </div>
+    `;
 
         document.getElementById("downloadPdfBtn").addEventListener("click", downloadPDF);
         document.getElementById("bookCall").addEventListener("click", () => {
