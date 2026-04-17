@@ -43,7 +43,7 @@ pip install -r requirements.txt
 
 **4. Set up environment variables**
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory. You can copy from `.env.sample`:
 ```
 GEMINI_API_KEY=your_api_key_here
 ```
@@ -63,3 +63,11 @@ The app will be available at `http://127.0.0.1:8000`.
 ## Notes
 - Recommendation generation typically takes 15–40 seconds depending on the Gemini model used
 - If the site is not reflecting recent changes, do a hard refresh (`Cmd+Shift+R` on Mac, `Ctrl+Shift+R` on Windows)
+
+---
+
+## Security Review Artifacts
+
+- Environment variable template: [.env.sample](/Users/devanshijain/SBDC/.env.sample)
+- Network diagram: [docs/security/network-diagram.md](/Users/devanshijain/SBDC/docs/security/network-diagram.md)
+- Data flow diagram: [docs/security/data-flow-diagram.md](/Users/devanshijain/SBDC/docs/security/data-flow-diagram.md)
