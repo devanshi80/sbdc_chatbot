@@ -236,9 +236,7 @@ class AssessmentService:
             key=lambda c: c.normalized_score if c.normalized_score is not None else -1
         )
 
-        i = 0
         for cat in sorted_areas:
-            i += 1
             tier = cat.tier if cat.tier is not None else result.overall_tier
             area = cat.name
 
@@ -282,7 +280,7 @@ class AssessmentService:
                 ])
 
                 prompt_parts.append(
-                    f"### {i}. {area.replace('_', ' & ')}\n"
+                    f"### {area.replace('_', ' & ')}\n"
                     f"\n"
                     f"**Opening Statement (use this exactly):** {intro}\n"
                     f"\n"
@@ -305,7 +303,7 @@ class AssessmentService:
                 )
             else:
                 prompt_parts.append(
-                    f"### {i}. {area.replace('_', ' & ')}\n"
+                    f"### {area.replace('_', ' & ')}\n"
                     f"\n"
                     f"**Opening Statement (use this exactly):** {intro}\n"
                     f"\n"
@@ -323,8 +321,9 @@ class AssessmentService:
         prompt_parts.extend([
             "",
             "## FORMATTING REQUIREMENTS:",
-            "- Use clear headings for each functional area (e.g., '1. Financials', '2. Operations')",
-            "- Number your recommendations (1, 2, 3) within each area",
+            "- Use markdown headings for each functional area (e.g., '### Financials', '### Operations')",
+            "- Do not number the functional area headings",
+            "- Number your recommendations 1, 2, 3 within each area and restart numbering in each new section",
             "- Write each recommendation as a cohesive paragraph, NOT bullet points",
             "- Use **bold** sparingly for key terms only",
             "- Do NOT show scores or tier information",
