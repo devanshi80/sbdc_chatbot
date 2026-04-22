@@ -248,8 +248,8 @@
 
     function computeProgress() {
         const total = data.flat.filter((q) => q.id !== "CATALYST-001" && q.kind !== "area_note").length;
-        const done = Object.keys(answers).filter(id => id !== "CATALYST-001").length;
-        const pct = total ? Math.round((done / total) * 100) : 0;
+        const done = Object.keys(answers).filter(id => id !== "CATALYST-001" && data.flat.some(q => q.id === id && q.kind !== "area_note")).length;
+        const pct = Math.min(100, total ? Math.round((done / total) * 100) : 0);
 
         // Debug logging
         console.log("Progress Debug:", {
