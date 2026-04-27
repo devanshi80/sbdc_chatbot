@@ -7,7 +7,8 @@
     let answers = {};
     let areaNotes = {};
     let prefilled = null;
-    let lastAssessmentResult = null; 
+    let lastAssessmentResult = null;
+    let shouldStartAssessment = false; 
     const assessmentFocusDefinitions = {
         "Economic Uncertainty": "The economy or market conditions are changing, and I’m unsure how it will impact my business.",
         "Crisis or Setback": "Something urgent or unexpected happened, and I need to stabilize my business quickly.",
@@ -34,57 +35,13 @@
     const submitBtn = document.getElementById("submitBtn");
     const submitStatus = document.getElementById("submitStatus");
     const resetBtn = document.getElementById("resetBtn");
+    const startAssessmentBtn = document.getElementById("startAssessmentBtn");
+    const landingPage = document.getElementById("landingPage");
+    const appContainer = document.getElementById("app");
 
     const storageKey = "assessment_answers_v1";
 
-    function escapeHTML(value) {
-        return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#39;");
-    }
-
-    function sanitizeUserTextInput(value) {
-        const input = String(value ?? "").replace(/\0/g, "");
-        if (window.DOMPurify) {
-            return window.DOMPurify.sanitize(input, {
-                ALLOWED_TAGS: [],
-                ALLOWED_ATTR: []
-            }).trim();
-        }
-        return input.trim();
-    }
-
-    function sanitizeLLMHtml(markdown) {
-    const rendered = window.marked
-        ? marked.parse(String(markdown ?? ""))
-        : escapeHTML(String(markdown ?? ""));
-
-    if (window.DOMPurify) {
-        return window.DOMPurify.sanitize(rendered, {
-            ALLOWED_TAGS: ["p", "ul", "ol", "li", "strong", "em", "br", "a", "code", "pre", "blockquote"],
-            ALLOWED_ATTR: ["href", "target", "rel"],
-            FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
-            FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "style"]
-        });
-    }
-
-    return escapeHTML(String(markdown ?? ""));
-    }
-
-    function sanitizeAreaNotesMap(notes) {
-        if (!notes || typeof notes !== "object") return {};
-        return Object.fromEntries(
-            Object.entries(notes)
-                .map(([area, note]) => [area, sanitizeUserTextInput(note)])
-                .filter(([, note]) => note)
-        );
-    }
-
     function saveLocal() {
-        areaNotes = sanitizeAreaNotesMap(areaNotes);
         localStorage.setItem(storageKey, JSON.stringify({ answers, areaNotes }));
     }
 
@@ -94,7 +51,7 @@
             if (parsed && typeof parsed === "object" && ("answers" in parsed || "areaNotes" in parsed)) {
                 return {
                     answers: parsed.answers || {},
-                    areaNotes: sanitizeAreaNotesMap(parsed.areaNotes || {})
+                    areaNotes: parsed.areaNotes || {}
                 };
             }
             return { answers: parsed || {}, areaNotes: {} };
@@ -110,9 +67,14 @@
     // Define which questions act as conditional gates for sections
     const conditionalSections = {
         "Employees": {
-            gateQuestion: "EMP-000", // Employee count gate question
+            gateQuestion: "EMP-001", // First question about employees
             skipAnswers: ["0", "N/A"], // If they answer "I do not do this" or "Not Applicable"
             skipMessage: "I don't have employees"
+        },
+        "Products_Services": {
+            gateQuestion: "PDS-001", // First question about products/services
+            skipAnswers: ["0", "N/A"],
+            skipMessage: "I don't offer products or services"
         }
     };
 
@@ -169,19 +131,22 @@
         const tiles = specialEntries
             .map(([value, label]) => {
                 const isSel = selected === value || (value === "SKIP_SECTION" && shouldSkipSection(sectionName));
+                const isSkipOption = value === "SKIP_SECTION";
 
-                return `<button class="tile ${isSel ? "selected" : ""}"
-                                data-value="${escapeHTML(value)}"
-                                data-section="${value === "SKIP_SECTION" ? escapeHTML(sectionName) : ""}"
+                return `<button class="tile ${isSel ? "selected" : ""} ${isSkipOption ? "skip-option" : ""}"
+                                data-value="${value}"
+                                data-section="${isSkipOption ? sectionName : ''}"
                                 aria-pressed="${isSel}">
-                    ${escapeHTML(label)}
+                    ${label}
+                    ${isSkipOption ? '<div class="skip-explanation">This will mark all questions in this section as "Not Applicable"</div>' : ''}
                 </button>`;
             })
             .join("");
 
         questionArea.innerHTML = `
             <article class="question-card" data-qid="${q.id}">
-                <div class="question-text">${escapeHTML(q.question)}</div>
+                <div class="question-text">${q.question}</div>
+                <div class="section-info">This question determines if the ${cleanAreaName(sectionName)} section applies to your business.</div>
                 <div class="tile-grid" role="group" aria-label="Answer choices for ${q.id}">
                     ${tiles}
                 </div>
@@ -264,29 +229,6 @@
         progressLabel.textContent = `${pct}% complete`;
     }
 
-    function getSectionForQuestion(q) {
-        return data.sections.find(sec => sec.items.includes(q) || sec.noteItem === q);
-    }
-
-    function isQuestionHiddenBySkip(q) {
-        const questionSection = getSectionForQuestion(q);
-        return Boolean(questionSection && shouldSkipSection(questionSection.name));
-    }
-
-    function findNavigableIndex(startIndex, direction) {
-        let idx = startIndex;
-
-        while (idx >= 0 && idx < data.flat.length) {
-            const q = data.flat[idx];
-            if (!isQuestionHiddenBySkip(q)) {
-                return idx;
-            }
-            idx += direction;
-        }
-
-        return clamp(startIndex, 0, data.flat.length - 1);
-    }
-
     function cleanAreaName(name) {
         return name.replace('Customers_Marketing', 'Customers & Marketing').replace('Products_Services', 'Products & Services');
     }
@@ -325,7 +267,7 @@
                 }
             }
 
-            const cleanName = escapeHTML(cleanAreaName(sec.name));
+            const cleanName = cleanAreaName(sec.name);
             pill.innerHTML = `<span>${cleanName}</span>${displayCount}`;
             pill.addEventListener("click", () => {
                 currentIndex = indexById.get(sec.items[0].id);
@@ -404,42 +346,56 @@
             return;
         }
 
-        // Check if this question belongs to a skipped section, including area notes
-        if (isQuestionHiddenBySkip(q)) {
-            // This question is in a skipped section, auto-answer and move on
-            if (q.kind !== "area_note" && answers[q.id] !== "N/A") {
-                answers[q.id] = "N/A";
-                saveLocal();
-            }
-
-            // Skip to next question
-            if (currentIndex < data.flat.length - 1) {
-                currentIndex = findNavigableIndex(currentIndex + 1, 1);
-                updateUI();
-            } else {
-                updateUI();
-            }
-            return;
-        }
-
         if (q.kind === "area_note") {
             const existingNote = areaNotes[q.areaName] || "";
-            questionArea.innerHTML = `
-                <article class="question-card question-card--note" data-qid="${q.id}">
-                    <div class="question-text">${escapeHTML(cleanAreaName(q.areaName))}</div>
-                    <p class="note-intro">${escapeHTML(q.helperText)}</p>
-                    <label class="note-label" for="${q.id}">${escapeHTML(q.question)}</label>
-                    <textarea id="${q.id}" class="area-note-input" placeholder="Type here if you'd like to share more context..." rows="7"></textarea>
-                </article>
-            `;
 
-            const textarea = questionArea.querySelector(".area-note-input");
+            // Clear and create elements programmatically
+            questionArea.innerHTML = "";
+
+            const article = document.createElement("article");
+            article.className = "question-card question-card--note";
+            article.setAttribute("data-qid", q.id);
+
+            const questionText = document.createElement("div");
+            questionText.className = "question-text";
+            questionText.textContent = cleanAreaName(q.areaName);
+
+            const noteIntro = document.createElement("p");
+            noteIntro.className = "note-intro";
+            noteIntro.textContent = q.helperText;
+
+            const label = document.createElement("label");
+            label.className = "note-label";
+            label.setAttribute("for", q.id);
+            label.textContent = q.question;
+
+            const textarea = document.createElement("textarea");
+            textarea.id = q.id;
+            textarea.className = "area-note-input";
+            textarea.placeholder = "Type here if you'd like to share more context...";
+            textarea.rows = 7;
             textarea.value = existingNote;
+
+            const disclaimer = document.createElement("p");
+            disclaimer.className = "privacy-disclaimer";
+            disclaimer.textContent = "We do not collect or store personal data. Please avoid entering personal details such as names, addresses, phone numbers, or other sensitive information.";
+            disclaimer.style.fontSize = "12px";
+            disclaimer.style.color = "#666";
+            disclaimer.style.marginTop = "8px";
+            disclaimer.style.fontStyle = "italic";
+
+            article.appendChild(questionText);
+            article.appendChild(noteIntro);
+            article.appendChild(label);
+            article.appendChild(textarea);
+            article.appendChild(disclaimer);
+
+            questionArea.appendChild(article);
+
             textarea.addEventListener("input", () => {
-                const sanitizedNote = sanitizeUserTextInput(textarea.value);
-                const trimmed = sanitizedNote.trim();
+                const trimmed = textarea.value.trim();
                 if (trimmed) {
-                    areaNotes[q.areaName] = sanitizedNote;
+                    areaNotes[q.areaName] = textarea.value;
                 } else {
                     delete areaNotes[q.areaName];
                 }
@@ -454,6 +410,25 @@
             return;
         }
 
+        // Check if this question belongs to a skipped section
+        const questionSection = data.sections.find(sec => sec.items.includes(q));
+        if (questionSection && shouldSkipSection(questionSection.name)) {
+            // This question is in a skipped section, auto-answer and move on
+            if (answers[q.id] !== "N/A") {
+                answers[q.id] = "N/A";
+                saveLocal();
+            }
+
+            // Skip to next question
+            if (currentIndex < data.flat.length - 1) {
+                currentIndex += 1;
+                updateUI();
+            } else {
+                updateUI();
+            }
+            return;
+        }
+
         const entries = Object.entries(q.scoring_scale);
         const selected = answers[q.id];
 
@@ -463,11 +438,11 @@
                 const isCatalyst = q.id === "CATALYST-001";
                 let desc = "";
                 if (isCatalyst && assessmentFocusDefinitions[label]) {
-                    desc = `<p style="font-size:12px;color:#666;margin-top:4px;">${escapeHTML(assessmentFocusDefinitions[label])}</p>`;
+                    desc = `<p style="font-size:12px;color:#666;margin-top:4px;">${assessmentFocusDefinitions[label]}</p>`;
                 }
 
-                return `<button class="tile ${isSel ? "selected" : ""}" data-value="${escapeHTML(value)}" aria-pressed="${isSel}">
-                    ${escapeHTML(label)}
+                return `<button class="tile ${isSel ? "selected" : ""}" data-value="${value}" aria-pressed="${isSel}">
+                    ${label}
                     ${desc}
                 </button>`;
             })
@@ -475,7 +450,7 @@
 
         questionArea.innerHTML = `
             <article class="question-card" data-qid="${q.id}">
-                <div class="question-text">${escapeHTML(q.question)}</div>
+                <div class="question-text">${q.question}</div>
                 <div class="tile-grid" role="group" aria-label="Answer choices for ${q.id}">
                     ${tiles}
                 </div>
@@ -504,8 +479,8 @@
     }
 
     function updateNavButtons() {
-        prevBtn.disabled = currentIndex <= 0 || findNavigableIndex(currentIndex - 1, -1) === currentIndex;
-        nextBtn.disabled = currentIndex >= data.flat.length - 1 || findNavigableIndex(currentIndex + 1, 1) === currentIndex;
+        prevBtn.disabled = currentIndex <= 0;
+        nextBtn.disabled = currentIndex >= data.flat.length - 1;
     }
 
     function updateUI() {
@@ -516,29 +491,64 @@
     }
 
     prevBtn.addEventListener("click", () => {
-        currentIndex = findNavigableIndex(currentIndex - 1, -1);
+        currentIndex = clamp(currentIndex - 1, 0, data.flat.length - 1);
         updateUI();
     });
 
     nextBtn.addEventListener("click", () => {
-        currentIndex = findNavigableIndex(currentIndex + 1, 1);
+        currentIndex = clamp(currentIndex + 1, 0, data.flat.length - 1);
         updateUI();
     });
 
     resetBtn.addEventListener("click", () => {
-        if (confirm("Erase all answers?")) {
+        if (confirm("Erase all answers and return to start?")) {
             answers = {};
             areaNotes = {};
             saveLocal();
             lastAssessmentResult = null;
-    
+
             setAssessmentDisabled(false);
             questionArea.classList.remove("hidden");
             document.getElementById("results").classList.add("hidden");
-    
+
+            // Return to landing page
+            showLandingPage();
+            currentIndex = 0;
             updateUI();
         }
     });
+
+    // Landing page functionality
+    function showLandingPage() {
+        landingPage.classList.remove("hidden");
+        appContainer.classList.add("hidden");
+    }
+
+    function showAssessment() {
+        landingPage.classList.add("hidden");
+        appContainer.classList.remove("hidden");
+    }
+
+    startAssessmentBtn.addEventListener("click", () => {
+        shouldStartAssessment = true;
+        showAssessment();
+        // Ensure the assessment is properly initialized and shows the first question
+        if (data.flat.length > 0) {
+            currentIndex = 0;
+            updateUI();
+        } else {
+            // If data isn't loaded yet, show loading and wait
+            questionArea.innerHTML = '<div class="loading">Loading questions...</div>';
+            // Boot will handle showing the first question once data is loaded
+        }
+    });
+
+    // Check if user has already started assessment
+    function shouldShowLanding() {
+        // Show landing page if no answers saved or user explicitly wants to restart
+        const savedData = loadLocal();
+        return Object.keys(savedData.answers).length === 0 && Object.keys(savedData.areaNotes).length === 0;
+    }
 
     function setAssessmentDisabled(disabled) {
         prevBtn.disabled = disabled;
@@ -564,45 +574,45 @@
             recommendationsHTML = out.recommendations
                 .map(rec => `
                     <div class="recommendation">
-                        ${sanitizeLLMHtml(rec)}
+                        ${marked.parse(rec)}
                     </div>
                 `)
                 .join("");
         } else {
             recommendationsHTML = `
                 <div class="recommendation">
-                    ${sanitizeLLMHtml(out.recommendations)}
+                    ${marked.parse(out.recommendations)}
                 </div>
             `;
         }
 
         resultsEl.innerHTML = `
-        <h2 style="text-align: center;">
-            Congrats on taking the next step to move your business forward!
-        </h2>
-    
-        <div class="action-buttons"
-             style="display: flex; justify-content: center; gap: 12px; margin: 16px 0;">
-            
-            <button id="downloadPdfBtn" type="button">
-                Download Results
-            </button>
-    
-            <button id="bookCall" type="button">
-                Request SBDC Consultation
-            </button>
-    
-            <button id="viewResources" type="button">
-                View More Resources
-            </button>
-            
-        </div>
-    
-        <div class="result-block">
-            <h3>Recommendations</h3>
-            ${recommendationsHTML}
-        </div>
-    `;
+            <h2 style="text-align: center;">
+                Congrats on taking the next step to move your business forward!
+            </h2>
+
+            <div class="action-buttons"
+                 style="display: flex; justify-content: center; gap: 12px; margin: 16px 0;">
+                
+                <button id="downloadPdfBtn" type="button">
+                    Download Results
+                </button>
+
+                <button id="bookCall" type="button">
+                    Request SBDC Consultation
+                </button>
+
+                <button id="viewResources" type="button">
+                    View More Resources
+                </button>
+                
+            </div>
+
+            <div class="result-block">
+                <h3>Recommendations</h3>
+                ${recommendationsHTML}
+            </div>
+        `;
 
         document.getElementById("downloadPdfBtn").addEventListener("click", downloadPDF);
         document.getElementById("bookCall").addEventListener("click", () => {
@@ -672,7 +682,11 @@
                     score: parseInt(value, 10),
                     notes: null
                 }));
-            const filteredAreaNotes = sanitizeAreaNotesMap(areaNotes);
+            const filteredAreaNotes = Object.fromEntries(
+                Object.entries(areaNotes)
+                    .map(([area, note]) => [area, note.trim()])
+                    .filter(([, note]) => note)
+            );
 
             const payload = {
                 catalyst: answers["CATALYST-001"] || "Steady Growth",
@@ -731,27 +745,16 @@
                 }
             };
 
-            const employeeGateQuestion = questions.assessment.Employees.find((q) => q.id === "EMP-000");
-            const productsGateQuestion = questions.assessment.Products_Services.find((q) => q.id === "PDS-000");
-
-            const assessmentFocusItems = [catalystQuestion, employeeGateQuestion, productsGateQuestion].filter(Boolean);
-
             const sections = [{
                 name: "Assessment Focus",
-                items: assessmentFocusItems,
-                containsIndex: (idx) => idx >= 0 && idx < assessmentFocusItems.length
+                items: [catalystQuestion],
+                containsIndex: (idx) => idx === 0
             }];
 
             Object.keys(questions.assessment).forEach((name) => {
-                const sectionItems = questions.assessment[name].filter((q) => {
-                    if (name === "Employees") return q.id !== "EMP-000";
-                    if (name === "Products_Services") return q.id !== "PDS-000";
-                    return true;
-                });
-
                 sections.push({
                     name,
-                    items: sectionItems,
+                    items: questions.assessment[name],
                     noteItem: buildAreaNoteQuestion(name),
                     containsIndex: () => false
                 });
@@ -778,7 +781,7 @@
 
             const savedState = loadLocal();
             answers = savedState.answers;
-            areaNotes = sanitizeAreaNotesMap(savedState.areaNotes);
+            areaNotes = savedState.areaNotes;
 
             // Set default catalyst answer if not already set
             if (!answers["CATALYST-001"]) {
@@ -795,10 +798,23 @@
                 } catch {}
             }
 
-            updateUI();
+            // Determine whether to show landing page or assessment
+            if (shouldStartAssessment) {
+                // User clicked start from landing page
+                showAssessment();
+                currentIndex = 0;
+                updateUI();
+            } else if (shouldShowLanding()) {
+                showLandingPage();
+            } else {
+                showAssessment();
+                updateUI();
+            }
 
         } catch (err) {
             console.error(err);
+            // On error, show landing page
+            showLandingPage();
         }
     }
 
