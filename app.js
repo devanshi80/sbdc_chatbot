@@ -430,6 +430,7 @@
                     <p class="note-intro">${escapeHTML(q.helperText)}</p>
                     <label class="note-label" for="${q.id}">${escapeHTML(q.question)}</label>
                     <textarea id="${q.id}" class="area-note-input" placeholder="Type here if you'd like to share more context..." rows="7"></textarea>
+                    <p class="privacy-disclaimer" style="font-size: 12px; color: #666; margin-top: 8px; font-style: italic;">We do not collect or store personal data. Please avoid entering personal details such as names, addresses, phone numbers, or other sensitive information.</p>
                 </article>
             `;
 
