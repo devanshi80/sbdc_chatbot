@@ -35,6 +35,9 @@
     const submitBtn = document.getElementById("submitBtn");
     const submitStatus = document.getElementById("submitStatus");
     const resetBtn = document.getElementById("resetBtn");
+    const resetModal = document.getElementById("resetModal");
+    const cancelResetBtn = document.getElementById("cancelResetBtn");
+    const confirmResetBtn = document.getElementById("confirmResetBtn");
 
     const storageKey = "assessment_answers_v1";
 
@@ -550,21 +553,44 @@
         updateUI();
     });
 
-    resetBtn.addEventListener("click", () => {
-        if (confirm("Erase all answers?")) {
-            answers = {};
-            areaNotes = {};
-            Object.keys(lastVisitedIndexBySection).forEach((sectionName) => {
-                delete lastVisitedIndexBySection[sectionName];
-            });
-            saveLocal();
-            lastAssessmentResult = null;
-    
-            setAssessmentDisabled(false);
-            questionArea.classList.remove("hidden");
-            document.getElementById("results").classList.add("hidden");
-    
-            updateUI();
+    function openResetModal() {
+        resetModal.hidden = false;
+        confirmResetBtn.focus();
+    }
+
+    function closeResetModal() {
+        resetModal.hidden = true;
+        resetBtn.focus();
+    }
+
+    function restartAssessment() {
+        answers = {};
+        areaNotes = {};
+        Object.keys(lastVisitedIndexBySection).forEach((sectionName) => {
+            delete lastVisitedIndexBySection[sectionName];
+        });
+        saveLocal();
+        lastAssessmentResult = null;
+
+        setAssessmentDisabled(false);
+        questionArea.classList.remove("hidden");
+        document.getElementById("results").classList.add("hidden");
+
+        closeResetModal();
+        updateUI();
+    }
+
+    resetBtn.addEventListener("click", openResetModal);
+    cancelResetBtn.addEventListener("click", closeResetModal);
+    confirmResetBtn.addEventListener("click", restartAssessment);
+    resetModal.addEventListener("click", (event) => {
+        if (event.target === resetModal) {
+            closeResetModal();
+        }
+    });
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !resetModal.hidden) {
+            closeResetModal();
         }
     });
 

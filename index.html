@@ -19,7 +19,7 @@
                     <p class="muted">Select the tiles to answer</p>
                 </div>
                 <div class="sidebar-footer" style="display: flex; justify-content: center;">
-                    <button id="resetBtn" class="btn ghost" type="button">Reset answers</button>
+                    <button id="resetBtn" class="btn ghost" type="button">Restart Assessment</button>
                 </div>
             </aside>
 
@@ -54,6 +54,17 @@
                     </div>
                 </footer>
             </main>
+        </div>
+
+        <div id="resetModal" class="modal-backdrop" hidden>
+            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle" aria-describedby="resetModalMessage">
+                <h2 id="resetModalTitle">Restart Assessment?</h2>
+                <p id="resetModalMessage">This will erase your current answers and let you begin again.</p>
+                <div class="modal-actions">
+                    <button id="cancelResetBtn" class="btn" type="button">Cancel</button>
+                    <button id="confirmResetBtn" class="btn danger" type="button">Restart Assessment</button>
+                </div>
+            </div>
         </div>
 
         <script>

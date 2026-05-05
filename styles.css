@@ -148,15 +148,65 @@ body {
 .btn:hover { border-color: #cbd5e1; }
 .btn.primary { background: var(--primary); color: white; border-color: var(--primary-700); }
 .btn.success { background: var(--success); color: white; border-color: #15803d; }
+.btn.danger { background: #dc2626; color: white; border-color: #b91c1c; }
 .btn.ghost { background: transparent; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 
 .loading { color: var(--muted); }
 
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(15, 23, 42, 0.42);
+    backdrop-filter: blur(4px);
+}
+
+.modal-backdrop[hidden] {
+    display: none;
+}
+
+.modal {
+    width: min(100%, 420px);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22);
+    padding: 24px;
+}
+
+.modal h2 {
+    margin: 0 0 10px;
+    font-size: 20px;
+}
+
+.modal p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}
+
 @media (max-width: 920px) {
     #app { grid-template-columns: 1fr; }
     .sidebar { position: relative; height: auto; }
     .progress-wrap { width: 180px; }
+    .modal-actions {
+        flex-direction: column-reverse;
+    }
+    .modal-actions .btn {
+        width: 100%;
+    }
 }
 /* ── Loading Screen ──────────────────────────────────────────────────────── */
 #loadingScreen {
