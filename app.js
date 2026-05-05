@@ -8,6 +8,7 @@
     let areaNotes = {};
     let prefilled = null;
     let lastAssessmentResult = null; 
+    const lastVisitedIndexBySection = {};
     const assessmentFocusDefinitions = {
         "Economic Uncertainty": "The economy or market conditions are changing, and I’m unsure how it will impact my business.",
         "Crisis or Setback": "Something urgent or unexpected happened, and I need to stabilize my business quickly.",
@@ -302,6 +303,27 @@
         };
     }
 
+    function rememberCurrentSectionIndex() {
+        const q = data.flat[currentIndex];
+        const section = q ? getSectionForQuestion(q) : null;
+        if (section) {
+            lastVisitedIndexBySection[section.name] = currentIndex;
+        }
+    }
+
+    function getSectionStartIndex(sec) {
+        const rememberedIndex = lastVisitedIndexBySection[sec.name];
+        if (
+            Number.isInteger(rememberedIndex) &&
+            sec.containsIndex(rememberedIndex) &&
+            !isQuestionHiddenBySkip(data.flat[rememberedIndex])
+        ) {
+            return rememberedIndex;
+        }
+
+        return indexById.get(sec.items[0].id);
+    }
+
     function renderSections() {
         sectionList.innerHTML = "";
         data.sections.forEach((sec) => {
@@ -328,7 +350,7 @@
             const cleanName = escapeHTML(cleanAreaName(sec.name));
             pill.innerHTML = `<span>${cleanName}</span>${displayCount}`;
             pill.addEventListener("click", () => {
-                currentIndex = indexById.get(sec.items[0].id);
+                currentIndex = getSectionStartIndex(sec);
                 updateUI();
             });
             sectionList.appendChild(pill);
@@ -403,6 +425,8 @@
             questionArea.innerHTML = '<div class="loading">No questions found.</div>';
             return;
         }
+
+        rememberCurrentSectionIndex();
 
         // Check if this question belongs to a skipped section, including area notes
         if (isQuestionHiddenBySkip(q)) {
@@ -530,6 +554,9 @@
         if (confirm("Erase all answers?")) {
             answers = {};
             areaNotes = {};
+            Object.keys(lastVisitedIndexBySection).forEach((sectionName) => {
+                delete lastVisitedIndexBySection[sectionName];
+            });
             saveLocal();
             lastAssessmentResult = null;
     
