@@ -389,6 +389,7 @@
                 priority_categories: lastAssessmentResult.priority_categories,
                 category_scores: lastAssessmentResult.category_scores,
                 category_details: lastAssessmentResult.category_details,
+                priority_recommendations: lastAssessmentResult.priority_recommendations || [],
                 recommendations: lastAssessmentResult.recommendations,
                 answers: formattedAnswers,
                 area_notes: formattedAreaNotes
@@ -597,6 +598,7 @@
     function setAssessmentDisabled(disabled) {
         prevBtn.disabled = disabled;
         nextBtn.disabled = disabled;
+        submitBtn.disabled = disabled;
     
         sectionList.querySelectorAll("button").forEach(btn => {
             btn.disabled = disabled;
@@ -630,16 +632,41 @@
             `;
         }
 
+        const priorityItems = Array.isArray(out.priority_recommendations)
+            ? out.priority_recommendations.slice(0, 3)
+            : [];
+        const priorityHTML = priorityItems.length
+            ? priorityItems.map(item => `
+                <article class="priority-card priority-card--${escapeHTML(item.type || "key_area")}">
+                    <div class="priority-label">${escapeHTML(item.label || "Key Area to Consider")}</div>
+                    <h4>${escapeHTML(item.title || "")}</h4>
+                    <div class="priority-section">
+                        <p>${escapeHTML(item.summary || item.what_to_do || "")}</p>
+                    </div>
+                    <p class="priority-step"><strong>First step:</strong> ${escapeHTML(item.first_step || "")}</p>
+                </article>
+            `).join("")
+            : `
+                <article class="priority-card">
+                    <div class="priority-label">Key Area to Consider</div>
+                    <h4>Report Review Starter</h4>
+                    <div class="priority-section">
+                        <p>Start with the full recommendations and look for the section that feels most connected to your current business decision.</p>
+                    </div>
+                    <p class="priority-step"><strong>First step:</strong> Note one recommendation you want to act on this week.</p>
+                </article>
+            `;
+
         resultsEl.innerHTML = `
         <h2 style="text-align: center;">
-            Congrats on taking the next step to move your business forward!
+            Next Steps to Move Your Business Forward
         </h2>
     
         <div class="action-buttons"
              style="display: flex; justify-content: center; gap: 12px; margin: 16px 0;">
             
             <button id="downloadPdfBtn" type="button">
-                Download Results
+                Download PDF Results
             </button>
     
             <button id="bookCall" type="button">
@@ -652,13 +679,37 @@
             
         </div>
     
-        <div class="result-block">
-            <h3>Recommendations</h3>
+        <section class="result-block priority-block">
+            <p class="recommendations-intro">
+                In our many years of working with small businesses, we know that planning for your business' future can feel overwhelming or hard to prioritize.
+            </p>
+            <p class="recommendations-intro">
+                Below, you'll find three recommendations. These include two key areas to consider - based on what you indicated as your business strengths, challenges, and reason for planning - and one "quick win" that should help you take a step in the right direction quickly. These recommendations are meant to highlight possible next steps for your own planning and/or areas to discuss with your SBDC Consultant so they can best support you.
+            </p>
+            <p class="recommendations-intro">
+                If these suggestions aren't a fit, or they are not something you can work on right now, click "See Additional Recommendations" for more ideas to consider.
+            </p>
+            <div class="priority-grid">
+                ${priorityHTML}
+            </div>
+            <button id="showFullRecommendations" class="btn primary" type="button">
+                See Additional Recommendations
+            </button>
+        </section>
+
+        <section id="fullRecommendations" class="result-block full-recommendations hidden">
+            <h3>Additional Recommendations</h3>
             ${recommendationsHTML}
-        </div>
+        </section>
     `;
 
         document.getElementById("downloadPdfBtn").addEventListener("click", downloadPDF);
+        document.getElementById("showFullRecommendations").addEventListener("click", () => {
+            const fullRecommendations = document.getElementById("fullRecommendations");
+            fullRecommendations.classList.remove("hidden");
+            document.getElementById("showFullRecommendations").hidden = true;
+            fullRecommendations.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
         document.getElementById("bookCall").addEventListener("click", () => {
             window.open("https://sbdc.wisc.edu/about-us/free-small-business-consulting/", "_blank");
         });
@@ -753,7 +804,7 @@
             hideLoadingScreen();
             submitStatus.textContent = "Could not submit";
         } finally {
-            submitBtn.disabled = false;
+            submitBtn.disabled = Boolean(lastAssessmentResult);
         }
     });
 
