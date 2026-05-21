@@ -1,0 +1,505 @@
+{
+  "metadata": {
+    "source": "4-29-2026 SBDC_GPT_Assessment_Content_Catalyst_Rankings_Filled.xlsx",
+    "direction": "Lower rank means higher catalyst importance.",
+    "notes": "Mapped once from spreadsheet rows to current questions.json question IDs. Runtime code must use question IDs, not spreadsheet text."
+  },
+  "rankings": {
+    "FIN-001": {
+      "Economic Uncertainty": 5,
+      "Crisis": 5,
+      "New Opportunity": 22,
+      "Steady Growth": 7,
+      "Lifestyle Change": 32,
+      "Operational Adjustments": 33
+    },
+    "FIN-002": {
+      "Economic Uncertainty": 3,
+      "Crisis": 13,
+      "New Opportunity": 4,
+      "Steady Growth": 2,
+      "Lifestyle Change": 11,
+      "Operational Adjustments": 11
+    },
+    "FIN-003": {
+      "Economic Uncertainty": 59,
+      "Crisis": 59,
+      "New Opportunity": 58,
+      "Steady Growth": 58,
+      "Lifestyle Change": 58,
+      "Operational Adjustments": 59
+    },
+    "FIN-004": {
+      "Economic Uncertainty": 9,
+      "Crisis": 15,
+      "New Opportunity": 6,
+      "Steady Growth": 30,
+      "Lifestyle Change": 33,
+      "Operational Adjustments": 36
+    },
+    "FIN-005": {
+      "Economic Uncertainty": 2,
+      "Crisis": 2,
+      "New Opportunity": 32,
+      "Steady Growth": 29,
+      "Lifestyle Change": 10,
+      "Operational Adjustments": 35
+    },
+    "FIN-006": {
+      "Economic Uncertainty": 4,
+      "Crisis": 14,
+      "New Opportunity": 23,
+      "Steady Growth": 3,
+      "Lifestyle Change": 9,
+      "Operational Adjustments": 34
+    },
+    "FIN-007": {
+      "Economic Uncertainty": 1,
+      "Crisis": 1,
+      "New Opportunity": 24,
+      "Steady Growth": 6,
+      "Lifestyle Change": 8,
+      "Operational Adjustments": 12
+    },
+    "FIN-008": {
+      "Economic Uncertainty": 13,
+      "Crisis": 36,
+      "New Opportunity": 30,
+      "Steady Growth": 39,
+      "Lifestyle Change": 43,
+      "Operational Adjustments": 43
+    },
+    "FIN-009": {
+      "Economic Uncertainty": 12,
+      "Crisis": 9,
+      "New Opportunity": 31,
+      "Steady Growth": 38,
+      "Lifestyle Change": 42,
+      "Operational Adjustments": 42
+    },
+    "FIN-010": {
+      "Economic Uncertainty": 29,
+      "Crisis": 25,
+      "New Opportunity": 29,
+      "Steady Growth": 31,
+      "Lifestyle Change": 24,
+      "Operational Adjustments": 41
+    },
+    "FIN-011": {
+      "Economic Uncertainty": 6,
+      "Crisis": 6,
+      "New Opportunity": 5,
+      "Steady Growth": 8,
+      "Lifestyle Change": 12,
+      "Operational Adjustments": 13
+    },
+    "FIN-012": {
+      "Economic Uncertainty": 30,
+      "Crisis": 31,
+      "New Opportunity": 28,
+      "Steady Growth": 32,
+      "Lifestyle Change": 34,
+      "Operational Adjustments": 37
+    },
+    "OPS-001": {
+      "Economic Uncertainty": 25,
+      "Crisis": 10,
+      "New Opportunity": 11,
+      "Steady Growth": 1,
+      "Lifestyle Change": 3,
+      "Operational Adjustments": 1
+    },
+    "OPS-002": {
+      "Economic Uncertainty": 26,
+      "Crisis": 26,
+      "New Opportunity": 38,
+      "Steady Growth": 18,
+      "Lifestyle Change": 31,
+      "Operational Adjustments": 2
+    },
+    "OPS-003": {
+      "Economic Uncertainty": 37,
+      "Crisis": 37,
+      "New Opportunity": 12,
+      "Steady Growth": 17,
+      "Lifestyle Change": 44,
+      "Operational Adjustments": 9
+    },
+    "OPS-004": {
+      "Economic Uncertainty": 36,
+      "Crisis": 27,
+      "New Opportunity": 39,
+      "Steady Growth": 19,
+      "Lifestyle Change": 30,
+      "Operational Adjustments": 3
+    },
+    "OPS-005": {
+      "Economic Uncertainty": 24,
+      "Crisis": 3,
+      "New Opportunity": 33,
+      "Steady Growth": 33,
+      "Lifestyle Change": 13,
+      "Operational Adjustments": 5
+    },
+    "OPS-006": {
+      "Economic Uncertainty": 10,
+      "Crisis": 28,
+      "New Opportunity": 36,
+      "Steady Growth": 35,
+      "Lifestyle Change": 39,
+      "Operational Adjustments": 8
+    },
+    "OPS-007": {
+      "Economic Uncertainty": 60,
+      "Crisis": 60,
+      "New Opportunity": 59,
+      "Steady Growth": 59,
+      "Lifestyle Change": 59,
+      "Operational Adjustments": 28
+    },
+    "OPS-008": {
+      "Economic Uncertainty": 38,
+      "Crisis": 29,
+      "New Opportunity": 40,
+      "Steady Growth": 20,
+      "Lifestyle Change": 29,
+      "Operational Adjustments": 4
+    },
+    "EMP-004": {
+      "Economic Uncertainty": 42,
+      "Crisis": 46,
+      "New Opportunity": 44,
+      "Steady Growth": 44,
+      "Lifestyle Change": 17,
+      "Operational Adjustments": 14
+    },
+    "EMP-005": {
+      "Economic Uncertainty": 33,
+      "Crisis": 17,
+      "New Opportunity": 13,
+      "Steady Growth": 9,
+      "Lifestyle Change": 4,
+      "Operational Adjustments": 6
+    },
+    "EMP-006": {
+      "Economic Uncertainty": 43,
+      "Crisis": 47,
+      "New Opportunity": 45,
+      "Steady Growth": 45,
+      "Lifestyle Change": 18,
+      "Operational Adjustments": 15
+    },
+    "EMP-007": {
+      "Economic Uncertainty": 61,
+      "Crisis": 61,
+      "New Opportunity": 60,
+      "Steady Growth": 60,
+      "Lifestyle Change": 60,
+      "Operational Adjustments": 60
+    },
+    "EMP-008": {
+      "Economic Uncertainty": 46,
+      "Crisis": 49,
+      "New Opportunity": 47,
+      "Steady Growth": 47,
+      "Lifestyle Change": 14,
+      "Operational Adjustments": 30
+    },
+    "EMP-009": {
+      "Economic Uncertainty": 44,
+      "Crisis": 48,
+      "New Opportunity": 46,
+      "Steady Growth": 46,
+      "Lifestyle Change": 54,
+      "Operational Adjustments": 29
+    },
+    "EMP-010": {
+      "Economic Uncertainty": 45,
+      "Crisis": 18,
+      "New Opportunity": 14,
+      "Steady Growth": 21,
+      "Lifestyle Change": 16,
+      "Operational Adjustments": 16
+    },
+    "EMP-011": {
+      "Economic Uncertainty": 47,
+      "Crisis": 50,
+      "New Opportunity": 48,
+      "Steady Growth": 48,
+      "Lifestyle Change": 19,
+      "Operational Adjustments": 49
+    },
+    "EMP-012": {
+      "Economic Uncertainty": 48,
+      "Crisis": 51,
+      "New Opportunity": 15,
+      "Steady Growth": 11,
+      "Lifestyle Change": 55,
+      "Operational Adjustments": 50
+    },
+    "EMP-013": {
+      "Economic Uncertainty": 49,
+      "Crisis": 52,
+      "New Opportunity": 49,
+      "Steady Growth": 49,
+      "Lifestyle Change": 56,
+      "Operational Adjustments": 51
+    },
+    "CMK-001": {
+      "Economic Uncertainty": 31,
+      "Crisis": 12,
+      "New Opportunity": 34,
+      "Steady Growth": 34,
+      "Lifestyle Change": 26,
+      "Operational Adjustments": 10
+    },
+    "CMK-002": {
+      "Economic Uncertainty": 17,
+      "Crisis": 30,
+      "New Opportunity": 61,
+      "Steady Growth": 61,
+      "Lifestyle Change": 61,
+      "Operational Adjustments": 61
+    },
+    "CMK-003": {
+      "Economic Uncertainty": 28,
+      "Crisis": 43,
+      "New Opportunity": 17,
+      "Steady Growth": 13,
+      "Lifestyle Change": 49,
+      "Operational Adjustments": 23
+    },
+    "CMK-004": {
+      "Economic Uncertainty": 18,
+      "Crisis": 41,
+      "New Opportunity": 42,
+      "Steady Growth": 14,
+      "Lifestyle Change": 25,
+      "Operational Adjustments": 45
+    },
+    "CMK-005": {
+      "Economic Uncertainty": 27,
+      "Crisis": 42,
+      "New Opportunity": 16,
+      "Steady Growth": 12,
+      "Lifestyle Change": 28,
+      "Operational Adjustments": 22
+    },
+    "CMK-006": {
+      "Economic Uncertainty": 21,
+      "Crisis": 32,
+      "New Opportunity": 8,
+      "Steady Growth": 16,
+      "Lifestyle Change": 37,
+      "Operational Adjustments": 38
+    },
+    "CMK-007": {
+      "Economic Uncertainty": 20,
+      "Crisis": 33,
+      "New Opportunity": 7,
+      "Steady Growth": 15,
+      "Lifestyle Change": 38,
+      "Operational Adjustments": 39
+    },
+    "CMK-008": {
+      "Economic Uncertainty": 16,
+      "Crisis": 45,
+      "New Opportunity": 19,
+      "Steady Growth": 42,
+      "Lifestyle Change": 50,
+      "Operational Adjustments": 24
+    },
+    "CMK-009": {
+      "Economic Uncertainty": 19,
+      "Crisis": 44,
+      "New Opportunity": 18,
+      "Steady Growth": 41,
+      "Lifestyle Change": 27,
+      "Operational Adjustments": 46
+    },
+    "CMK-010": {
+      "Economic Uncertainty": 15,
+      "Crisis": 21,
+      "New Opportunity": 3,
+      "Steady Growth": 27,
+      "Lifestyle Change": 51,
+      "Operational Adjustments": 25
+    },
+    "PDS-001": {
+      "Economic Uncertainty": 7,
+      "Crisis": 7,
+      "New Opportunity": 2,
+      "Steady Growth": 4,
+      "Lifestyle Change": 35,
+      "Operational Adjustments": 26
+    },
+    "PDS-002": {
+      "Economic Uncertainty": 40,
+      "Crisis": 22,
+      "New Opportunity": 20,
+      "Steady Growth": 28,
+      "Lifestyle Change": 52,
+      "Operational Adjustments": 47
+    },
+    "PDS-003": {
+      "Economic Uncertainty": 22,
+      "Crisis": 38,
+      "New Opportunity": 9,
+      "Steady Growth": 24,
+      "Lifestyle Change": 46,
+      "Operational Adjustments": 31
+    },
+    "PDS-004": {
+      "Economic Uncertainty": 11,
+      "Crisis": 16,
+      "New Opportunity": 21,
+      "Steady Growth": 40,
+      "Lifestyle Change": 45,
+      "Operational Adjustments": 21
+    },
+    "PDS-005": {
+      "Economic Uncertainty": 41,
+      "Crisis": 23,
+      "New Opportunity": 43,
+      "Steady Growth": 43,
+      "Lifestyle Change": 53,
+      "Operational Adjustments": 48
+    },
+    "PDS-006": {
+      "Economic Uncertainty": 62,
+      "Crisis": 62,
+      "New Opportunity": 62,
+      "Steady Growth": 62,
+      "Lifestyle Change": 62,
+      "Operational Adjustments": 62
+    },
+    "PDS-007": {
+      "Economic Uncertainty": 23,
+      "Crisis": 39,
+      "New Opportunity": 10,
+      "Steady Growth": 25,
+      "Lifestyle Change": 47,
+      "Operational Adjustments": 32
+    },
+    "PDS-008": {
+      "Economic Uncertainty": 8,
+      "Crisis": 8,
+      "New Opportunity": 1,
+      "Steady Growth": 5,
+      "Lifestyle Change": 36,
+      "Operational Adjustments": 27
+    },
+    "PDS-009": {
+      "Economic Uncertainty": 39,
+      "Crisis": 40,
+      "New Opportunity": 41,
+      "Steady Growth": 26,
+      "Lifestyle Change": 48,
+      "Operational Adjustments": 44
+    },
+    "LDR-001": {
+      "Economic Uncertainty": 50,
+      "Crisis": 24,
+      "New Opportunity": 50,
+      "Steady Growth": 50,
+      "Lifestyle Change": 20,
+      "Operational Adjustments": 19
+    },
+    "LDR-002": {
+      "Economic Uncertainty": 51,
+      "Crisis": 53,
+      "New Opportunity": 26,
+      "Steady Growth": 22,
+      "Lifestyle Change": 6,
+      "Operational Adjustments": 52
+    },
+    "LDR-003": {
+      "Economic Uncertainty": 52,
+      "Crisis": 54,
+      "New Opportunity": 51,
+      "Steady Growth": 51,
+      "Lifestyle Change": 57,
+      "Operational Adjustments": 53
+    },
+    "LDR-004": {
+      "Economic Uncertainty": 53,
+      "Crisis": 55,
+      "New Opportunity": 52,
+      "Steady Growth": 52,
+      "Lifestyle Change": 23,
+      "Operational Adjustments": 54
+    },
+    "LDR-005": {
+      "Economic Uncertainty": 54,
+      "Crisis": 56,
+      "New Opportunity": 53,
+      "Steady Growth": 53,
+      "Lifestyle Change": 15,
+      "Operational Adjustments": 17
+    },
+    "EMP-002": {
+      "Economic Uncertainty": 34,
+      "Crisis": 34,
+      "New Opportunity": 25,
+      "Steady Growth": 10,
+      "Lifestyle Change": 1,
+      "Operational Adjustments": 18
+    },
+    "LDR-007": {
+      "Economic Uncertainty": 55,
+      "Crisis": 57,
+      "New Opportunity": 54,
+      "Steady Growth": 54,
+      "Lifestyle Change": 21,
+      "Operational Adjustments": 55
+    },
+    "EMP-003": {
+      "Economic Uncertainty": 56,
+      "Crisis": 19,
+      "New Opportunity": 55,
+      "Steady Growth": 55,
+      "Lifestyle Change": 7,
+      "Operational Adjustments": 56
+    },
+    "EMP-001": {
+      "Economic Uncertainty": 32,
+      "Crisis": 11,
+      "New Opportunity": 35,
+      "Steady Growth": 23,
+      "Lifestyle Change": 5,
+      "Operational Adjustments": 7
+    },
+    "LDR-006": {
+      "Economic Uncertainty": 14,
+      "Crisis": 35,
+      "New Opportunity": 27,
+      "Steady Growth": 36,
+      "Lifestyle Change": 40,
+      "Operational Adjustments": 40
+    },
+    "LDR-010": {
+      "Economic Uncertainty": 57,
+      "Crisis": 58,
+      "New Opportunity": 56,
+      "Steady Growth": 56,
+      "Lifestyle Change": 22,
+      "Operational Adjustments": 57
+    },
+    "LDR-011": {
+      "Economic Uncertainty": 35,
+      "Crisis": 4,
+      "New Opportunity": 37,
+      "Steady Growth": 37,
+      "Lifestyle Change": 41,
+      "Operational Adjustments": 20
+    },
+    "LDR-012": {
+      "Economic Uncertainty": 58,
+      "Crisis": 20,
+      "New Opportunity": 57,
+      "Steady Growth": 57,
+      "Lifestyle Change": 2,
+      "Operational Adjustments": 58
+    }
+  }
+}

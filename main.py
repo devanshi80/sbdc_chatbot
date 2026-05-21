@@ -43,6 +43,13 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
     try:
         result: AssessmentReport = service.calculate_scores(response)
 
+        priority_recommendations = service.generate_priority_recommendations(
+            result,
+            response.catalyst,
+            response.answers,
+            response.area_notes
+        )
+
         recommendations = service.generate_recommendations(
             result,
             response.catalyst,
@@ -63,6 +70,7 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
                 }
                 for name, cs in result.category_scores.items()
             },
+            "priority_recommendations": priority_recommendations,
             "recommendations": recommendations,
             "tier_distribution": service.get_tier_distribution(result)
         }
@@ -183,9 +191,63 @@ async def export_pdf(payload: Dict[str, Any]):
         pdf.drawString(x, y, f"Catalyst: {payload.get('catalyst', 'N/A')}")
         add_spacing(25)
 
+        priority_recommendations = payload.get("priority_recommendations", [])
+        if isinstance(priority_recommendations, list) and priority_recommendations:
+            pdf.setFont("Helvetica-Bold", 14)
+            pdf.drawString(x, y, "Next Steps to Move Your Business Forward")
+            add_spacing(15)
+
+            snapshot_intro_paragraphs = [
+                (
+                    "In our many years of working with small businesses, we know that planning for your "
+                    "business' future can feel overwhelming or hard to prioritize."
+                ),
+                (
+                    "Below, you'll find three recommendations. These include two key areas to consider - "
+                    "based on what you indicated as your business strengths, challenges, and reason for "
+                    "planning - and one quick win that should help you take a step in the right direction "
+                    "quickly. These recommendations are meant to highlight possible next steps for your own "
+                    "planning and/or areas to discuss with your SBDC Consultant so they can best support you."
+                ),
+                (
+                    "If these suggestions aren't a fit, or they are not something you can work on right now, "
+                    "review the additional recommendations for more ideas to consider."
+                ),
+            ]
+            for paragraph in snapshot_intro_paragraphs:
+                write_formatted_line(paragraph, base_size=9)
+                add_spacing(5)
+            add_spacing(10)
+
+            for item in priority_recommendations[:3]:
+                if not isinstance(item, dict):
+                    continue
+                label = str(item.get("label", "")).strip()
+                title = str(item.get("title", "")).strip()
+                summary = str(item.get("summary", item.get("what_to_do", ""))).strip()
+                first_step = str(item.get("first_step", "")).strip()
+
+                if label or title:
+                    write_formatted_line(f"**{label}:** {title}", base_size=11)
+                if summary:
+                    write_formatted_line(summary, base_size=10, indent=8)
+                if first_step:
+                    write_formatted_line(f"**First step:** {first_step}", base_size=10, indent=8)
+                add_spacing(8)
+
+            add_spacing(10)
+
         pdf.setFont("Helvetica-Bold", 14)
         pdf.drawString(x, y, "Recommendations")
         add_spacing(15)
+
+        recommendations_intro = (
+            "Think of this assessment as a starting point for your conversation with an SBDC consultant. "
+            "The recommendations below are meant to highlight possible next steps and help your advisor "
+            "understand where they can best support you."
+        )
+        write_formatted_line(recommendations_intro, base_size=9)
+        add_spacing(12)
 
         recs_text = payload.get("recommendations", "")
         if isinstance(recs_text, str) and recs_text:
