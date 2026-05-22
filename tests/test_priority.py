@@ -150,7 +150,7 @@ class PriorityConfigCoverageTests(unittest.TestCase):
 
 
 class AssessResponseShapeTests(unittest.TestCase):
-    def test_assess_returns_priority_recommendations(self):
+    def test_assess_returns_priority_and_full_recommendations(self):
         os.environ.setdefault("GEMINI_API_KEY", "test-key")
         if "reportlab" not in sys.modules:
             reportlab = ModuleType("reportlab")
@@ -221,6 +221,8 @@ class AssessResponseShapeTests(unittest.TestCase):
         self.assertEqual(payload["priority_recommendations"][2]["type"], "quick_win")
         self.assertIn("summary", payload["priority_recommendations"][0])
         self.assertEqual(payload["recommendations"], "Full report")
+        self.assertNotIn("recommendations_status", payload)
+        self.assertNotIn("report_id", payload)
 
     def test_fallback_priority_copy_is_specific(self):
         os.environ.setdefault("GEMINI_API_KEY", "test-key")

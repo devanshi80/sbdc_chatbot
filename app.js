@@ -78,6 +78,32 @@
     return escapeHTML(String(markdown ?? ""));
     }
 
+    function renderRecommendationsHTML(recommendations) {
+        if (Array.isArray(recommendations)) {
+            return recommendations
+                .map(rec => `
+                    <div class="recommendation">
+                        ${sanitizeLLMHtml(rec)}
+                    </div>
+                `)
+                .join("");
+        }
+
+        if (recommendations) {
+            return `
+                <div class="recommendation">
+                    ${sanitizeLLMHtml(recommendations)}
+                </div>
+            `;
+        }
+
+        return `
+            <div class="recommendation recommendation-status">
+                Additional recommendations are still being prepared.
+            </div>
+        `;
+    }
+
     function sanitizeAreaNotesMap(notes) {
         if (!notes || typeof notes !== "object") return {};
         return Object.fromEntries(
@@ -615,22 +641,7 @@
 
         resultsEl.classList.remove("hidden");
 
-        let recommendationsHTML = "";
-        if (Array.isArray(out.recommendations)) {
-            recommendationsHTML = out.recommendations
-                .map(rec => `
-                    <div class="recommendation">
-                        ${sanitizeLLMHtml(rec)}
-                    </div>
-                `)
-                .join("");
-        } else {
-            recommendationsHTML = `
-                <div class="recommendation">
-                    ${sanitizeLLMHtml(out.recommendations)}
-                </div>
-            `;
-        }
+        const recommendationsHTML = renderRecommendationsHTML(out.recommendations);
 
         const priorityItems = Array.isArray(out.priority_recommendations)
             ? out.priority_recommendations.slice(0, 3)

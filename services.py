@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 import json
 import random
+from urllib import request, error
 from typing import Any, List, Dict
 import google.generativeai as genai
 from config import config
@@ -34,12 +35,21 @@ class AssessmentService:
             for q in questions
         }
 
-        # Initialize Gemini model
+        # Initialize Gemini models
         api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
             raise ValueError("GEMINI_API_KEY environment variable not set.")
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel("models/gemini-2.5-pro")
+        self.priority_model = genai.GenerativeModel("models/gemini-2.5-flash")
+        self.recommendation_model = genai.GenerativeModel("models/gemini-2.5-flash")
+        self.priority_provider = os.getenv("PRIORITY_PROVIDER", "gemini").lower()
+        self.recommendation_provider = os.getenv("RECOMMENDATION_PROVIDER", "gemini").lower()
+        self.openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+        self.openrouter_model = os.getenv("OPENROUTER_MODEL", "openai/gpt-5.4-mini")
+        self.openrouter_priority_model = os.getenv("OPENROUTER_PRIORITY_MODEL", self.openrouter_model)
+        self.openrouter_recommendation_model = os.getenv("OPENROUTER_RECOMMENDATION_MODEL", self.openrouter_model)
+        self.openrouter_referer = os.getenv("OPENROUTER_HTTP_REFERER", "http://localhost:8000")
+        self.openrouter_title = os.getenv("OPENROUTER_APP_TITLE", "SBDC Assessment")
 
     def _is_scorable_question(self, question: Dict[str, Any]) -> bool:
         return not question.get("exclude_from_scoring", False)
@@ -67,6 +77,104 @@ class AssessmentService:
             raise FileNotFoundError(f"Configuration file not found: {path}")
         with open(path, "r") as f:
             return json.load(f)
+
+    def _response_text_and_finish_reason(self, response: Any) -> tuple[str, str]:
+        finish_reason = "unknown"
+        try:
+            candidates = getattr(response, "candidates", None) or []
+            if candidates:
+                finish_reason = str(getattr(candidates[0], "finish_reason", "unknown"))
+        except Exception:
+            finish_reason = "unavailable"
+
+        try:
+            return response.text or "", finish_reason
+        except ValueError:
+            return "", finish_reason
+
+    def _generate_openrouter_text(
+        self,
+        prompt: str,
+        *,
+        model: str,
+        temperature: float,
+        max_tokens: int,
+        response_format: Dict[str, Any] | None = None,
+    ) -> tuple[str, str]:
+        if not self.openrouter_api_key:
+            raise ValueError("OPENROUTER_API_KEY environment variable not set.")
+
+        payload = {
+            "model": model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+        }
+        if response_format:
+            payload["response_format"] = response_format
+
+        body = json.dumps(payload).encode("utf-8")
+        req = request.Request(
+            "https://openrouter.ai/api/v1/chat/completions",
+            data=body,
+            headers={
+                "Authorization": f"Bearer {self.openrouter_api_key}",
+                "Content-Type": "application/json",
+                "HTTP-Referer": self.openrouter_referer,
+                "X-OpenRouter-Title": self.openrouter_title,
+            },
+            method="POST",
+        )
+
+        try:
+            with request.urlopen(req, timeout=120) as res:
+                data = json.loads(res.read().decode("utf-8"))
+        except error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")
+            raise RuntimeError(f"OpenRouter request failed with HTTP {exc.code}: {detail}") from exc
+
+        choice = (data.get("choices") or [{}])[0]
+        message = choice.get("message") or {}
+        return message.get("content") or "", choice.get("finish_reason", "unknown")
+
+    def _priority_response_format(self) -> Dict[str, Any]:
+        card_schema = {
+            "type": "object",
+            "properties": {
+                "type": {"type": "string", "enum": ["key_area", "quick_win"]},
+                "label": {"type": "string", "enum": ["Key Area to Consider", "Quick Win"]},
+                "title": {"type": "string"},
+                "summary": {"type": "string"},
+                "first_step": {"type": "string"},
+            },
+            "required": ["type", "label", "title", "summary", "first_step"],
+            "additionalProperties": False,
+        }
+        return {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "priority_recommendations",
+                "strict": True,
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "cards": {
+                            "type": "array",
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "items": card_schema,
+                        }
+                    },
+                    "required": ["cards"],
+                    "additionalProperties": False,
+                },
+            },
+        }
 
     # SCORE CALCULATION
     def calculate_scores(self, response: AssessmentResponse) -> AssessmentReport:
@@ -207,24 +315,41 @@ class AssessmentService:
             json.dumps(candidate_payload, indent=2),
             "",
             "Return only valid JSON in this exact shape:",
-            "[",
-            "  {\"type\":\"key_area\",\"label\":\"Key Area to Consider\",\"title\":\"...\",\"summary\":\"...\",\"first_step\":\"...\"},",
-            "  {\"type\":\"key_area\",\"label\":\"Key Area to Consider\",\"title\":\"...\",\"summary\":\"...\",\"first_step\":\"...\"},",
-            "  {\"type\":\"quick_win\",\"label\":\"Quick Win\",\"title\":\"...\",\"summary\":\"...\",\"first_step\":\"...\"}",
-            "]",
+            "{",
+            "  \"cards\": [",
+            "    {\"type\":\"key_area\",\"label\":\"Key Area to Consider\",\"title\":\"...\",\"summary\":\"...\",\"first_step\":\"...\"},",
+            "    {\"type\":\"key_area\",\"label\":\"Key Area to Consider\",\"title\":\"...\",\"summary\":\"...\",\"first_step\":\"...\"},",
+            "    {\"type\":\"quick_win\",\"label\":\"Quick Win\",\"title\":\"...\",\"summary\":\"...\",\"first_step\":\"...\"}",
+            "  ]",
+            "}",
         ])
 
         try:
-            response = self.model.generate_content(
+            if self.priority_provider == "openrouter":
+                response_text, finish_reason = self._generate_openrouter_text(
+                    prompt,
+                    model=self.openrouter_priority_model,
+                    temperature=0.35,
+                    max_tokens=1500,
+                    response_format=self._priority_response_format(),
+                )
+                parsed = self._parse_priority_response(response_text)
+                if parsed:
+                    return parsed
+                return self._fallback_priority_recommendations(candidates, catalyst)
+
+            response = self.priority_model.generate_content(
                 prompt,
                 generation_config={
                     "temperature": 0.35,
                     "top_p": 0.9,
                     "top_k": 40,
-                    "max_output_tokens": 1500,
+                    "max_output_tokens": 1000,
+                    "response_mime_type": "application/json",
                 },
             )
-            parsed = self._parse_priority_response(response.text)
+            response_text, finish_reason = self._response_text_and_finish_reason(response)
+            parsed = self._parse_priority_response(response_text)
             if parsed:
                 return parsed
         except Exception:
@@ -236,7 +361,12 @@ class AssessmentService:
         cleaned = text.strip()
         cleaned = cleaned.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
 
-        if not cleaned.startswith("["):
+        if not cleaned:
+            return None
+
+        if cleaned.startswith("{"):
+            data = json.loads(cleaned).get("cards")
+        elif not cleaned.startswith("["):
             match = json.JSONDecoder().raw_decode(cleaned[cleaned.find("["):]) if "[" in cleaned else None
             data = match[0] if match else None
         else:
@@ -594,13 +724,22 @@ class AssessmentService:
                 "top_k": 40,
                 "max_output_tokens": 8000,
             }
-            
-            response = self.model.generate_content(
+
+            if self.recommendation_provider == "openrouter":
+                response_text, finish_reason = self._generate_openrouter_text(
+                    prompt,
+                    model=self.openrouter_recommendation_model,
+                    temperature=generation_config["temperature"],
+                    max_tokens=generation_config["max_output_tokens"],
+                )
+                return response_text
+
+            response = self.recommendation_model.generate_content(
                 prompt,
                 generation_config=generation_config
             )
-            
-            return response.text
+            response_text, finish_reason = self._response_text_and_finish_reason(response)
+            return response_text
         except Exception as e:
             return f"Error generating recommendations: {e}"
 

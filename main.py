@@ -41,16 +41,17 @@ async def get_tone_options() -> Dict[str, Any]:
 @app.post("/assess")
 async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
     try:
-        result: AssessmentReport = service.calculate_scores(response)
+        service_instance = service
+        result: AssessmentReport = service_instance.calculate_scores(response)
 
-        priority_recommendations = service.generate_priority_recommendations(
+        priority_recommendations = service_instance.generate_priority_recommendations(
             result,
             response.catalyst,
             response.answers,
             response.area_notes
         )
 
-        recommendations = service.generate_recommendations(
+        recommendations = service_instance.generate_recommendations(
             result,
             response.catalyst,
             response.answers,
@@ -72,7 +73,7 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
             },
             "priority_recommendations": priority_recommendations,
             "recommendations": recommendations,
-            "tier_distribution": service.get_tier_distribution(result)
+            "tier_distribution": service_instance.get_tier_distribution(result)
         }
         return response_data
 
@@ -163,6 +164,57 @@ async def export_pdf(payload: Dict[str, Any]):
             if y < 60:
                 pdf.showPage()
                 y = height - 60
+
+        def write_wrapped_text(text: str, size=10, indent=0, force_bold=False):
+            """Write wrapped text at a fixed size without markdown heading scaling."""
+            nonlocal y
+
+            segments, _ = parse_markdown_line(text)
+            current_x = x + indent
+
+            for segment in segments:
+                content = segment["text"]
+                font = "Helvetica-Bold" if segment["bold"] or force_bold else "Helvetica"
+                pdf.setFont(font, size)
+
+                for word in content.split():
+                    word_width = pdf.stringWidth(word + " ", font, size)
+                    if current_x + word_width > width - 50:
+                        y -= size + 4
+                        current_x = x + indent
+
+                        if y < 60:
+                            pdf.showPage()
+                            y = height - 60
+                            current_x = x + indent
+
+                        pdf.setFont(font, size)
+
+                    pdf.drawString(current_x, y, word)
+                    current_x += word_width
+
+            y -= size + 4
+            if y < 60:
+                pdf.showPage()
+                y = height - 60
+
+        def write_recommendations_section(markdown_text: str):
+            for raw_line in markdown_text.split("\n"):
+                line = raw_line.strip()
+                if not line:
+                    add_spacing(6)
+                    continue
+
+                if line.startswith("###"):
+                    add_spacing(4)
+                    heading = line[3:].strip()
+                    write_wrapped_text(heading, size=12, force_bold=True)
+                    add_spacing(4)
+                    continue
+
+                indent = 12 if re.match(r"^\d+[\.)]\s+", line) else 0
+                write_wrapped_text(line, size=10, indent=indent)
+                add_spacing(3)
         
         def add_spacing(pixels=10):
             nonlocal y
@@ -251,13 +303,7 @@ async def export_pdf(payload: Dict[str, Any]):
 
         recs_text = payload.get("recommendations", "")
         if isinstance(recs_text, str) and recs_text:
-            lines = recs_text.split("\n")
-            for line in lines:
-                line = line.strip()
-                if not line:
-                    add_spacing(8)
-                    continue
-                write_formatted_line(line, base_size=11, indent=0)
+            write_recommendations_section(recs_text)
 
         # ── DISCLAIMER ───────────────────────────────────────────────────────
         add_spacing(20)
