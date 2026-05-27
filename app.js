@@ -6,6 +6,7 @@
     let currentIndex = 0;
     let answers = {};
     let areaNotes = {};
+    let skippedSections = {};
     let prefilled = null;
     let lastAssessmentResult = null; 
     const lastVisitedIndexBySection = {};
@@ -115,7 +116,7 @@
 
     function saveLocal() {
         areaNotes = sanitizeAreaNotesMap(areaNotes);
-        localStorage.setItem(storageKey, JSON.stringify({ answers, areaNotes }));
+        localStorage.setItem(storageKey, JSON.stringify({ answers, areaNotes, skippedSections }));
     }
 
     function loadLocal() {
@@ -124,12 +125,13 @@
             if (parsed && typeof parsed === "object" && ("answers" in parsed || "areaNotes" in parsed)) {
                 return {
                     answers: parsed.answers || {},
-                    areaNotes: sanitizeAreaNotesMap(parsed.areaNotes || {})
+                    areaNotes: sanitizeAreaNotesMap(parsed.areaNotes || {}),
+                    skippedSections: parsed.skippedSections || {}
                 };
             }
-            return { answers: parsed || {}, areaNotes: {} };
+            return { answers: parsed || {}, areaNotes: {}, skippedSections: {} };
         } catch {
-            return { answers: {}, areaNotes: {} };
+            return { answers: {}, areaNotes: {}, skippedSections: {} };
         }
     }
 
@@ -155,6 +157,8 @@
     }
 
     function shouldSkipSection(sectionName) {
+        if (skippedSections[sectionName]) return true;
+
         const section = conditionalSections[sectionName];
         if (!section) return false;
 
@@ -162,20 +166,50 @@
         return section.skipAnswers.includes(gateAnswer);
     }
 
-    function skipSectionQuestions(sectionName) {
-        const sectionQuestions = data.flat.filter(q => {
-            // Find questions that belong to this section
-            for (const sec of data.sections) {
-                if (sec.name === sectionName) {
-                    return sec.items.includes(q) || (sec.noteItem && sec.noteItem === q);
-                }
-            }
-            return false;
-        });
+    function isSkippableSection(sectionName) {
+        return sectionName && sectionName !== "Assessment Focus";
+    }
 
-        // Mark all questions in this section as "N/A" except the gate question
+    function getSectionScorableItems(sec) {
+        return sec.items.filter((q) => q.id !== "CATALYST-001" && q.kind !== "area_note");
+    }
+
+    function isQuestionInSection(q, sectionName) {
+        const sec = data.sections.find((section) => section.name === sectionName);
+        return Boolean(sec && (sec.items.includes(q) || sec.noteItem === q));
+    }
+
+    function isAnswerInSkippedSection(questionId) {
+        const q = indexById.has(questionId) ? data.flat[indexById.get(questionId)] : null;
+        if (!q) return false;
+
+        const section = getSectionForQuestion(q);
+        return Boolean(section && shouldSkipSection(section.name));
+    }
+
+    function getSkippedSectionNames() {
+        return data.sections
+            .filter((section) => isSkippableSection(section.name) && shouldSkipSection(section.name))
+            .map((section) => section.name);
+    }
+
+    function filterSkippedAreaNotes(notes) {
+        const skippedNames = new Set(getSkippedSectionNames());
+        return Object.fromEntries(
+            Object.entries(notes).filter(([area]) => !skippedNames.has(area))
+        );
+    }
+
+    function skipSectionQuestions(sectionName) {
+        if (!isSkippableSection(sectionName)) return;
+        skippedSections[sectionName] = true;
+        delete areaNotes[sectionName];
+
+        const sectionQuestions = data.flat.filter(q => isQuestionInSection(q, sectionName));
+
+        // Mark all questions in this section as skipped so prior answers are not scored.
         sectionQuestions.forEach(q => {
-            if (q.id !== conditionalSections[sectionName].gateQuestion && q.kind !== "area_note") {
+            if (q.id !== conditionalSections[sectionName]?.gateQuestion && q.kind !== "area_note") {
                 answers[q.id] = "N/A";
             }
         });
@@ -183,6 +217,80 @@
         saveLocal();
         computeProgress();
         renderSections();
+    }
+
+    function getSectionEndIndex(sec) {
+        const indexes = [];
+        sec.items.forEach((q) => {
+            if (indexById.has(q.id)) indexes.push(indexById.get(q.id));
+        });
+        if (sec.noteItem && indexById.has(sec.noteItem.id)) {
+            indexes.push(indexById.get(sec.noteItem.id));
+        }
+        return indexes.length ? Math.max(...indexes) : currentIndex;
+    }
+
+    function clearSectionSkip(sectionName) {
+        delete skippedSections[sectionName];
+        const sectionQuestions = data.flat.filter(q => {
+            for (const sec of data.sections) {
+                if (sec.name === sectionName) {
+                    return sec.items.includes(q);
+                }
+            }
+            return false;
+        });
+
+        // Remove skipped placeholders when a user reopens a section.
+        sectionQuestions.forEach(q => {
+            if (q.id !== conditionalSections[sectionName]?.gateQuestion && answers[q.id] === "N/A") {
+                delete answers[q.id];
+            }
+        });
+
+        saveLocal();
+    }
+
+    function reopenSection(sectionName) {
+        const sec = data.sections.find((section) => section.name === sectionName);
+        if (!sec) return;
+        clearSectionSkip(sectionName);
+        currentIndex = getSectionStartIndex(sec);
+        updateUI();
+    }
+
+    function renderSkippedSection(sectionName) {
+        const sec = data.sections.find((section) => section.name === sectionName);
+        if (!sec) return;
+
+        questionArea.classList.remove("hidden");
+        document.getElementById("results").classList.add("hidden");
+        questionArea.innerHTML = `
+            <article class="question-card skipped-section-card">
+                <div class="section-kicker">${escapeHTML(cleanAreaName(sectionName))}</div>
+                <div class="question-text">This section has been skipped.</div>
+                <div class="section-actions">
+                    <button id="reopenSectionBtn" class="btn primary" type="button">Answer this section</button>
+                    <button id="nextSectionBtn" class="btn" type="button">Go to next section</button>
+                </div>
+            </article>
+        `;
+
+        document.getElementById("reopenSectionBtn").addEventListener("click", () => reopenSection(sectionName));
+        document.getElementById("nextSectionBtn").addEventListener("click", () => {
+            currentIndex = getNextSectionIndex(sectionName);
+            updateUI();
+        });
+    }
+
+    function getNextSectionIndex(sectionName) {
+        const sec = data.sections.find((section) => section.name === sectionName);
+        if (!sec) return currentIndex;
+        const nextIndex = getSectionEndIndex(sec) + 1;
+        if (nextIndex >= data.flat.length) {
+            return findNavigableIndex(getSectionStartIndex(sec) - 1, -1);
+        }
+        return findNavigableIndex(nextIndex, 1);
     }
 
     function renderConditionalQuestion(q) {
@@ -258,27 +366,16 @@
         });
     }
 
-    function clearSectionSkip(sectionName) {
-        const sectionQuestions = data.flat.filter(q => {
-            for (const sec of data.sections) {
-                if (sec.name === sectionName) {
-                    return sec.items.includes(q);
-                }
-            }
-            return false;
-        });
-
-        // Remove "N/A" answers from this section (except the gate question)
-        sectionQuestions.forEach(q => {
-            if (q.id !== conditionalSections[sectionName].gateQuestion && answers[q.id] === "N/A") {
-                delete answers[q.id];
-            }
-        });
-    }
-
     function computeProgress() {
-        const total = data.flat.filter((q) => q.id !== "CATALYST-001" && q.kind !== "area_note").length;
-        const done = Object.keys(answers).filter(id => id !== "CATALYST-001").length;
+        const total = data.flat.filter((q) =>
+            q.id !== "CATALYST-001" &&
+            q.kind !== "area_note" &&
+            !isQuestionHiddenBySkip(q)
+        ).length;
+        const done = Object.entries(answers).filter(([id, value]) => {
+            const q = indexById.has(id) ? data.flat[indexById.get(id)] : null;
+            return id !== "CATALYST-001" && value !== "N/A" && q && !isQuestionHiddenBySkip(q);
+        }).length;
         const pct = total ? Math.round((done / total) * 100) : 0;
 
         // Debug logging
@@ -356,14 +453,16 @@
     function renderSections() {
         sectionList.innerHTML = "";
         data.sections.forEach((sec) => {
-            const doneInSec = sec.items.filter((q) => answers[q.id] !== undefined).length;
+            const scorableItems = getSectionScorableItems(sec);
+            const doneInSec = scorableItems.filter((q) => answers[q.id] !== undefined && answers[q.id] !== "N/A").length;
             const pill = document.createElement("button");
 
             // Check if this section is skipped
             const isSkipped = shouldSkipSection(sec.name);
             const skippedClass = isSkipped ? " skipped" : "";
+            const isActive = sec.containsIndex(currentIndex);
 
-            pill.className = "section-pill" + (sec.containsIndex(currentIndex) ? " active" : "") + skippedClass;
+            pill.className = "section-pill" + (isActive ? " active" : "") + skippedClass;
             pill.type = "button";
 
             // Exclude catalyst section from showing counts
@@ -371,16 +470,24 @@
             if (sec.name !== "Assessment Focus") {
                 if (isSkipped) {
                     displayCount = `<span class="count skipped-count">Skipped</span>`;
+                } else if (doneInSec === 0) {
+                    displayCount = `<span class="count">Not started</span>`;
+                } else if (doneInSec >= scorableItems.length) {
+                    displayCount = `<span class="count">Complete</span>`;
                 } else {
-                    displayCount = `<span class="count">${doneInSec}/${sec.items.length}</span>`;
+                    displayCount = `<span class="count">${doneInSec}/${scorableItems.length}</span>`;
                 }
             }
 
             const cleanName = escapeHTML(cleanAreaName(sec.name));
             pill.innerHTML = `<span>${cleanName}</span>${displayCount}`;
             pill.addEventListener("click", () => {
-                currentIndex = getSectionStartIndex(sec);
-                updateUI();
+                if (isSkipped) {
+                    renderSkippedSection(sec.name);
+                } else {
+                    currentIndex = getSectionStartIndex(sec);
+                    updateUI();
+                }
             });
             sectionList.appendChild(pill);
         });
@@ -397,13 +504,17 @@
 
             // Prepare answers in the format needed for the PDF
             const formattedAnswers = Object.entries(answers)
-                .filter(([question_id, value]) => question_id !== "CATALYST-001" && value !== "N/A")
+                .filter(([question_id, value]) =>
+                    question_id !== "CATALYST-001" &&
+                    value !== "N/A" &&
+                    !isAnswerInSkippedSection(question_id)
+                )
                 .map(([question_id, value]) => ({
                     question_id: question_id,
                     score: parseInt(value, 10)
                 }));
             const formattedAreaNotes = Object.fromEntries(
-                Object.entries(areaNotes)
+                Object.entries(filterSkippedAreaNotes(areaNotes))
                     .map(([area, note]) => [area, note.trim()])
                     .filter(([, note]) => note)
             );
@@ -449,6 +560,33 @@
         }
     }
 
+    function renderSectionControls(q) {
+        const sec = getSectionForQuestion(q);
+        if (!sec || !isSkippableSection(sec.name) || shouldSkipSection(sec.name)) {
+            return "";
+        }
+
+        return `
+            <div class="section-control-bar">
+                <p>If this area does not apply to your business right now, you can skip it. You can also leave any question unanswered and move on. Skipped sections will not be included in your final recommendations.</p>
+                <button class="btn ghost skip-section-btn" type="button" data-section="${escapeHTML(sec.name)}">Skip section</button>
+            </div>
+        `;
+    }
+
+    function bindSectionControls() {
+        const skipButton = questionArea.querySelector(".skip-section-btn");
+        if (!skipButton) return;
+
+        skipButton.addEventListener("click", () => {
+            const sectionName = skipButton.getAttribute("data-section");
+            if (!sectionName) return;
+
+            skipSectionQuestions(sectionName);
+            renderSkippedSection(sectionName);
+        });
+    }
+
     function renderQuestion() {
         const q = data.flat[currentIndex];
         if (!q) {
@@ -466,11 +604,11 @@
                 saveLocal();
             }
 
-            // Skip to next question
-            if (currentIndex < data.flat.length - 1) {
-                currentIndex = findNavigableIndex(currentIndex + 1, 1);
-                updateUI();
+            const skippedSection = getSectionForQuestion(q);
+            if (skippedSection) {
+                renderSkippedSection(skippedSection.name);
             } else {
+                currentIndex = findNavigableIndex(currentIndex + 1, 1);
                 updateUI();
             }
             return;
@@ -480,6 +618,7 @@
             const existingNote = areaNotes[q.areaName] || "";
             questionArea.innerHTML = `
                 <article class="question-card question-card--note" data-qid="${q.id}">
+                    ${renderSectionControls(q)}
                     <div class="question-text">${escapeHTML(cleanAreaName(q.areaName))}</div>
                     <p class="note-intro">${escapeHTML(q.helperText)}</p>
                     <label class="note-label" for="${q.id}">${escapeHTML(q.question)}</label>
@@ -487,6 +626,7 @@
                     <p class="privacy-disclaimer" style="font-size: 12px; color: #666; margin-top: 8px; font-style: italic;">We do not collect or store personal data. Please avoid entering personal details such as names, addresses, phone numbers, or other sensitive information.</p>
                 </article>
             `;
+            bindSectionControls();
 
             const textarea = questionArea.querySelector(".area-note-input");
             textarea.value = existingNote;
@@ -530,12 +670,14 @@
 
         questionArea.innerHTML = `
             <article class="question-card" data-qid="${q.id}">
+                ${renderSectionControls(q)}
                 <div class="question-text">${escapeHTML(q.question)}</div>
                 <div class="tile-grid" role="group" aria-label="Answer choices for ${q.id}">
                     ${tiles}
                 </div>
             </article>
         `;
+        bindSectionControls();
 
         questionArea.querySelectorAll(".tile").forEach((btn) => {
             btn.addEventListener("click", () => {
@@ -593,6 +735,7 @@
     function restartAssessment() {
         answers = {};
         areaNotes = {};
+        skippedSections = {};
         Object.keys(lastVisitedIndexBySection).forEach((sectionName) => {
             delete lastVisitedIndexBySection[sectionName];
         });
@@ -642,6 +785,12 @@
         resultsEl.classList.remove("hidden");
 
         const recommendationsHTML = renderRecommendationsHTML(out.recommendations);
+        const skippedNames = Object.keys(skippedSections)
+            .filter((name) => skippedSections[name])
+            .map(cleanAreaName);
+        const skippedNotice = skippedNames.length
+            ? `<p class="recommendations-intro">Some sections were skipped and were not included in your recommendations: ${escapeHTML(skippedNames.join(", "))}.</p>`
+            : "";
 
         const priorityItems = Array.isArray(out.priority_recommendations)
             ? out.priority_recommendations.slice(0, 3)
@@ -700,6 +849,10 @@
             <p class="recommendations-intro">
                 If these suggestions aren't a fit, or they are not something you can work on right now, click "See Additional Recommendations" for more ideas to consider.
             </p>
+            <p class="recommendations-intro">
+                Your recommendations are based only on the sections you completed.
+            </p>
+            ${skippedNotice}
             <div class="priority-grid">
                 ${priorityHTML}
             </div>
@@ -782,18 +935,24 @@
 
         try {
             const filteredAnswers = Object.entries(answers)
-                .filter(([question_id, value]) => value !== "N/A" && question_id !== "CATALYST-001")
+                .filter(([question_id, value]) =>
+                    value !== "N/A" &&
+                    question_id !== "CATALYST-001" &&
+                    !isAnswerInSkippedSection(question_id)
+                )
                 .map(([question_id, value]) => ({
                     question_id,
                     score: parseInt(value, 10),
                     notes: null
                 }));
-            const filteredAreaNotes = sanitizeAreaNotesMap(areaNotes);
+            const filteredAreaNotes = filterSkippedAreaNotes(sanitizeAreaNotesMap(areaNotes));
+            const skippedSectionNames = getSkippedSectionNames();
 
             const payload = {
                 catalyst: answers["CATALYST-001"] || "Steady Growth",
                 answers: filteredAnswers,
-                area_notes: filteredAreaNotes
+                area_notes: filteredAreaNotes,
+                skipped_sections: skippedSectionNames
             };
 
             const res = await fetch(cfg.submitUrl, {
@@ -895,6 +1054,7 @@
             const savedState = loadLocal();
             answers = savedState.answers;
             areaNotes = sanitizeAreaNotesMap(savedState.areaNotes);
+            skippedSections = savedState.skippedSections || {};
 
             // Set default catalyst answer if not already set
             if (!answers["CATALYST-001"]) {
