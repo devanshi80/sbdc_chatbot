@@ -35,6 +35,7 @@ class AssessmentResponse(BaseModel):
     ]
     answers: List[Answer]
     area_notes: Dict[str, str] = {}
+    skipped_sections: List[str] = []
 
 
 # Per-category computed score

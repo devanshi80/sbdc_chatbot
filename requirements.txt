@@ -5,3 +5,4 @@ python-dotenv==1.0.1
 reportlab==4.2.5
 google-generativeai==0.8.3
 aiofiles==24.1.0
+requests==2.32.3

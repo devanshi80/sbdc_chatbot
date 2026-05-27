@@ -2,8 +2,8 @@ from dotenv import load_dotenv
 import os
 import json
 import random
-from urllib import request, error
 from typing import Any, List, Dict
+import requests
 import google.generativeai as genai
 from config import config
 from priority import calculate_priority_candidates
@@ -101,7 +101,7 @@ class AssessmentService:
         max_tokens: int,
         response_format: Dict[str, Any] | None = None,
     ) -> tuple[str, str]:
-        if not self.openrouter_api_key:
+        if not self.openrouter_api_key or not self.openrouter_api_key.strip():
             raise ValueError("OPENROUTER_API_KEY environment variable not set.")
 
         payload = {
@@ -118,25 +118,25 @@ class AssessmentService:
         if response_format:
             payload["response_format"] = response_format
 
-        body = json.dumps(payload).encode("utf-8")
-        req = request.Request(
+        try:
+            response = requests.post(
             "https://openrouter.ai/api/v1/chat/completions",
-            data=body,
+                json=payload,
             headers={
-                "Authorization": f"Bearer {self.openrouter_api_key}",
+                    "Authorization": f"Bearer {self.openrouter_api_key.strip()}",
                 "Content-Type": "application/json",
                 "HTTP-Referer": self.openrouter_referer,
                 "X-OpenRouter-Title": self.openrouter_title,
             },
-            method="POST",
-        )
-
-        try:
-            with request.urlopen(req, timeout=120) as res:
-                data = json.loads(res.read().decode("utf-8"))
-        except error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")
-            raise RuntimeError(f"OpenRouter request failed with HTTP {exc.code}: {detail}") from exc
+                timeout=120,
+            )
+            response.raise_for_status()
+            data = response.json()
+        except requests.HTTPError as exc:
+            detail = response.text if "response" in locals() else str(exc)
+            raise RuntimeError(f"OpenRouter request failed with HTTP {response.status_code}: {detail}") from exc
+        except requests.RequestException as exc:
+            raise RuntimeError(f"OpenRouter request failed: {exc}") from exc
 
         choice = (data.get("choices") or [{}])[0]
         message = choice.get("message") or {}
@@ -518,10 +518,12 @@ class AssessmentService:
         result: AssessmentReport,
         catalyst: str,
         answers: list | None = None,
-        area_notes: Dict[str, str] | None = None
+        area_notes: Dict[str, str] | None = None,
+        skipped_sections: list[str] | None = None
     ) -> str:
         answers = answers or []
         area_notes = area_notes or {}
+        skipped_sections = set(skipped_sections or [])
 
         # Normalize catalyst name to match JSON keys
         catalyst_key = catalyst.replace(" ", "_")
@@ -602,18 +604,25 @@ class AssessmentService:
             ""
         ])
 
-        # Sort areas by priority (lowest scores first), exclude Employees if all N/A
+        # Sort areas by priority and omit areas the user did not complete.
         sorted_areas = sorted(
             [
                 c for c in result.category_scores.values()
-                if not (
-                    c.normalized_score is None
-                    and c.name == "Employees"
-                    and not area_notes.get("Employees", "").strip()
+                if c.name not in skipped_sections
+                and (
+                    c.normalized_score is not None
+                    or area_notes.get(c.name, "").strip()
                 )
             ],
             key=lambda c: c.normalized_score if c.normalized_score is not None else -1
         )
+
+        if not sorted_areas:
+            return (
+                "### Recommendations\n\n"
+                "Your recommendations are based on the sections you complete. "
+                "Complete at least one section to receive tailored next steps."
+            )
 
         for cat in sorted_areas:
             tier = cat.tier if cat.tier is not None else result.overall_tier

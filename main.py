@@ -55,7 +55,8 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
             result,
             response.catalyst,
             response.answers,
-            response.area_notes
+            response.area_notes,
+            response.skipped_sections
         )
         
         response_data = {
@@ -73,7 +74,8 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
             },
             "priority_recommendations": priority_recommendations,
             "recommendations": recommendations,
-            "tier_distribution": service_instance.get_tier_distribution(result)
+            "tier_distribution": service_instance.get_tier_distribution(result),
+            "skipped_sections": response.skipped_sections
         }
         return response_data
 

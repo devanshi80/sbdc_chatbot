@@ -199,7 +199,7 @@ class AssessResponseShapeTests(unittest.TestCase):
                     {"type": "quick_win", "label": "Quick Win", "title": "G", "summary": "H", "first_step": "I"},
                 ]
 
-            def generate_recommendations(self, result, catalyst, answers, area_notes):
+            def generate_recommendations(self, result, catalyst, answers, area_notes, skipped_sections=None):
                 return "Full report"
 
             def get_tier_distribution(self, result):

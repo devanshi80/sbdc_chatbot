@@ -120,6 +120,45 @@ h1, h2, h3, h4,
     font-weight: 600;
     margin-bottom: 10px;
 }
+
+.section-control-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+}
+
+.section-control-bar p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.section-control-bar .btn {
+    white-space: nowrap;
+}
+
+.section-kicker {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    margin-bottom: 8px;
+}
+
+.section-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 .area-note-input {
     width: 100%;
     min-height: 180px;
@@ -243,6 +282,10 @@ h1, h2, h3, h4,
     #app { grid-template-columns: 1fr; }
     .sidebar { position: relative; height: auto; }
     .progress-wrap { width: 180px; }
+    .section-control-bar {
+        align-items: stretch;
+        flex-direction: column;
+    }
     .modal-actions {
         flex-direction: column-reverse;
     }
