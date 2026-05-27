@@ -50,14 +50,6 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
             response.answers,
             response.area_notes
         )
-
-        recommendations = service_instance.generate_recommendations(
-            result,
-            response.catalyst,
-            response.answers,
-            response.area_notes,
-            response.skipped_sections
-        )
         
         response_data = {
             "overall_score": result.overall_score,
@@ -73,11 +65,29 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
                 for name, cs in result.category_scores.items()
             },
             "priority_recommendations": priority_recommendations,
-            "recommendations": recommendations,
             "tier_distribution": service_instance.get_tier_distribution(result),
             "skipped_sections": response.skipped_sections
         }
         return response_data
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/recommendations")
+async def generate_full_recommendations(response: AssessmentResponse) -> Dict[str, Any]:
+    try:
+        service_instance = service
+        result: AssessmentReport = service_instance.calculate_scores(response)
+
+        recommendations = service_instance.generate_recommendations(
+            result,
+            response.catalyst,
+            response.answers,
+            response.area_notes,
+            response.skipped_sections
+        )
+
+        return {"recommendations": recommendations}
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

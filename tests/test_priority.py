@@ -150,7 +150,7 @@ class PriorityConfigCoverageTests(unittest.TestCase):
 
 
 class AssessResponseShapeTests(unittest.TestCase):
-    def test_assess_returns_priority_and_full_recommendations(self):
+    def test_assess_returns_priority_recommendations_without_full_report(self):
         os.environ.setdefault("GEMINI_API_KEY", "test-key")
         if "reportlab" not in sys.modules:
             reportlab = ModuleType("reportlab")
@@ -220,9 +220,38 @@ class AssessResponseShapeTests(unittest.TestCase):
         self.assertEqual(len(payload["priority_recommendations"]), 3)
         self.assertEqual(payload["priority_recommendations"][2]["type"], "quick_win")
         self.assertIn("summary", payload["priority_recommendations"][0])
-        self.assertEqual(payload["recommendations"], "Full report")
+        self.assertNotIn("recommendations", payload)
         self.assertNotIn("recommendations_status", payload)
         self.assertNotIn("report_id", payload)
+
+    def test_recommendations_endpoint_returns_full_report(self):
+        main = importlib.import_module("main")
+
+        class FakeService:
+            def calculate_scores(self, response):
+                return SimpleNamespace(
+                    overall_score=0.5,
+                    overall_tier="Building",
+                    priority_categories=["Financials"],
+                    category_scores={},
+                )
+
+            def generate_recommendations(self, result, catalyst, answers, area_notes, skipped_sections=None):
+                return "Full report"
+
+        original_service = main.service
+        main.service = FakeService()
+        try:
+            response = AssessmentResponse(
+                catalyst="Crisis",
+                answers=[Answer(question_id="FIN-001", score=1)],
+                area_notes={},
+            )
+            payload = asyncio.run(main.generate_full_recommendations(response))
+        finally:
+            main.service = original_service
+
+        self.assertEqual(payload["recommendations"], "Full report")
 
     def test_fallback_priority_copy_is_specific(self):
         os.environ.setdefault("GEMINI_API_KEY", "test-key")

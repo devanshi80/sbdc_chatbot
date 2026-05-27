@@ -9,6 +9,8 @@
     let skippedSections = {};
     let prefilled = null;
     let lastAssessmentResult = null; 
+    let lastAssessmentPayload = null;
+    let fullRecommendationsLoading = false;
     const lastVisitedIndexBySection = {};
     const assessmentFocusDefinitions = {
         "Economic Uncertainty": "The economy or market conditions are changing, and I’m unsure how it will impact my business.",
@@ -498,6 +500,10 @@
             alert("No assessment results available. Please complete and submit the assessment first.");
             return;
         }
+        if (fullRecommendationsLoading || !lastAssessmentResult.recommendations) {
+            alert("Additional recommendations are still being generated. Please try again in a moment.");
+            return;
+        }
 
         try {
             const catalyst = answers["CATALYST-001"] || "Steady Growth";
@@ -557,6 +563,77 @@
         } catch (err) {
             console.error("Failed to download PDF:", err);
             alert("Failed to download PDF. Please try again.");
+        }
+    }
+
+    function setFullRecommendationsLoading(isLoading) {
+        fullRecommendationsLoading = isLoading;
+
+        const downloadBtn = document.getElementById("downloadPdfBtn");
+        const showFullBtn = document.getElementById("showFullRecommendations");
+        const fullRecommendations = document.getElementById("fullRecommendations");
+
+        if (downloadBtn) {
+            downloadBtn.disabled = isLoading;
+            downloadBtn.textContent = isLoading ? "Generating PDF Content..." : "Download PDF Results";
+        }
+
+        if (showFullBtn) {
+            showFullBtn.disabled = isLoading;
+            showFullBtn.textContent = isLoading ? "Generating Additional Recommendations..." : "See Additional Recommendations";
+        }
+
+        if (fullRecommendations && isLoading) {
+            fullRecommendations.innerHTML = `
+                <h3>Additional Recommendations</h3>
+                <div class="recommendation recommendation-status">
+                    Additional recommendations are being generated.
+                </div>
+            `;
+        }
+    }
+
+    async function loadFullRecommendations() {
+        if (!lastAssessmentPayload) return;
+
+        setFullRecommendationsLoading(true);
+
+        try {
+            const response = await fetch("recommendations", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(lastAssessmentPayload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const out = await response.json().catch(() => ({}));
+            lastAssessmentResult.recommendations = out.recommendations || "";
+
+            const fullRecommendations = document.getElementById("fullRecommendations");
+            if (fullRecommendations) {
+                fullRecommendations.innerHTML = `
+                    <h3>Additional Recommendations</h3>
+                    ${renderRecommendationsHTML(lastAssessmentResult.recommendations)}
+                `;
+            }
+        } catch (err) {
+            console.error("Failed to load full recommendations:", err);
+            lastAssessmentResult.recommendations = "";
+
+            const fullRecommendations = document.getElementById("fullRecommendations");
+            if (fullRecommendations) {
+                fullRecommendations.innerHTML = `
+                    <h3>Additional Recommendations</h3>
+                    <div class="recommendation recommendation-status">
+                        Additional recommendations could not be generated. Please try submitting again.
+                    </div>
+                `;
+            }
+        } finally {
+            setFullRecommendationsLoading(false);
         }
     }
 
@@ -784,7 +861,6 @@
 
         resultsEl.classList.remove("hidden");
 
-        const recommendationsHTML = renderRecommendationsHTML(out.recommendations);
         const skippedNames = Object.keys(skippedSections)
             .filter((name) => skippedSections[name])
             .map(cleanAreaName);
@@ -826,7 +902,7 @@
              style="display: flex; justify-content: center; gap: 12px; margin: 16px 0;">
             
             <button id="downloadPdfBtn" type="button">
-                Download PDF Results
+                Generating PDF Content...
             </button>
     
             <button id="bookCall" type="button">
@@ -856,14 +932,16 @@
             <div class="priority-grid">
                 ${priorityHTML}
             </div>
-            <button id="showFullRecommendations" class="btn primary" type="button">
-                See Additional Recommendations
+            <button id="showFullRecommendations" class="btn primary" type="button" disabled>
+                Generating Additional Recommendations...
             </button>
         </section>
 
         <section id="fullRecommendations" class="result-block full-recommendations hidden">
             <h3>Additional Recommendations</h3>
-            ${recommendationsHTML}
+            <div class="recommendation recommendation-status">
+                Additional recommendations are being generated.
+            </div>
         </section>
     `;
 
@@ -880,6 +958,9 @@
         document.getElementById("viewResources").addEventListener("click", () => {
             window.open("https://sbdc.wisc.edu/resources/", "_blank");
         });
+
+        setFullRecommendationsLoading(true);
+        loadFullRecommendations();
     }
 
     function showLoadingScreen() {
@@ -954,6 +1035,7 @@
                 area_notes: filteredAreaNotes,
                 skipped_sections: skippedSectionNames
             };
+            lastAssessmentPayload = payload;
 
             const res = await fetch(cfg.submitUrl, {
                 method: "POST",

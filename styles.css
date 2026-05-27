@@ -414,6 +414,16 @@ h1, h2, h3, h4,
     box-shadow: 0 8px 18px rgba(40, 88, 116, 0.24);
 }
 
+.action-buttons button:disabled,
+.action-buttons button:disabled:hover {
+    background: #e5e7eb;
+    border-color: #cbd5e1;
+    box-shadow: none;
+    color: #64748b;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .action-buttons button:active {
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(40, 88, 116, 0.25);
@@ -429,6 +439,15 @@ h1, h2, h3, h4,
     background: var(--primary-700);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(12, 40, 72, 0.28);
+}
+
+.action-buttons button#downloadPdfBtn:disabled,
+.action-buttons button#downloadPdfBtn:disabled:hover {
+    background: #e5e7eb;
+    border-color: #cbd5e1;
+    box-shadow: none;
+    color: #64748b;
+    transform: none;
 }
 
 .action-buttons button#bookCall {
