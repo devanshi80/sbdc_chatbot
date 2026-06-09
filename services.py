@@ -4,7 +4,6 @@ import json
 import random
 from typing import Any, List, Dict
 import requests
-import google.generativeai as genai
 from config import config
 from priority import calculate_priority_candidates
 
@@ -12,7 +11,6 @@ from schema import AssessmentResponse, AssessmentReport, CategoryScore
 
 
 load_dotenv()
-api_key = os.getenv("GEMINI_API_KEY")
 
 
 class AssessmentService:
@@ -35,17 +33,12 @@ class AssessmentService:
             for q in questions
         }
 
-        # Initialize Gemini models
-        api_key = os.getenv("GEMINI_API_KEY")
+        # Initialize OpenRouter settings for OpenAI models
+        api_key = os.getenv("OPENROUTER_API_KEY")
         if not api_key:
-            raise ValueError("GEMINI_API_KEY environment variable not set.")
-        genai.configure(api_key=api_key)
-        self.priority_model = genai.GenerativeModel("models/gemini-2.5-flash")
-        self.recommendation_model = genai.GenerativeModel("models/gemini-2.5-flash")
-        self.priority_provider = os.getenv("PRIORITY_PROVIDER", "gemini").lower()
-        self.recommendation_provider = os.getenv("RECOMMENDATION_PROVIDER", "gemini").lower()
-        self.openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
-        self.openrouter_model = os.getenv("OPENROUTER_MODEL", "openai/gpt-5.4-mini")
+            raise ValueError("OPENROUTER_API_KEY environment variable not set.")
+        self.openrouter_api_key = api_key
+        self.openrouter_model = os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini")
         self.openrouter_priority_model = os.getenv("OPENROUTER_PRIORITY_MODEL", self.openrouter_model)
         self.openrouter_recommendation_model = os.getenv("OPENROUTER_RECOMMENDATION_MODEL", self.openrouter_model)
         self.openrouter_referer = os.getenv("OPENROUTER_HTTP_REFERER", "http://localhost:8000")
@@ -78,20 +71,6 @@ class AssessmentService:
         with open(path, "r") as f:
             return json.load(f)
 
-    def _response_text_and_finish_reason(self, response: Any) -> tuple[str, str]:
-        finish_reason = "unknown"
-        try:
-            candidates = getattr(response, "candidates", None) or []
-            if candidates:
-                finish_reason = str(getattr(candidates[0], "finish_reason", "unknown"))
-        except Exception:
-            finish_reason = "unavailable"
-
-        try:
-            return response.text or "", finish_reason
-        except ValueError:
-            return "", finish_reason
-
     def _generate_openrouter_text(
         self,
         prompt: str,
@@ -120,14 +99,14 @@ class AssessmentService:
 
         try:
             response = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
+                "https://openrouter.ai/api/v1/chat/completions",
                 json=payload,
-            headers={
+                headers={
                     "Authorization": f"Bearer {self.openrouter_api_key.strip()}",
-                "Content-Type": "application/json",
-                "HTTP-Referer": self.openrouter_referer,
-                "X-OpenRouter-Title": self.openrouter_title,
-            },
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": self.openrouter_referer,
+                    "X-OpenRouter-Title": self.openrouter_title,
+                },
                 timeout=120,
             )
             response.raise_for_status()
@@ -325,30 +304,13 @@ class AssessmentService:
         ])
 
         try:
-            if self.priority_provider == "openrouter":
-                response_text, finish_reason = self._generate_openrouter_text(
-                    prompt,
-                    model=self.openrouter_priority_model,
-                    temperature=0.35,
-                    max_tokens=1500,
-                    response_format=self._priority_response_format(),
-                )
-                parsed = self._parse_priority_response(response_text)
-                if parsed:
-                    return parsed
-                return self._fallback_priority_recommendations(candidates, catalyst)
-
-            response = self.priority_model.generate_content(
+            response_text, finish_reason = self._generate_openrouter_text(
                 prompt,
-                generation_config={
-                    "temperature": 0.35,
-                    "top_p": 0.9,
-                    "top_k": 40,
-                    "max_output_tokens": 1000,
-                    "response_mime_type": "application/json",
-                },
+                model=self.openrouter_priority_model,
+                temperature=0.35,
+                max_tokens=1500,
+                response_format=self._priority_response_format(),
             )
-            response_text, finish_reason = self._response_text_and_finish_reason(response)
             parsed = self._parse_priority_response(response_text)
             if parsed:
                 return parsed
@@ -727,27 +689,12 @@ class AssessmentService:
         prompt = "\n".join(prompt_parts)
 
         try:
-            generation_config = {
-                "temperature": 0.7,
-                "top_p": 0.9,
-                "top_k": 40,
-                "max_output_tokens": 8000,
-            }
-
-            if self.recommendation_provider == "openrouter":
-                response_text, finish_reason = self._generate_openrouter_text(
-                    prompt,
-                    model=self.openrouter_recommendation_model,
-                    temperature=generation_config["temperature"],
-                    max_tokens=generation_config["max_output_tokens"],
-                )
-                return response_text
-
-            response = self.recommendation_model.generate_content(
+            response_text, finish_reason = self._generate_openrouter_text(
                 prompt,
-                generation_config=generation_config
+                model=self.openrouter_recommendation_model,
+                temperature=0.7,
+                max_tokens=8000,
             )
-            response_text, finish_reason = self._response_text_and_finish_reason(response)
             return response_text
         except Exception as e:
             return f"Error generating recommendations: {e}"

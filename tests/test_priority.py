@@ -151,7 +151,7 @@ class PriorityConfigCoverageTests(unittest.TestCase):
 
 class AssessResponseShapeTests(unittest.TestCase):
     def test_assess_returns_priority_recommendations_without_full_report(self):
-        os.environ.setdefault("GEMINI_API_KEY", "test-key")
+        os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
         if "reportlab" not in sys.modules:
             reportlab = ModuleType("reportlab")
             pdfgen = ModuleType("reportlab.pdfgen")
@@ -165,14 +165,6 @@ class AssessResponseShapeTests(unittest.TestCase):
             sys.modules["reportlab.pdfgen.canvas"] = canvas
             sys.modules["reportlab.lib"] = lib
             sys.modules["reportlab.lib.pagesizes"] = pagesizes
-
-        if "google.generativeai" not in sys.modules:
-            google = ModuleType("google")
-            generativeai = ModuleType("google.generativeai")
-            generativeai.configure = lambda **kwargs: None
-            generativeai.GenerativeModel = lambda *args, **kwargs: SimpleNamespace()
-            sys.modules["google"] = google
-            sys.modules["google.generativeai"] = generativeai
 
         main = importlib.import_module("main")
 
@@ -254,14 +246,7 @@ class AssessResponseShapeTests(unittest.TestCase):
         self.assertEqual(payload["recommendations"], "Full report")
 
     def test_fallback_priority_copy_is_specific(self):
-        os.environ.setdefault("GEMINI_API_KEY", "test-key")
-        if "google.generativeai" not in sys.modules:
-            google = ModuleType("google")
-            generativeai = ModuleType("google.generativeai")
-            generativeai.configure = lambda **kwargs: None
-            generativeai.GenerativeModel = lambda *args, **kwargs: SimpleNamespace()
-            sys.modules["google"] = google
-            sys.modules["google.generativeai"] = generativeai
+        os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
 
         services = importlib.import_module("services")
         service = services.AssessmentService.__new__(services.AssessmentService)
