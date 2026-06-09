@@ -822,6 +822,8 @@
         setAssessmentDisabled(false);
         questionArea.classList.remove("hidden");
         document.getElementById("results").classList.add("hidden");
+        const progressWrap = document.getElementById("progressWrap");
+        if (progressWrap) progressWrap.classList.remove("hidden");
 
         closeResetModal();
         updateUI();
@@ -858,6 +860,9 @@
         const resultsEl = document.getElementById("results");
         questionArea.innerHTML = "";
         questionArea.classList.add("hidden");
+
+        const progressWrap = document.getElementById("progressWrap");
+        if (progressWrap) progressWrap.classList.add("hidden");
 
         resultsEl.classList.remove("hidden");
 

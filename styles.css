@@ -94,6 +94,10 @@ h1, h2, h3, h4,
     padding: 5px 24px; border-bottom: 1px solid var(--border); background: var(--panel);
     margin-bottom: 0%;
 }
+.logo-group { display: flex; align-items: center; gap: 16px; }
+.logo-group .wsb-logo { height: 48px; width: auto; }
+.logo-group .sbdc-logo { height: 40px; width: auto; }
+.progress-wrap.hidden { display: none; }
 .breadcrumbs { font-weight: 600; }
 .progress-wrap { width: 320px; }
 .progress { width: 100%; height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
