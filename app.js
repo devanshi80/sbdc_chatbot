@@ -866,13 +866,6 @@
 
         resultsEl.classList.remove("hidden");
 
-        const skippedNames = Object.keys(skippedSections)
-            .filter((name) => skippedSections[name])
-            .map(cleanAreaName);
-        const skippedNotice = skippedNames.length
-            ? `<p class="recommendations-intro">Some sections were skipped and were not included in your recommendations: ${escapeHTML(skippedNames.join(", "))}.</p>`
-            : "";
-
         const priorityItems = Array.isArray(out.priority_recommendations)
             ? out.priority_recommendations.slice(0, 3)
             : [];
@@ -930,10 +923,6 @@
             <p class="recommendations-intro">
                 If these suggestions aren't a fit, or they are not something you can work on right now, click "See Additional Recommendations" for more ideas to consider.
             </p>
-            <p class="recommendations-intro">
-                Your recommendations are based only on the sections you completed.
-            </p>
-            ${skippedNotice}
             <div class="priority-grid">
                 ${priorityHTML}
             </div>
