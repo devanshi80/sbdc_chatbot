@@ -6,8 +6,12 @@
     let currentIndex = 0;
     let answers = {};
     let areaNotes = {};
+    let skippedSections = {};
     let prefilled = null;
     let lastAssessmentResult = null; 
+    let lastAssessmentPayload = null;
+    let fullRecommendationsLoading = false;
+    const lastVisitedIndexBySection = {};
     const assessmentFocusDefinitions = {
         "Economic Uncertainty": "The economy or market conditions are changing, and I’m unsure how it will impact my business.",
         "Crisis or Setback": "Something urgent or unexpected happened, and I need to stabilize my business quickly.",
@@ -34,6 +38,9 @@
     const submitBtn = document.getElementById("submitBtn");
     const submitStatus = document.getElementById("submitStatus");
     const resetBtn = document.getElementById("resetBtn");
+    const resetModal = document.getElementById("resetModal");
+    const cancelResetBtn = document.getElementById("cancelResetBtn");
+    const confirmResetBtn = document.getElementById("confirmResetBtn");
 
     const storageKey = "assessment_answers_v1";
 
@@ -74,6 +81,32 @@
     return escapeHTML(String(markdown ?? ""));
     }
 
+    function renderRecommendationsHTML(recommendations) {
+        if (Array.isArray(recommendations)) {
+            return recommendations
+                .map(rec => `
+                    <div class="recommendation">
+                        ${sanitizeLLMHtml(rec)}
+                    </div>
+                `)
+                .join("");
+        }
+
+        if (recommendations) {
+            return `
+                <div class="recommendation">
+                    ${sanitizeLLMHtml(recommendations)}
+                </div>
+            `;
+        }
+
+        return `
+            <div class="recommendation recommendation-status">
+                Additional recommendations are still being prepared.
+            </div>
+        `;
+    }
+
     function sanitizeAreaNotesMap(notes) {
         if (!notes || typeof notes !== "object") return {};
         return Object.fromEntries(
@@ -85,7 +118,7 @@
 
     function saveLocal() {
         areaNotes = sanitizeAreaNotesMap(areaNotes);
-        localStorage.setItem(storageKey, JSON.stringify({ answers, areaNotes }));
+        localStorage.setItem(storageKey, JSON.stringify({ answers, areaNotes, skippedSections }));
     }
 
     function loadLocal() {
@@ -94,12 +127,13 @@
             if (parsed && typeof parsed === "object" && ("answers" in parsed || "areaNotes" in parsed)) {
                 return {
                     answers: parsed.answers || {},
-                    areaNotes: sanitizeAreaNotesMap(parsed.areaNotes || {})
+                    areaNotes: sanitizeAreaNotesMap(parsed.areaNotes || {}),
+                    skippedSections: parsed.skippedSections || {}
                 };
             }
-            return { answers: parsed || {}, areaNotes: {} };
+            return { answers: parsed || {}, areaNotes: {}, skippedSections: {} };
         } catch {
-            return { answers: {}, areaNotes: {} };
+            return { answers: {}, areaNotes: {}, skippedSections: {} };
         }
     }
 
@@ -125,6 +159,8 @@
     }
 
     function shouldSkipSection(sectionName) {
+        if (skippedSections[sectionName]) return true;
+
         const section = conditionalSections[sectionName];
         if (!section) return false;
 
@@ -132,20 +168,50 @@
         return section.skipAnswers.includes(gateAnswer);
     }
 
-    function skipSectionQuestions(sectionName) {
-        const sectionQuestions = data.flat.filter(q => {
-            // Find questions that belong to this section
-            for (const sec of data.sections) {
-                if (sec.name === sectionName) {
-                    return sec.items.includes(q) || (sec.noteItem && sec.noteItem === q);
-                }
-            }
-            return false;
-        });
+    function isSkippableSection(sectionName) {
+        return sectionName && sectionName !== "Assessment Focus";
+    }
 
-        // Mark all questions in this section as "N/A" except the gate question
+    function getSectionScorableItems(sec) {
+        return sec.items.filter((q) => q.id !== "CATALYST-001" && q.kind !== "area_note");
+    }
+
+    function isQuestionInSection(q, sectionName) {
+        const sec = data.sections.find((section) => section.name === sectionName);
+        return Boolean(sec && (sec.items.includes(q) || sec.noteItem === q));
+    }
+
+    function isAnswerInSkippedSection(questionId) {
+        const q = indexById.has(questionId) ? data.flat[indexById.get(questionId)] : null;
+        if (!q) return false;
+
+        const section = getSectionForQuestion(q);
+        return Boolean(section && shouldSkipSection(section.name));
+    }
+
+    function getSkippedSectionNames() {
+        return data.sections
+            .filter((section) => isSkippableSection(section.name) && shouldSkipSection(section.name))
+            .map((section) => section.name);
+    }
+
+    function filterSkippedAreaNotes(notes) {
+        const skippedNames = new Set(getSkippedSectionNames());
+        return Object.fromEntries(
+            Object.entries(notes).filter(([area]) => !skippedNames.has(area))
+        );
+    }
+
+    function skipSectionQuestions(sectionName) {
+        if (!isSkippableSection(sectionName)) return;
+        skippedSections[sectionName] = true;
+        delete areaNotes[sectionName];
+
+        const sectionQuestions = data.flat.filter(q => isQuestionInSection(q, sectionName));
+
+        // Mark all questions in this section as skipped so prior answers are not scored.
         sectionQuestions.forEach(q => {
-            if (q.id !== conditionalSections[sectionName].gateQuestion && q.kind !== "area_note") {
+            if (q.id !== conditionalSections[sectionName]?.gateQuestion && q.kind !== "area_note") {
                 answers[q.id] = "N/A";
             }
         });
@@ -153,6 +219,80 @@
         saveLocal();
         computeProgress();
         renderSections();
+    }
+
+    function getSectionEndIndex(sec) {
+        const indexes = [];
+        sec.items.forEach((q) => {
+            if (indexById.has(q.id)) indexes.push(indexById.get(q.id));
+        });
+        if (sec.noteItem && indexById.has(sec.noteItem.id)) {
+            indexes.push(indexById.get(sec.noteItem.id));
+        }
+        return indexes.length ? Math.max(...indexes) : currentIndex;
+    }
+
+    function clearSectionSkip(sectionName) {
+        delete skippedSections[sectionName];
+        const sectionQuestions = data.flat.filter(q => {
+            for (const sec of data.sections) {
+                if (sec.name === sectionName) {
+                    return sec.items.includes(q);
+                }
+            }
+            return false;
+        });
+
+        // Remove skipped placeholders when a user reopens a section.
+        sectionQuestions.forEach(q => {
+            if (q.id !== conditionalSections[sectionName]?.gateQuestion && answers[q.id] === "N/A") {
+                delete answers[q.id];
+            }
+        });
+
+        saveLocal();
+    }
+
+    function reopenSection(sectionName) {
+        const sec = data.sections.find((section) => section.name === sectionName);
+        if (!sec) return;
+        clearSectionSkip(sectionName);
+        currentIndex = getSectionStartIndex(sec);
+        updateUI();
+    }
+
+    function renderSkippedSection(sectionName) {
+        const sec = data.sections.find((section) => section.name === sectionName);
+        if (!sec) return;
+
+        questionArea.classList.remove("hidden");
+        document.getElementById("results").classList.add("hidden");
+        questionArea.innerHTML = `
+            <article class="question-card skipped-section-card">
+                <div class="section-kicker">${escapeHTML(cleanAreaName(sectionName))}</div>
+                <div class="question-text">This section has been skipped.</div>
+                <div class="section-actions">
+                    <button id="reopenSectionBtn" class="btn primary" type="button">Answer this section</button>
+                    <button id="nextSectionBtn" class="btn" type="button">Go to next section</button>
+                </div>
+            </article>
+        `;
+
+        document.getElementById("reopenSectionBtn").addEventListener("click", () => reopenSection(sectionName));
+        document.getElementById("nextSectionBtn").addEventListener("click", () => {
+            currentIndex = getNextSectionIndex(sectionName);
+            updateUI();
+        });
+    }
+
+    function getNextSectionIndex(sectionName) {
+        const sec = data.sections.find((section) => section.name === sectionName);
+        if (!sec) return currentIndex;
+        const nextIndex = getSectionEndIndex(sec) + 1;
+        if (nextIndex >= data.flat.length) {
+            return findNavigableIndex(getSectionStartIndex(sec) - 1, -1);
+        }
+        return findNavigableIndex(nextIndex, 1);
     }
 
     function renderConditionalQuestion(q) {
@@ -228,27 +368,16 @@
         });
     }
 
-    function clearSectionSkip(sectionName) {
-        const sectionQuestions = data.flat.filter(q => {
-            for (const sec of data.sections) {
-                if (sec.name === sectionName) {
-                    return sec.items.includes(q);
-                }
-            }
-            return false;
-        });
-
-        // Remove "N/A" answers from this section (except the gate question)
-        sectionQuestions.forEach(q => {
-            if (q.id !== conditionalSections[sectionName].gateQuestion && answers[q.id] === "N/A") {
-                delete answers[q.id];
-            }
-        });
-    }
-
     function computeProgress() {
-        const total = data.flat.filter((q) => q.id !== "CATALYST-001" && q.kind !== "area_note").length;
-        const done = Object.keys(answers).filter(id => id !== "CATALYST-001").length;
+        const total = data.flat.filter((q) =>
+            q.id !== "CATALYST-001" &&
+            q.kind !== "area_note" &&
+            !isQuestionHiddenBySkip(q)
+        ).length;
+        const done = Object.entries(answers).filter(([id, value]) => {
+            const q = indexById.has(id) ? data.flat[indexById.get(id)] : null;
+            return id !== "CATALYST-001" && value !== "N/A" && q && !isQuestionHiddenBySkip(q);
+        }).length;
         const pct = total ? Math.round((done / total) * 100) : 0;
 
         // Debug logging
@@ -302,17 +431,40 @@
         };
     }
 
+    function rememberCurrentSectionIndex() {
+        const q = data.flat[currentIndex];
+        const section = q ? getSectionForQuestion(q) : null;
+        if (section) {
+            lastVisitedIndexBySection[section.name] = currentIndex;
+        }
+    }
+
+    function getSectionStartIndex(sec) {
+        const rememberedIndex = lastVisitedIndexBySection[sec.name];
+        if (
+            Number.isInteger(rememberedIndex) &&
+            sec.containsIndex(rememberedIndex) &&
+            !isQuestionHiddenBySkip(data.flat[rememberedIndex])
+        ) {
+            return rememberedIndex;
+        }
+
+        return indexById.get(sec.items[0].id);
+    }
+
     function renderSections() {
         sectionList.innerHTML = "";
         data.sections.forEach((sec) => {
-            const doneInSec = sec.items.filter((q) => answers[q.id] !== undefined).length;
+            const scorableItems = getSectionScorableItems(sec);
+            const doneInSec = scorableItems.filter((q) => answers[q.id] !== undefined && answers[q.id] !== "N/A").length;
             const pill = document.createElement("button");
 
             // Check if this section is skipped
             const isSkipped = shouldSkipSection(sec.name);
             const skippedClass = isSkipped ? " skipped" : "";
+            const isActive = sec.containsIndex(currentIndex);
 
-            pill.className = "section-pill" + (sec.containsIndex(currentIndex) ? " active" : "") + skippedClass;
+            pill.className = "section-pill" + (isActive ? " active" : "") + skippedClass;
             pill.type = "button";
 
             // Exclude catalyst section from showing counts
@@ -320,16 +472,24 @@
             if (sec.name !== "Assessment Focus") {
                 if (isSkipped) {
                     displayCount = `<span class="count skipped-count">Skipped</span>`;
+                } else if (doneInSec === 0) {
+                    displayCount = `<span class="count">Not started</span>`;
+                } else if (doneInSec >= scorableItems.length) {
+                    displayCount = `<span class="count">Complete</span>`;
                 } else {
-                    displayCount = `<span class="count">${doneInSec}/${sec.items.length}</span>`;
+                    displayCount = `<span class="count">${doneInSec}/${scorableItems.length}</span>`;
                 }
             }
 
             const cleanName = escapeHTML(cleanAreaName(sec.name));
             pill.innerHTML = `<span>${cleanName}</span>${displayCount}`;
             pill.addEventListener("click", () => {
-                currentIndex = indexById.get(sec.items[0].id);
-                updateUI();
+                if (isSkipped) {
+                    renderSkippedSection(sec.name);
+                } else {
+                    currentIndex = getSectionStartIndex(sec);
+                    updateUI();
+                }
             });
             sectionList.appendChild(pill);
         });
@@ -340,19 +500,27 @@
             alert("No assessment results available. Please complete and submit the assessment first.");
             return;
         }
+        if (fullRecommendationsLoading || !lastAssessmentResult.recommendations) {
+            alert("Additional recommendations are still being generated. Please try again in a moment.");
+            return;
+        }
 
         try {
             const catalyst = answers["CATALYST-001"] || "Steady Growth";
 
             // Prepare answers in the format needed for the PDF
             const formattedAnswers = Object.entries(answers)
-                .filter(([question_id, value]) => question_id !== "CATALYST-001" && value !== "N/A")
+                .filter(([question_id, value]) =>
+                    question_id !== "CATALYST-001" &&
+                    value !== "N/A" &&
+                    !isAnswerInSkippedSection(question_id)
+                )
                 .map(([question_id, value]) => ({
                     question_id: question_id,
                     score: parseInt(value, 10)
                 }));
             const formattedAreaNotes = Object.fromEntries(
-                Object.entries(areaNotes)
+                Object.entries(filterSkippedAreaNotes(areaNotes))
                     .map(([area, note]) => [area, note.trim()])
                     .filter(([, note]) => note)
             );
@@ -364,6 +532,7 @@
                 priority_categories: lastAssessmentResult.priority_categories,
                 category_scores: lastAssessmentResult.category_scores,
                 category_details: lastAssessmentResult.category_details,
+                priority_recommendations: lastAssessmentResult.priority_recommendations || [],
                 recommendations: lastAssessmentResult.recommendations,
                 answers: formattedAnswers,
                 area_notes: formattedAreaNotes
@@ -397,12 +566,112 @@
         }
     }
 
+    function setFullRecommendationsLoading(isLoading) {
+        fullRecommendationsLoading = isLoading;
+
+        const downloadBtn = document.getElementById("downloadPdfBtn");
+        const showFullBtn = document.getElementById("showFullRecommendations");
+        const fullRecommendations = document.getElementById("fullRecommendations");
+
+        if (downloadBtn) {
+            downloadBtn.disabled = isLoading;
+            downloadBtn.textContent = isLoading ? "Generating PDF Content..." : "Download PDF Results";
+        }
+
+        if (showFullBtn) {
+            showFullBtn.disabled = isLoading;
+            showFullBtn.textContent = isLoading ? "Generating Additional Recommendations..." : "See Additional Recommendations";
+        }
+
+        if (fullRecommendations && isLoading) {
+            fullRecommendations.innerHTML = `
+                <h3>Additional Recommendations</h3>
+                <div class="recommendation recommendation-status">
+                    Additional recommendations are being generated.
+                </div>
+            `;
+        }
+    }
+
+    async function loadFullRecommendations() {
+        if (!lastAssessmentPayload) return;
+
+        setFullRecommendationsLoading(true);
+
+        try {
+            const response = await fetch("recommendations", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(lastAssessmentPayload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const out = await response.json().catch(() => ({}));
+            lastAssessmentResult.recommendations = out.recommendations || "";
+
+            const fullRecommendations = document.getElementById("fullRecommendations");
+            if (fullRecommendations) {
+                fullRecommendations.innerHTML = `
+                    <h3>Additional Recommendations</h3>
+                    ${renderRecommendationsHTML(lastAssessmentResult.recommendations)}
+                `;
+            }
+        } catch (err) {
+            console.error("Failed to load full recommendations:", err);
+            lastAssessmentResult.recommendations = "";
+
+            const fullRecommendations = document.getElementById("fullRecommendations");
+            if (fullRecommendations) {
+                fullRecommendations.innerHTML = `
+                    <h3>Additional Recommendations</h3>
+                    <div class="recommendation recommendation-status">
+                        Additional recommendations could not be generated. Please try submitting again.
+                    </div>
+                `;
+            }
+        } finally {
+            setFullRecommendationsLoading(false);
+        }
+    }
+
+    function renderSectionControls(q) {
+        const sec = getSectionForQuestion(q);
+        if (!sec || !isSkippableSection(sec.name) || shouldSkipSection(sec.name)) {
+            return "";
+        }
+
+        return `
+            <div class="section-control-bar">
+                <p>If this area does not apply to your business right now, you can skip it. You can also leave any question unanswered and move on. Skipped sections will not be included in your final recommendations.</p>
+                <button class="btn ghost skip-section-btn" type="button" data-section="${escapeHTML(sec.name)}">Skip section</button>
+            </div>
+        `;
+    }
+
+    function bindSectionControls() {
+        const skipButton = questionArea.querySelector(".skip-section-btn");
+        if (!skipButton) return;
+
+        skipButton.addEventListener("click", () => {
+            const sectionName = skipButton.getAttribute("data-section");
+            if (!sectionName) return;
+
+            skipSectionQuestions(sectionName);
+            renderSkippedSection(sectionName);
+        });
+    }
+
     function renderQuestion() {
         const q = data.flat[currentIndex];
         if (!q) {
             questionArea.innerHTML = '<div class="loading">No questions found.</div>';
             return;
         }
+
+        rememberCurrentSectionIndex();
 
         // Check if this question belongs to a skipped section, including area notes
         if (isQuestionHiddenBySkip(q)) {
@@ -412,11 +681,11 @@
                 saveLocal();
             }
 
-            // Skip to next question
-            if (currentIndex < data.flat.length - 1) {
-                currentIndex = findNavigableIndex(currentIndex + 1, 1);
-                updateUI();
+            const skippedSection = getSectionForQuestion(q);
+            if (skippedSection) {
+                renderSkippedSection(skippedSection.name);
             } else {
+                currentIndex = findNavigableIndex(currentIndex + 1, 1);
                 updateUI();
             }
             return;
@@ -426,12 +695,15 @@
             const existingNote = areaNotes[q.areaName] || "";
             questionArea.innerHTML = `
                 <article class="question-card question-card--note" data-qid="${q.id}">
+                    ${renderSectionControls(q)}
                     <div class="question-text">${escapeHTML(cleanAreaName(q.areaName))}</div>
                     <p class="note-intro">${escapeHTML(q.helperText)}</p>
                     <label class="note-label" for="${q.id}">${escapeHTML(q.question)}</label>
                     <textarea id="${q.id}" class="area-note-input" placeholder="Type here if you'd like to share more context..." rows="7"></textarea>
+                    <p class="privacy-disclaimer" style="font-size: 12px; color: #666; margin-top: 8px; font-style: italic;">We do not collect or store personal data. Please avoid entering personal details such as names, addresses, phone numbers, or other sensitive information.</p>
                 </article>
             `;
+            bindSectionControls();
 
             const textarea = questionArea.querySelector(".area-note-input");
             textarea.value = existingNote;
@@ -475,12 +747,14 @@
 
         questionArea.innerHTML = `
             <article class="question-card" data-qid="${q.id}">
+                ${renderSectionControls(q)}
                 <div class="question-text">${escapeHTML(q.question)}</div>
                 <div class="tile-grid" role="group" aria-label="Answer choices for ${q.id}">
                     ${tiles}
                 </div>
             </article>
         `;
+        bindSectionControls();
 
         questionArea.querySelectorAll(".tile").forEach((btn) => {
             btn.addEventListener("click", () => {
@@ -525,26 +799,54 @@
         updateUI();
     });
 
-    resetBtn.addEventListener("click", () => {
-        if (confirm("Erase all answers?")) {
-            answers = {};
-            areaNotes = {};
-            saveLocal();
-            lastAssessmentResult = null;
-    
-            setAssessmentDisabled(false);
-            questionArea.classList.remove("hidden");
-            document.getElementById("results").classList.add("hidden");
-            const progressWrap = document.getElementById("progressWrap");
-            if (progressWrap) progressWrap.classList.remove("hidden");
-    
-            updateUI();
+    function openResetModal() {
+        resetModal.hidden = false;
+        confirmResetBtn.focus();
+    }
+
+    function closeResetModal() {
+        resetModal.hidden = true;
+        resetBtn.focus();
+    }
+
+    function restartAssessment() {
+        answers = {};
+        areaNotes = {};
+        skippedSections = {};
+        Object.keys(lastVisitedIndexBySection).forEach((sectionName) => {
+            delete lastVisitedIndexBySection[sectionName];
+        });
+        saveLocal();
+        lastAssessmentResult = null;
+
+        setAssessmentDisabled(false);
+        questionArea.classList.remove("hidden");
+        document.getElementById("results").classList.add("hidden");
+        const progressWrap = document.getElementById("progressWrap");
+        if (progressWrap) progressWrap.classList.remove("hidden");
+
+        closeResetModal();
+        updateUI();
+    }
+
+    resetBtn.addEventListener("click", openResetModal);
+    cancelResetBtn.addEventListener("click", closeResetModal);
+    confirmResetBtn.addEventListener("click", restartAssessment);
+    resetModal.addEventListener("click", (event) => {
+        if (event.target === resetModal) {
+            closeResetModal();
+        }
+    });
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !resetModal.hidden) {
+            closeResetModal();
         }
     });
 
     function setAssessmentDisabled(disabled) {
         prevBtn.disabled = disabled;
         nextBtn.disabled = disabled;
+        submitBtn.disabled = disabled;
     
         sectionList.querySelectorAll("button").forEach(btn => {
             btn.disabled = disabled;
@@ -564,33 +866,48 @@
 
         resultsEl.classList.remove("hidden");
 
-        let recommendationsHTML = "";
-        if (Array.isArray(out.recommendations)) {
-            recommendationsHTML = out.recommendations
-                .map(rec => `
-                    <div class="recommendation">
-                        ${sanitizeLLMHtml(rec)}
+        const skippedNames = Object.keys(skippedSections)
+            .filter((name) => skippedSections[name])
+            .map(cleanAreaName);
+        const skippedNotice = skippedNames.length
+            ? `<p class="recommendations-intro">Some sections were skipped and were not included in your recommendations: ${escapeHTML(skippedNames.join(", "))}.</p>`
+            : "";
+
+        const priorityItems = Array.isArray(out.priority_recommendations)
+            ? out.priority_recommendations.slice(0, 3)
+            : [];
+        const priorityHTML = priorityItems.length
+            ? priorityItems.map(item => `
+                <article class="priority-card priority-card--${escapeHTML(item.type || "key_area")}">
+                    <div class="priority-label">${escapeHTML(item.label || "Key Area to Consider")}</div>
+                    <h4>${escapeHTML(item.title || "")}</h4>
+                    <div class="priority-section">
+                        <p>${escapeHTML(item.summary || item.what_to_do || "")}</p>
                     </div>
-                `)
-                .join("");
-        } else {
-            recommendationsHTML = `
-                <div class="recommendation">
-                    ${sanitizeLLMHtml(out.recommendations)}
-                </div>
+                    <p class="priority-step"><strong>First step:</strong> ${escapeHTML(item.first_step || "")}</p>
+                </article>
+            `).join("")
+            : `
+                <article class="priority-card">
+                    <div class="priority-label">Key Area to Consider</div>
+                    <h4>Report Review Starter</h4>
+                    <div class="priority-section">
+                        <p>Start with the full recommendations and look for the section that feels most connected to your current business decision.</p>
+                    </div>
+                    <p class="priority-step"><strong>First step:</strong> Note one recommendation you want to act on this week.</p>
+                </article>
             `;
-        }
 
         resultsEl.innerHTML = `
         <h2 style="text-align: center;">
-            Congrats on taking the next step to move your business forward!
+            Next Steps to Move Your Business Forward
         </h2>
     
         <div class="action-buttons"
              style="display: flex; justify-content: center; gap: 12px; margin: 16px 0;">
             
             <button id="downloadPdfBtn" type="button">
-                Download Results
+                Generating PDF Content...
             </button>
     
             <button id="bookCall" type="button">
@@ -603,19 +920,52 @@
             
         </div>
     
-        <div class="result-block">
-            <h3>Recommendations</h3>
-            ${recommendationsHTML}
-        </div>
+        <section class="result-block priority-block">
+            <p class="recommendations-intro">
+                In our many years of working with small businesses, we know that planning for your business' future can feel overwhelming or hard to prioritize.
+            </p>
+            <p class="recommendations-intro">
+                Below, you'll find three recommendations. These include two key areas to consider - based on what you indicated as your business strengths, challenges, and reason for planning - and one "quick win" that should help you take a step in the right direction quickly. These recommendations are meant to highlight possible next steps for your own planning and/or areas to discuss with your SBDC Consultant so they can best support you.
+            </p>
+            <p class="recommendations-intro">
+                If these suggestions aren't a fit, or they are not something you can work on right now, click "See Additional Recommendations" for more ideas to consider.
+            </p>
+            <p class="recommendations-intro">
+                Your recommendations are based only on the sections you completed.
+            </p>
+            ${skippedNotice}
+            <div class="priority-grid">
+                ${priorityHTML}
+            </div>
+            <button id="showFullRecommendations" class="btn primary" type="button" disabled>
+                Generating Additional Recommendations...
+            </button>
+        </section>
+
+        <section id="fullRecommendations" class="result-block full-recommendations hidden">
+            <h3>Additional Recommendations</h3>
+            <div class="recommendation recommendation-status">
+                Additional recommendations are being generated.
+            </div>
+        </section>
     `;
 
         document.getElementById("downloadPdfBtn").addEventListener("click", downloadPDF);
+        document.getElementById("showFullRecommendations").addEventListener("click", () => {
+            const fullRecommendations = document.getElementById("fullRecommendations");
+            fullRecommendations.classList.remove("hidden");
+            document.getElementById("showFullRecommendations").hidden = true;
+            fullRecommendations.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
         document.getElementById("bookCall").addEventListener("click", () => {
             window.open("https://sbdc.wisc.edu/about-us/free-small-business-consulting/", "_blank");
         });
         document.getElementById("viewResources").addEventListener("click", () => {
             window.open("https://sbdc.wisc.edu/resources/", "_blank");
         });
+
+        setFullRecommendationsLoading(true);
+        loadFullRecommendations();
     }
 
     function showLoadingScreen() {
@@ -671,19 +1021,26 @@
 
         try {
             const filteredAnswers = Object.entries(answers)
-                .filter(([question_id, value]) => value !== "N/A" && question_id !== "CATALYST-001")
+                .filter(([question_id, value]) =>
+                    value !== "N/A" &&
+                    question_id !== "CATALYST-001" &&
+                    !isAnswerInSkippedSection(question_id)
+                )
                 .map(([question_id, value]) => ({
                     question_id,
                     score: parseInt(value, 10),
                     notes: null
                 }));
-            const filteredAreaNotes = sanitizeAreaNotesMap(areaNotes);
+            const filteredAreaNotes = filterSkippedAreaNotes(sanitizeAreaNotesMap(areaNotes));
+            const skippedSectionNames = getSkippedSectionNames();
 
             const payload = {
                 catalyst: answers["CATALYST-001"] || "Steady Growth",
                 answers: filteredAnswers,
-                area_notes: filteredAreaNotes
+                area_notes: filteredAreaNotes,
+                skipped_sections: skippedSectionNames
             };
+            lastAssessmentPayload = payload;
 
             const res = await fetch(cfg.submitUrl, {
                 method: "POST",
@@ -704,7 +1061,7 @@
             hideLoadingScreen();
             submitStatus.textContent = "Could not submit";
         } finally {
-            submitBtn.disabled = false;
+            submitBtn.disabled = Boolean(lastAssessmentResult);
         }
     });
 
@@ -784,6 +1141,7 @@
             const savedState = loadLocal();
             answers = savedState.answers;
             areaNotes = sanitizeAreaNotesMap(savedState.areaNotes);
+            skippedSections = savedState.skippedSections || {};
 
             // Set default catalyst answer if not already set
             if (!answers["CATALYST-001"]) {

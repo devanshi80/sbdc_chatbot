@@ -6,7 +6,7 @@
         <title>Business Assessment</title>
         <link rel="stylesheet" href="./styles.css" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     </head>
     <body>
         <div id="app">
@@ -19,7 +19,7 @@
                     <p class="muted">Select the tiles to answer</p>
                 </div>
                 <div class="sidebar-footer" style="display: flex; justify-content: center;">
-                    <button id="resetBtn" class="btn ghost" type="button">Reset answers</button>
+                    <button id="resetBtn" class="btn ghost" type="button">Restart Assessment</button>
                 </div>
             </aside>
 
@@ -59,9 +59,20 @@
             </main>
         </div>
 
+        <div id="resetModal" class="modal-backdrop" hidden>
+            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle" aria-describedby="resetModalMessage">
+                <h2 id="resetModalTitle">Restart Assessment?</h2>
+                <p id="resetModalMessage">This will erase your current answers and let you begin again.</p>
+                <div class="modal-actions">
+                    <button id="cancelResetBtn" class="btn" type="button">Cancel</button>
+                    <button id="confirmResetBtn" class="btn danger" type="button">Restart Assessment</button>
+                </div>
+            </div>
+        </div>
+
         <script>
             window.APP_CONFIG = {
-                submitUrl: "/assess",      
+                submitUrl: "/assess",
                 prefillUrl: null,                          
                 dataPaths: {
                     questions: "./questions.json",

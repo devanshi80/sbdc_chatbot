@@ -41,9 +41,10 @@ async def get_tone_options() -> Dict[str, Any]:
 @app.post("/assess")
 async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
     try:
-        result: AssessmentReport = service.calculate_scores(response)
+        service_instance = service
+        result: AssessmentReport = service_instance.calculate_scores(response)
 
-        recommendations = service.generate_recommendations(
+        priority_recommendations = service_instance.generate_priority_recommendations(
             result,
             response.catalyst,
             response.answers,
@@ -63,10 +64,30 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
                 }
                 for name, cs in result.category_scores.items()
             },
-            "recommendations": recommendations,
-            "tier_distribution": service.get_tier_distribution(result)
+            "priority_recommendations": priority_recommendations,
+            "tier_distribution": service_instance.get_tier_distribution(result),
+            "skipped_sections": response.skipped_sections
         }
         return response_data
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/recommendations")
+async def generate_full_recommendations(response: AssessmentResponse) -> Dict[str, Any]:
+    try:
+        service_instance = service
+        result: AssessmentReport = service_instance.calculate_scores(response)
+
+        recommendations = service_instance.generate_recommendations(
+            result,
+            response.catalyst,
+            response.answers,
+            response.area_notes,
+            response.skipped_sections
+        )
+
+        return {"recommendations": recommendations}
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -155,6 +176,57 @@ async def export_pdf(payload: Dict[str, Any]):
             if y < 60:
                 pdf.showPage()
                 y = height - 60
+
+        def write_wrapped_text(text: str, size=10, indent=0, force_bold=False):
+            """Write wrapped text at a fixed size without markdown heading scaling."""
+            nonlocal y
+
+            segments, _ = parse_markdown_line(text)
+            current_x = x + indent
+
+            for segment in segments:
+                content = segment["text"]
+                font = "Helvetica-Bold" if segment["bold"] or force_bold else "Helvetica"
+                pdf.setFont(font, size)
+
+                for word in content.split():
+                    word_width = pdf.stringWidth(word + " ", font, size)
+                    if current_x + word_width > width - 50:
+                        y -= size + 4
+                        current_x = x + indent
+
+                        if y < 60:
+                            pdf.showPage()
+                            y = height - 60
+                            current_x = x + indent
+
+                        pdf.setFont(font, size)
+
+                    pdf.drawString(current_x, y, word)
+                    current_x += word_width
+
+            y -= size + 4
+            if y < 60:
+                pdf.showPage()
+                y = height - 60
+
+        def write_recommendations_section(markdown_text: str):
+            for raw_line in markdown_text.split("\n"):
+                line = raw_line.strip()
+                if not line:
+                    add_spacing(6)
+                    continue
+
+                if line.startswith("###"):
+                    add_spacing(4)
+                    heading = line[3:].strip()
+                    write_wrapped_text(heading, size=12, force_bold=True)
+                    add_spacing(4)
+                    continue
+
+                indent = 12 if re.match(r"^\d+[\.)]\s+", line) else 0
+                write_wrapped_text(line, size=10, indent=indent)
+                add_spacing(3)
         
         def add_spacing(pixels=10):
             nonlocal y
@@ -183,19 +255,67 @@ async def export_pdf(payload: Dict[str, Any]):
         pdf.drawString(x, y, f"Catalyst: {payload.get('catalyst', 'N/A')}")
         add_spacing(25)
 
+        priority_recommendations = payload.get("priority_recommendations", [])
+        if isinstance(priority_recommendations, list) and priority_recommendations:
+            pdf.setFont("Helvetica-Bold", 14)
+            pdf.drawString(x, y, "Next Steps to Move Your Business Forward")
+            add_spacing(15)
+
+            snapshot_intro_paragraphs = [
+                (
+                    "In our many years of working with small businesses, we know that planning for your "
+                    "business' future can feel overwhelming or hard to prioritize."
+                ),
+                (
+                    "Below, you'll find three recommendations. These include two key areas to consider - "
+                    "based on what you indicated as your business strengths, challenges, and reason for "
+                    "planning - and one quick win that should help you take a step in the right direction "
+                    "quickly. These recommendations are meant to highlight possible next steps for your own "
+                    "planning and/or areas to discuss with your SBDC Consultant so they can best support you."
+                ),
+                (
+                    "If these suggestions aren't a fit, or they are not something you can work on right now, "
+                    "review the additional recommendations for more ideas to consider."
+                ),
+            ]
+            for paragraph in snapshot_intro_paragraphs:
+                write_formatted_line(paragraph, base_size=9)
+                add_spacing(5)
+            add_spacing(10)
+
+            for item in priority_recommendations[:3]:
+                if not isinstance(item, dict):
+                    continue
+                label = str(item.get("label", "")).strip()
+                title = str(item.get("title", "")).strip()
+                summary = str(item.get("summary", item.get("what_to_do", ""))).strip()
+                first_step = str(item.get("first_step", "")).strip()
+
+                if label or title:
+                    write_formatted_line(f"**{label}:** {title}", base_size=11)
+                if summary:
+                    write_formatted_line(summary, base_size=10, indent=8)
+                if first_step:
+                    write_formatted_line(f"**First step:** {first_step}", base_size=10, indent=8)
+                add_spacing(8)
+
+            add_spacing(10)
+
         pdf.setFont("Helvetica-Bold", 14)
         pdf.drawString(x, y, "Recommendations")
         add_spacing(15)
 
+        recommendations_intro = (
+            "Think of this assessment as a starting point for your conversation with an SBDC consultant. "
+            "The recommendations below are meant to highlight possible next steps and help your advisor "
+            "understand where they can best support you."
+        )
+        write_formatted_line(recommendations_intro, base_size=9)
+        add_spacing(12)
+
         recs_text = payload.get("recommendations", "")
         if isinstance(recs_text, str) and recs_text:
-            lines = recs_text.split("\n")
-            for line in lines:
-                line = line.strip()
-                if not line:
-                    add_spacing(8)
-                    continue
-                write_formatted_line(line, base_size=11, indent=0)
+            write_recommendations_section(recs_text)
 
         # ── DISCLAIMER ───────────────────────────────────────────────────────
         add_spacing(20)
