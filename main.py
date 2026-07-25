@@ -231,6 +231,148 @@ async def export_pdf(payload: Dict[str, Any]):
         def add_spacing(pixels=10):
             nonlocal y
             y -= pixels
+
+        def pdf_color(hex_value: str):
+            from reportlab.lib.colors import HexColor
+            return HexColor(hex_value)
+
+        def ensure_space(required_height: float):
+            nonlocal y
+            if y - required_height < 60:
+                pdf.showPage()
+                y = height - 60
+
+        def wrap_pdf_lines(text: str, box_width: float, size=8.5, font="Helvetica"):
+            pdf.setFont(font, size)
+            words = str(text or "").split()
+            lines = []
+            current = ""
+
+            for word in words:
+                candidate = f"{current} {word}".strip()
+                if pdf.stringWidth(candidate, font, size) <= box_width:
+                    current = candidate
+                    continue
+                if current:
+                    lines.append(current)
+                current = word
+
+            if current:
+                lines.append(current)
+
+            return lines
+
+        def draw_wrapped_in_box(text: str, left: float, top: float, box_width: float, size=8.5, font="Helvetica"):
+            line_height = size + 3
+            cursor_y = top
+            for line in wrap_pdf_lines(text, box_width, size, font):
+                pdf.drawString(left, cursor_y, line)
+                cursor_y -= line_height
+
+            return cursor_y
+
+        def priority_card_height(item: Dict[str, Any], card_width: float) -> float:
+            inner_width = card_width - 24
+            label = str(item.get("label", "Key Area to Consider")).upper()
+            title = item.get("title", "")
+            summary = item.get("summary", item.get("what_to_do", ""))
+            first_step = str(item.get("first_step", "")).strip()
+            first_step_width = inner_width - pdf.stringWidth("First step: ", "Helvetica-Bold", 8.2)
+
+            content_height = 20
+            content_height += len(wrap_pdf_lines(label, inner_width, 7.5, "Helvetica-Bold")) * 10.5 + 3
+            content_height += len(wrap_pdf_lines(title, inner_width, 11, "Helvetica-Bold")) * 14 + 5
+            content_height += len(wrap_pdf_lines(summary, inner_width, 8.2, "Helvetica")) * 11.2 + 5
+            if first_step:
+                content_height += max(
+                    11.2,
+                    len(wrap_pdf_lines(first_step, first_step_width, 8.2, "Helvetica")) * 11.2,
+                )
+
+            return max(220, content_height + 16)
+
+        def draw_priority_cards(cards):
+            nonlocal y
+            card_gap = 12
+            card_width = (width - 100 - (card_gap * 2)) / 3
+            visible_cards = [item for item in cards[:3] if isinstance(item, dict)]
+            if not visible_cards:
+                return
+
+            card_height = max(priority_card_height(item, card_width) for item in visible_cards)
+            ensure_space(card_height + 16)
+            card_top = y
+
+            for index, item in enumerate(visible_cards):
+                left = x + index * (card_width + card_gap)
+                is_quick_win = item.get("type") == "quick_win"
+                fill_color = pdf_color("#fff3e8" if is_quick_win else "#f3f8fb")
+                border_color = pdf_color("#f4d5bd" if is_quick_win else "#d7e4ef")
+                accent_color = pdf_color("#c5050c" if is_quick_win else "#0c2848")
+                text_color = pdf_color("#334155")
+                muted_color = pdf_color("#64748b")
+
+                pdf.setFillColor(fill_color)
+                pdf.setStrokeColor(border_color)
+                pdf.setLineWidth(1)
+                pdf.roundRect(left, card_top - card_height, card_width, card_height, 8, fill=1, stroke=1)
+
+                pdf.setFillColor(accent_color)
+                pdf.rect(left, card_top - 4, card_width, 4, fill=1, stroke=0)
+
+                inner_left = left + 12
+                inner_width = card_width - 24
+                cursor_y = card_top - 20
+
+                pdf.setFillColor(muted_color)
+                cursor_y = draw_wrapped_in_box(
+                    str(item.get("label", "Key Area to Consider")).upper(),
+                    inner_left,
+                    cursor_y,
+                    inner_width,
+                    size=7.5,
+                    font="Helvetica-Bold",
+                ) - 3
+
+                pdf.setFillColor(pdf_color("#111827"))
+                cursor_y = draw_wrapped_in_box(
+                    item.get("title", ""),
+                    inner_left,
+                    cursor_y,
+                    inner_width,
+                    size=11,
+                    font="Helvetica-Bold",
+                ) - 5
+
+                pdf.setFillColor(text_color)
+                cursor_y = draw_wrapped_in_box(
+                    item.get("summary", item.get("what_to_do", "")),
+                    inner_left,
+                    cursor_y,
+                    inner_width,
+                    size=8.2,
+                    font="Helvetica",
+                ) - 5
+
+                first_step = str(item.get("first_step", "")).strip()
+                if first_step:
+                    pdf.setFillColor(text_color)
+                    pdf.setFont("Helvetica-Bold", 8.2)
+                    pdf.drawString(inner_left, cursor_y, "First step:")
+                    label_width = pdf.stringWidth("First step: ", "Helvetica-Bold", 8.2)
+                    pdf.setFont("Helvetica", 8.2)
+                    draw_wrapped_in_box(
+                        first_step,
+                        inner_left + label_width,
+                        cursor_y,
+                        inner_width - label_width,
+                        size=8.2,
+                        font="Helvetica",
+                    )
+
+            y = card_top - card_height - 18
+            pdf.setFillColor(pdf_color("#000000"))
+            pdf.setStrokeColor(pdf_color("#000000"))
         
         # Header
         try:
@@ -283,21 +425,7 @@ async def export_pdf(payload: Dict[str, Any]):
                 add_spacing(5)
             add_spacing(10)
 
-            for item in priority_recommendations[:3]:
-                if not isinstance(item, dict):
-                    continue
-                label = str(item.get("label", "")).strip()
-                title = str(item.get("title", "")).strip()
-                summary = str(item.get("summary", item.get("what_to_do", ""))).strip()
-                first_step = str(item.get("first_step", "")).strip()
-
-                if label or title:
-                    write_formatted_line(f"**{label}:** {title}", base_size=11)
-                if summary:
-                    write_formatted_line(summary, base_size=10, indent=8)
-                if first_step:
-                    write_formatted_line(f"**First step:** {first_step}", base_size=10, indent=8)
-                add_spacing(8)
+            draw_priority_cards(priority_recommendations)
 
             add_spacing(10)
 

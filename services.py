@@ -2,10 +2,11 @@ from dotenv import load_dotenv
 import os
 import json
 import random
+import math
 from typing import Any, List, Dict
 import requests
 from config import config
-from priority import calculate_priority_candidates
+from priority import NOTE_SIGNAL_PATTERNS, calculate_priority_candidates, detect_note_signals
 
 from schema import AssessmentResponse, AssessmentReport, CategoryScore
 
@@ -41,8 +42,12 @@ class AssessmentService:
         self.openrouter_model = os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini")
         self.openrouter_priority_model = os.getenv("OPENROUTER_PRIORITY_MODEL", self.openrouter_model)
         self.openrouter_recommendation_model = os.getenv("OPENROUTER_RECOMMENDATION_MODEL", self.openrouter_model)
+        self.openrouter_signal_model = os.getenv("OPENROUTER_SIGNAL_MODEL", self.openrouter_priority_model)
+        self.openrouter_embedding_model = os.getenv("OPENROUTER_EMBEDDING_MODEL", "openai/text-embedding-3-small")
         self.openrouter_referer = os.getenv("OPENROUTER_HTTP_REFERER", "http://localhost:8000")
         self.openrouter_title = os.getenv("OPENROUTER_APP_TITLE", "SBDC Assessment")
+        self._recommendation_library_items = self._build_recommendation_library()
+        self._recommendation_library_embeddings: List[List[float]] | None = None
 
     def _is_scorable_question(self, question: Dict[str, Any]) -> bool:
         return not question.get("exclude_from_scoring", False)
@@ -121,6 +126,42 @@ class AssessmentService:
         message = choice.get("message") or {}
         return message.get("content") or "", choice.get("finish_reason", "unknown")
 
+    def _generate_openrouter_embeddings(self, inputs: List[str]) -> List[List[float]]:
+        if not inputs:
+            return []
+        if not self.openrouter_api_key or not self.openrouter_api_key.strip():
+            raise ValueError("OPENROUTER_API_KEY environment variable not set.")
+
+        try:
+            response = requests.post(
+                "https://openrouter.ai/api/v1/embeddings",
+                json={
+                    "model": self.openrouter_embedding_model,
+                    "input": inputs,
+                    "encoding_format": "float",
+                },
+                headers={
+                    "Authorization": f"Bearer {self.openrouter_api_key.strip()}",
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": self.openrouter_referer,
+                    "X-OpenRouter-Title": self.openrouter_title,
+                },
+                timeout=30,
+            )
+            response.raise_for_status()
+            data = response.json()
+        except requests.HTTPError as exc:
+            detail = response.text if "response" in locals() else str(exc)
+            raise RuntimeError(f"OpenRouter embeddings request failed with HTTP {response.status_code}: {detail}") from exc
+        except requests.RequestException as exc:
+            raise RuntimeError(f"OpenRouter embeddings request failed: {exc}") from exc
+
+        embeddings_by_index = sorted(data.get("data", []), key=lambda item: item.get("index", 0))
+        embeddings = [item.get("embedding", []) for item in embeddings_by_index]
+        if len(embeddings) != len(inputs) or any(not isinstance(item, list) for item in embeddings):
+            raise RuntimeError("OpenRouter embeddings response did not match the input batch.")
+        return embeddings
+
     def _priority_response_format(self) -> Dict[str, Any]:
         card_schema = {
             "type": "object",
@@ -150,6 +191,76 @@ class AssessmentService:
                         }
                     },
                     "required": ["cards"],
+                    "additionalProperties": False,
+                },
+            },
+        }
+
+    def _signal_response_format(self) -> Dict[str, Any]:
+        signal_names = list(NOTE_SIGNAL_PATTERNS.keys())
+        return {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "note_signal_classification",
+                "strict": True,
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "areas": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "area": {"type": "string"},
+                                    "signals": {
+                                        "type": "array",
+                                        "items": {"type": "string", "enum": signal_names},
+                                    },
+                                },
+                                "required": ["area", "signals"],
+                                "additionalProperties": False,
+                            },
+                        }
+                    },
+                    "required": ["areas"],
+                    "additionalProperties": False,
+                },
+            },
+        }
+
+    def _recommendation_response_format(self) -> Dict[str, Any]:
+        return {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "full_recommendation_report",
+                "strict": True,
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "report_markdown": {"type": "string"},
+                        "overrides": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "area": {"type": "string"},
+                                    "recommendation_number": {"type": "integer"},
+                                    "anchor_replaced": {"type": "string"},
+                                    "replacement_source_id": {"type": "string"},
+                                    "reason": {"type": "string"},
+                                },
+                                "required": [
+                                    "area",
+                                    "recommendation_number",
+                                    "anchor_replaced",
+                                    "replacement_source_id",
+                                    "reason",
+                                ],
+                                "additionalProperties": False,
+                            },
+                        },
+                    },
+                    "required": ["report_markdown", "overrides"],
                     "additionalProperties": False,
                 },
             },
@@ -231,16 +342,230 @@ class AssessmentService:
         area_notes: Dict[str, str] | None = None,
         limit: int = 8,
     ) -> List[Dict[str, Any]]:
+        area_notes = area_notes or {}
+        area_note_signals = self.classify_area_note_signals(area_notes)
         return calculate_priority_candidates(
             catalyst=catalyst,
             questions=self.questions,
             rankings=self.priority_rankings,
             category_scores=result.category_scores,
             answers=answers or [],
-            area_notes=area_notes or {},
+            area_notes=area_notes,
+            area_note_signals=area_note_signals,
             question_to_area_map=self.question_to_area_map,
             limit=limit,
         )
+
+    def classify_area_note_signals(self, area_notes: Dict[str, str] | None) -> Dict[str, List[str]]:
+        area_notes = {
+            str(area): str(note).strip()
+            for area, note in (area_notes or {}).items()
+            if str(note or "").strip()
+        }
+        fallback = {
+            area: detect_note_signals(note)
+            for area, note in area_notes.items()
+        }
+        if not area_notes:
+            return fallback
+
+        signal_definitions = {
+            "financial_urgency": "Cash, payroll, rent, bills, debt, affordability, or immediate money pressure.",
+            "capacity_constraint": "Not enough time, energy, staff capacity, bandwidth, or owner/team burnout.",
+            "demand_issue": "Customers are not buying, sales are down, demand is weak, or customers are being lost.",
+            "supplier_risk": "Suppliers, vendors, inventory, supply delays, or changing input costs are creating risk.",
+            "owner_dependency": "Work depends on the owner, knowledge is stuck with one person, or the team cannot take over.",
+            "team_process_issue": "Roles, training, communication, accountability, handoffs, or follow-through are unclear.",
+            "opportunity_feasibility": "A grant, launch, partnership, expansion, or new opportunity needs feasibility checking.",
+            "applicability_clarification": "The section does not apply, is not relevant, or assumptions like having employees do not fit.",
+        }
+
+        prompt = "\n".join([
+            "Classify each small business owner's free-text area note into zero or more signal labels.",
+            "Return only labels that are clearly supported by meaning, not by exact wording.",
+            "Use the labels exactly as provided. Do not invent labels.",
+            "If the note is vague, positive only, or unrelated to these definitions, return an empty signals array.",
+            "",
+            "Signal definitions:",
+            json.dumps(signal_definitions, indent=2),
+            "",
+            "Area notes to classify:",
+            json.dumps(area_notes, indent=2),
+            "",
+            "Examples:",
+            "- \"I am burnt out and cannot keep up\" => capacity_constraint",
+            "- \"hard to bring my employees into the fold\" => owner_dependency, team_process_issue",
+            "- \"vendor prices keep moving and shipments are late\" => supplier_risk",
+        ])
+
+        try:
+            response_text, _ = self._generate_openrouter_text(
+                prompt,
+                model=self.openrouter_signal_model,
+                temperature=0,
+                max_tokens=500,
+                response_format=self._signal_response_format(),
+            )
+            parsed = self._parse_signal_response(response_text, set(area_notes.keys()))
+            for area, regex_signals in fallback.items():
+                parsed.setdefault(area, [])
+                for signal in regex_signals:
+                    if signal not in parsed[area]:
+                        parsed[area].append(signal)
+            return parsed
+        except Exception:
+            return fallback
+
+    def _parse_signal_response(self, text: str, allowed_areas: set[str]) -> Dict[str, List[str]]:
+        valid_signals = set(NOTE_SIGNAL_PATTERNS.keys())
+        cleaned = text.strip()
+        cleaned = cleaned.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+        data = json.loads(cleaned)
+        areas = data.get("areas", [])
+        if not isinstance(areas, list):
+            return {}
+
+        parsed: Dict[str, List[str]] = {}
+        for item in areas:
+            if not isinstance(item, dict):
+                continue
+            area = str(item.get("area", ""))
+            if area not in allowed_areas:
+                continue
+            signals = []
+            for signal in item.get("signals", []):
+                if signal in valid_signals and signal not in signals:
+                    signals.append(signal)
+            parsed[area] = signals
+
+        return parsed
+
+    def _functional_tier_key(self, tier: str | None) -> str:
+        if tier == "Responding":
+            return "Responding"
+        if tier == "Building":
+            return "Building_Phase"
+        return "Optimizing"
+
+    def _build_recommendation_library(self) -> List[Dict[str, Any]]:
+        items = []
+        for tier_key, catalyst_map in config.functional_areas.items():
+            if not isinstance(catalyst_map, dict):
+                continue
+            for catalyst_key, area_map in catalyst_map.items():
+                if not isinstance(area_map, dict):
+                    continue
+                for area, recommendations in area_map.items():
+                    for index, recommendation in enumerate(recommendations or [], 1):
+                        text = str(recommendation.get("recommendation", "")).strip()
+                        if not text:
+                            continue
+                        items.append({
+                            "id": f"{tier_key}|{catalyst_key}|{area}|{index}",
+                            "tier_key": tier_key,
+                            "catalyst_key": catalyst_key,
+                            "area": area,
+                            "index": index,
+                            "tone_focus": recommendation.get("tone_focus", ""),
+                            "recommendation": text,
+                        })
+        return items
+
+    def _ensure_recommendation_library_embeddings(self) -> List[List[float]]:
+        if self._recommendation_library_embeddings is None:
+            texts = [
+                self._embedding_text_for_recommendation(item)
+                for item in self._recommendation_library_items
+            ]
+            self._recommendation_library_embeddings = self._generate_openrouter_embeddings(texts)
+        return self._recommendation_library_embeddings
+
+    def _embedding_text_for_recommendation(self, item: Dict[str, Any]) -> str:
+        return " | ".join([
+            f"Area: {item.get('area', '').replace('_', ' & ')}",
+            f"Tone: {item.get('tone_focus', '')}",
+            f"Recommendation: {item.get('recommendation', '')}",
+        ])
+
+    def _embedding_text_for_note(
+        self,
+        *,
+        area: str,
+        note: str,
+        catalyst: str,
+        tier: str,
+        weak_spots: List[str],
+    ) -> str:
+        weak_text = "; ".join(weak_spots[:6])
+        return " | ".join([
+            f"Area: {area.replace('_', ' & ')}",
+            f"Catalyst: {catalyst}",
+            f"Tier: {tier}",
+            f"Owner note: {note}",
+            f"Weak spots: {weak_text}",
+        ])
+
+    def _cosine_similarity(self, left: List[float], right: List[float]) -> float:
+        if not left or not right or len(left) != len(right):
+            return 0.0
+        numerator = sum(a * b for a, b in zip(left, right))
+        left_norm = math.sqrt(sum(a * a for a in left))
+        right_norm = math.sqrt(sum(b * b for b in right))
+        if not left_norm or not right_norm:
+            return 0.0
+        return numerator / (left_norm * right_norm)
+
+    def retrieve_semantic_recommendation_candidates(
+        self,
+        queries: Dict[str, Dict[str, Any]],
+        *,
+        limit: int = 15,
+    ) -> Dict[str, List[Dict[str, Any]]]:
+        if not queries:
+            return {}
+
+        try:
+            library_embeddings = self._ensure_recommendation_library_embeddings()
+            query_areas = list(queries.keys())
+            query_texts = [
+                self._embedding_text_for_note(
+                    area=area,
+                    note=queries[area]["note"],
+                    catalyst=queries[area]["catalyst"],
+                    tier=queries[area]["tier"],
+                    weak_spots=queries[area].get("weak_spots", []),
+                )
+                for area in query_areas
+            ]
+            query_embeddings = self._generate_openrouter_embeddings(query_texts)
+        except Exception:
+            return {area: [] for area in queries}
+
+        results: Dict[str, List[Dict[str, Any]]] = {}
+        for area, query_embedding in zip(query_areas, query_embeddings):
+            scored = []
+            for item, item_embedding in zip(self._recommendation_library_items, library_embeddings):
+                candidate = dict(item)
+                candidate["similarity"] = round(self._cosine_similarity(query_embedding, item_embedding), 4)
+                scored.append(candidate)
+            scored.sort(key=lambda item: item["similarity"], reverse=True)
+            results[area] = scored[:limit]
+
+        return results
+
+    def _format_semantic_candidates(self, candidates: List[Dict[str, Any]]) -> str:
+        if not candidates:
+            return "  No semantic alternate candidates were available; use the primary recommendations."
+
+        lines = []
+        for index, item in enumerate(candidates, 1):
+            lines.append(
+                "  "
+                f"{index}. [{item['id']}; similarity={item['similarity']}] "
+                f"Original context: tier={item['tier_key']}, catalyst={item['catalyst_key']}, "
+                f"area={item['area']}. Recommendation: {item['recommendation']}"
+            )
+        return "\n".join(lines)
 
     def generate_priority_recommendations(
         self,
@@ -489,11 +814,7 @@ class AssessmentService:
 
         # Normalize catalyst name to match JSON keys
         catalyst_key = catalyst.replace(" ", "_")
-        
-        # Get tier for functional area lookup
-        tier_key = "Responding" if result.overall_tier == "Responding" else \
-                    "Building_Phase" if result.overall_tier == "Building" else "Optimizing"
-        
+
         # Catalyst Context
         catalyst_info = config.catalysts.get(catalyst, {})
         catalyst_definition = catalyst_info.get("definition", "No definition available.")
@@ -586,9 +907,24 @@ class AssessmentService:
                 "Complete at least one section to receive tailored next steps."
             )
 
+        semantic_queries = {}
+        for cat in sorted_areas:
+            area = cat.name
+            note = area_notes.get(area, "").strip()
+            if not note:
+                continue
+            semantic_queries[area] = {
+                "note": note[:800],
+                "catalyst": catalyst,
+                "tier": cat.tier if cat.tier is not None else result.overall_tier,
+                "weak_spots": weak_spots.get(area, []),
+            }
+        semantic_candidates_by_area = self.retrieve_semantic_recommendation_candidates(semantic_queries)
+
         for cat in sorted_areas:
             tier = cat.tier if cat.tier is not None else result.overall_tier
             area = cat.name
+            area_tier_key = self._functional_tier_key(tier)
 
             # Get tone introduction
             tier_intros = config.tone_matrix.get(tier, {})
@@ -598,7 +934,7 @@ class AssessmentService:
             # Get detailed guidance from functional_areas.json
             detailed_data = (
                 config.functional_areas
-                .get(tier_key, {})
+                .get(area_tier_key, {})
                 .get(catalyst_key, {})
                 .get(area, [])
             )
@@ -626,9 +962,12 @@ class AssessmentService:
             # Format recommendations
             if detailed_data:
                 recommendations_text = "\n".join([
-                    f"  {j+1}. {rec['recommendation']}" 
+                    f"  A{j+1}. {rec['recommendation']}"
                     for j, rec in enumerate(detailed_data[:3])
                 ])
+                semantic_candidates_text = self._format_semantic_candidates(
+                    semantic_candidates_by_area.get(area, [])
+                )
 
                 prompt_parts.append(
                     f"### {area.replace('_', ' & ')}\n"
@@ -638,13 +977,23 @@ class AssessmentService:
                     f"**Catalyst Context:** This business is experiencing '{catalyst}' — {catalyst_definition} "
                     f"Frame all advice in this section specifically through that lens. "
                     f"What does {catalyst} mean for how they should approach {area.replace('_', ' & ')} right now?\n"
+                    f"**Actual Area Tier:** {tier}. Use this for framing, but do not reveal the tier label to the user.\n"
                     f"\n"
-                    f"**Base Your Advice On These Core Recommendations:**\n"
+                    f"**Primary Anchor Recommendations (default to these):**\n"
                     f"{recommendations_text}\n"
+                    f"\n"
+                    f"**Semantic Alternate Candidates from the Wider Library:**\n"
+                    f"{semantic_candidates_text}\n"
                     f"{weak_text}"
                     f"{area_note_text}"
                     f"\n"
-                    f"**Instructions:** Expand each recommendation above into a 3-4 sentence paragraph. "
+                    f"**Selection Instructions:** Expand three recommendations into 3-4 sentence paragraphs. "
+                    f"The three primary anchor recommendations are the default and should remain in place unless an alternate candidate more directly addresses what the owner's note describes. "
+                    f"You may substitute a semantic alternate only when it is clearly stronger for the note, specific gaps, and current catalyst/tier context. "
+                    f"If you substitute, reframe the alternate for this business's actual catalyst ('{catalyst}') and actual area tier ('{tier}'), not the alternate's original catalyst or tier. "
+                    f"Do not mention source IDs, similarity scores, original tiers, or original catalysts to the user. "
+                    f"For each substitution, include an override object in the structured response explaining the reason; do not put the reason in the visible report.\n"
+                    f"**Writing Instructions:** "
                     f"Each paragraph should naturally explain the specific action, its business impact, "
                     f"and a concrete first step — without using those as headings. "
                     f"If specific gaps are listed above, address them directly within the relevant paragraphs. "
@@ -660,6 +1009,7 @@ class AssessmentService:
                     f"\n"
                     f"**Catalyst Context:** This business is experiencing '{catalyst}' — {catalyst_definition} "
                     f"Frame all advice specifically through that lens.\n"
+                    f"**Actual Area Tier:** {tier}. Use this for framing, but do not reveal the tier label to the user.\n"
                     f"{weak_text}"
                     f"{area_note_text}"
                     f"\n"
@@ -683,21 +1033,73 @@ class AssessmentService:
             "- Total response: 1,500 - 1,800 words",
             "- Each functional area: 250-300 words (roughly 3 paragraphs of 3-4 sentences each)",
             "",
-            "Begin your recommendations now, starting directly with the first functional area:"
+            "## STRUCTURED RESPONSE REQUIREMENTS:",
+            "- Return JSON with report_markdown and overrides.",
+            "- report_markdown must contain only the user-visible recommendations, starting directly with the first functional area.",
+            "- overrides must be an empty array if no semantic alternate candidates replace primary anchor recommendations.",
+            "- If an override happens, include the area, recommendation number, the anchor recommendation text that was replaced, the replacement source ID, and a brief reason.",
+            "",
+            "Begin now."
         ])
 
         prompt = "\n".join(prompt_parts)
 
         try:
+            try:
+                response_text, finish_reason = self._generate_openrouter_text(
+                    prompt,
+                    model=self.openrouter_recommendation_model,
+                    temperature=0.7,
+                    max_tokens=8000,
+                    response_format=self._recommendation_response_format(),
+                )
+                parsed = self._parse_recommendation_response(response_text)
+                if parsed:
+                    if parsed["overrides"]:
+                        print(
+                            "Recommendation semantic overrides:",
+                            json.dumps(parsed["overrides"], ensure_ascii=False),
+                        )
+                    return parsed["report_markdown"]
+            except Exception:
+                pass
+
             response_text, finish_reason = self._generate_openrouter_text(
                 prompt,
                 model=self.openrouter_recommendation_model,
                 temperature=0.7,
                 max_tokens=8000,
             )
-            return response_text
+            parsed = self._parse_recommendation_response(response_text)
+            return parsed["report_markdown"] if parsed else response_text
         except Exception as e:
             return f"Error generating recommendations: {e}"
+
+    def _parse_recommendation_response(self, text: str) -> Dict[str, Any] | None:
+        cleaned = text.strip()
+        cleaned = cleaned.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+        if not cleaned:
+            return None
+        data = json.loads(cleaned)
+        report_markdown = str(data.get("report_markdown", "")).strip()
+        overrides = data.get("overrides", [])
+        if not report_markdown or not isinstance(overrides, list):
+            return None
+        normalized_overrides = []
+        for item in overrides:
+            if not isinstance(item, dict):
+                continue
+            normalized_overrides.append({
+                "area": str(item.get("area", ""))[:80],
+                "recommendation_number": item.get("recommendation_number"),
+                "anchor_replaced": str(item.get("anchor_replaced", ""))[:500],
+                "replacement_source_id": str(item.get("replacement_source_id", ""))[:120],
+                "reason": str(item.get("reason", ""))[:500],
+            })
+        return {
+            "report_markdown": report_markdown,
+            "overrides": normalized_overrides,
+        }
 
 
     def _get_tier(self, score: float) -> str:

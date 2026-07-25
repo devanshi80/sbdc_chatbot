@@ -127,10 +127,12 @@ def calculate_priority_candidates(
     category_scores: Dict[str, Any],
     answers: Iterable[Any],
     area_notes: Optional[Dict[str, str]] = None,
+    area_note_signals: Optional[Dict[str, List[str]]] = None,
     question_to_area_map: Optional[Dict[str, str]] = None,
     limit: int = 8,
 ) -> List[Dict[str, Any]]:
     area_notes = area_notes or {}
+    area_note_signals = area_note_signals or {}
     question_to_area_map = question_to_area_map or {
         q["id"]: area
         for area, area_questions in questions.get("assessment", {}).items()
@@ -170,7 +172,9 @@ def calculate_priority_candidates(
             candidate_score *= 1.1
 
         note = area_notes.get(area, "")
-        note_signals = detect_note_signals(note)
+        note_signals = area_note_signals.get(area)
+        if note_signals is None:
+            note_signals = detect_note_signals(note)
         boost_signals = [
             signal
             for signal in note_signals

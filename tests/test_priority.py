@@ -123,6 +123,146 @@ class PriorityScoringTests(unittest.TestCase):
 
         self.assertLessEqual(boosted - base, base * 0.25)
 
+    def test_preclassified_note_signals_feed_existing_scoring(self):
+        candidates = calculate_priority_candidates(
+            catalyst="Crisis",
+            questions=self.questions,
+            rankings=self.rankings,
+            category_scores=self.category_scores,
+            answers=[{"question_id": "FIN-001", "score": 1}],
+            area_notes={"Financials": "Hard to bring my employees into the fold."},
+            area_note_signals={"Financials": ["owner_dependency", "team_process_issue"]},
+        )
+
+        self.assertEqual(candidates[0]["note_signals"], ["owner_dependency", "team_process_issue"])
+
+
+class SignalClassificationTests(unittest.TestCase):
+    def test_priority_and_signal_schema_helpers_are_distinct(self):
+        os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
+        services = importlib.import_module("services")
+        service = services.AssessmentService.__new__(services.AssessmentService)
+
+        self.assertEqual(
+            service._priority_response_format()["json_schema"]["name"],
+            "priority_recommendations",
+        )
+        self.assertEqual(
+            service._signal_response_format()["json_schema"]["name"],
+            "note_signal_classification",
+        )
+
+    def test_llm_signal_classifier_handles_semantic_wording(self):
+        os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
+        services = importlib.import_module("services")
+        service = services.AssessmentService.__new__(services.AssessmentService)
+        service.openrouter_signal_model = "test-model"
+
+        def fake_generate(prompt, *, model, temperature, max_tokens, response_format=None):
+            return (
+                json.dumps({
+                    "areas": [
+                        {
+                            "area": "People",
+                            "signals": ["owner_dependency", "team_process_issue"],
+                        }
+                    ]
+                }),
+                "stop",
+            )
+
+        service._generate_openrouter_text = fake_generate
+
+        signals = service.classify_area_note_signals({
+            "People": "It is hard to bring my employees into the fold."
+        })
+
+        self.assertEqual(signals["People"], ["owner_dependency", "team_process_issue"])
+
+    def test_llm_signal_classifier_falls_back_to_regex(self):
+        os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
+        services = importlib.import_module("services")
+        service = services.AssessmentService.__new__(services.AssessmentService)
+        service.openrouter_signal_model = "test-model"
+
+        def fake_generate(prompt, *, model, temperature, max_tokens, response_format=None):
+            raise RuntimeError("model unavailable")
+
+        service._generate_openrouter_text = fake_generate
+
+        signals = service.classify_area_note_signals({
+            "Financials": "Cash is tight and payroll is stressful."
+        })
+
+        self.assertEqual(signals["Financials"], ["financial_urgency"])
+
+
+class SemanticRecommendationRetrievalTests(unittest.TestCase):
+    def test_retrieves_candidates_across_full_library(self):
+        os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
+        services = importlib.import_module("services")
+        service = services.AssessmentService.__new__(services.AssessmentService)
+        service._recommendation_library_items = [
+            {
+                "id": "Responding|Crisis|Financials|1",
+                "tier_key": "Responding",
+                "catalyst_key": "Crisis",
+                "area": "Financials",
+                "index": 1,
+                "tone_focus": "Cash",
+                "recommendation": "Preserve cash.",
+            },
+            {
+                "id": "Optimizing|Lifestyle_Change|Employees|1",
+                "tier_key": "Optimizing",
+                "catalyst_key": "Lifestyle_Change",
+                "area": "Employees",
+                "index": 1,
+                "tone_focus": "Delegate",
+                "recommendation": "Empower team leads.",
+            },
+        ]
+        service._recommendation_library_embeddings = None
+
+        def fake_embeddings(inputs):
+            if len(inputs) == 2:
+                return [[1.0, 0.0], [0.0, 1.0]]
+            return [[0.0, 1.0]]
+
+        service._generate_openrouter_embeddings = fake_embeddings
+
+        results = service.retrieve_semantic_recommendation_candidates({
+            "Financials": {
+                "note": "I need my team to own more of the work.",
+                "catalyst": "Crisis",
+                "tier": "Responding",
+                "weak_spots": [],
+            }
+        }, limit=1)
+
+        self.assertEqual(results["Financials"][0]["id"], "Optimizing|Lifestyle_Change|Employees|1")
+
+    def test_recommendation_response_parser_returns_markdown_and_overrides(self):
+        os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
+        services = importlib.import_module("services")
+        service = services.AssessmentService.__new__(services.AssessmentService)
+
+        parsed = service._parse_recommendation_response(json.dumps({
+            "report_markdown": "### Financials\n1. Do the useful thing.",
+            "overrides": [
+                {
+                    "area": "Financials",
+                    "recommendation_number": 2,
+                    "anchor_replaced": "Anchor",
+                    "replacement_source_id": "Optimizing|Lifestyle_Change|Employees|1",
+                    "reason": "The note described delegation.",
+                }
+            ],
+        }))
+
+        self.assertEqual(parsed["report_markdown"], "### Financials\n1. Do the useful thing.")
+        self.assertEqual(parsed["overrides"][0]["replacement_source_id"], "Optimizing|Lifestyle_Change|Employees|1")
+
 
 class PriorityConfigCoverageTests(unittest.TestCase):
     def test_every_scorable_question_has_all_catalyst_rankings(self):

@@ -813,11 +813,13 @@
         answers = {};
         areaNotes = {};
         skippedSections = {};
+        currentIndex = 0;
         Object.keys(lastVisitedIndexBySection).forEach((sectionName) => {
             delete lastVisitedIndexBySection[sectionName];
         });
         saveLocal();
         lastAssessmentResult = null;
+        lastAssessmentPayload = null;
 
         setAssessmentDisabled(false);
         questionArea.classList.remove("hidden");
