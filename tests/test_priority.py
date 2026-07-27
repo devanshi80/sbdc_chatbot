@@ -8,7 +8,7 @@ from pathlib import Path
 from types import ModuleType, SimpleNamespace
 
 from priority import calculate_priority_candidates
-from schema import Answer, AssessmentResponse
+from schema import Answer, AssessmentResponse, CategoryScore
 
 
 def category(score, tier="Building", answered=1):
@@ -262,6 +262,45 @@ class SemanticRecommendationRetrievalTests(unittest.TestCase):
 
         self.assertEqual(parsed["report_markdown"], "### Financials\n1. Do the useful thing.")
         self.assertEqual(parsed["overrides"][0]["replacement_source_id"], "Optimizing|Lifestyle_Change|Employees|1")
+
+    def test_missing_recommendation_areas_detects_partial_report(self):
+        os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
+        services = importlib.import_module("services")
+        service = services.AssessmentService.__new__(services.AssessmentService)
+
+        missing = service._missing_recommendation_areas(
+            "### Customers & Marketing\n1. Keep customers updated.",
+            ["Customers_Marketing", "Financials", "Operations"],
+        )
+
+        self.assertEqual(missing, ["Financials", "Operations"])
+
+    def test_append_fallback_recommendation_sections_adds_missing_areas(self):
+        os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
+        services = importlib.import_module("services")
+        service = services.AssessmentService.__new__(services.AssessmentService)
+
+        report = service._append_fallback_recommendation_sections(
+            "### Customers & Marketing\n1. Keep customers updated.",
+            ["Financials"],
+            [
+                CategoryScore(
+                    name="Financials",
+                    raw_score=4,
+                    normalized_score=0.5,
+                    tier="Building",
+                    questions_answered=2,
+                    total_questions=10,
+                )
+            ],
+            "Crisis",
+            "A disruption needs quick action.",
+            {},
+            {},
+        )
+
+        self.assertIn("### Customers & Marketing", report)
+        self.assertIn("### Financials", report)
 
 
 class PriorityConfigCoverageTests(unittest.TestCase):
