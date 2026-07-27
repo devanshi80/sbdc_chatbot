@@ -967,44 +967,104 @@ class AssessmentService:
         semantic_candidates_text = self._format_semantic_candidates(
             semantic_candidates_by_area.get(area, [])
         )
-        focus_text = "\n".join([f"- {focus}" for focus in focus_areas[:5]])
 
-        prompt = "\n".join([
-            "You are an experienced small business advisor.",
-            "Write exactly one functional area section for a detailed SBDC assessment report.",
+        prompt_parts = [
+            "You are an experienced small business advisor with expertise across retail, service, manufacturing, and professional services.",
             "",
-            "Business context:",
-            f"- Current situation: {catalyst}",
-            f"- What this means: {catalyst_definition}",
-            f"- Overall business state: {diagnosis}",
-            f"- Key priorities:\n{focus_text}" if focus_text else "- Key priorities: Use practical stability and growth priorities.",
-            f"\nAdditional business context:\n{business_context}" if business_context else "",
+            "## BUSINESS CONTEXT:",
+            f"**Current Situation:** {catalyst}",
+            f"**What This Means:** {catalyst_definition}",
+            f"**Overall Business State:** {diagnosis}",
+        ]
+
+        if business_context:
+            prompt_parts.extend([
+                "",
+                "## ADDITIONAL BUSINESS CONTEXT:",
+                business_context,
+            ])
+
+        prompt_parts.extend([
             "",
-            f"Functional area: {area_display}",
-            f"Opening statement, use exactly: {intro}",
-            f"Actual area tier: {tier}. Use this for framing, but do not reveal the tier label.",
+            "## KEY PRIORITIES FOR THIS SITUATION:",
+        ])
+
+        for i, focus in enumerate(focus_areas[:5], 1):
+            prompt_parts.append(f"{i}. {focus}")
+
+        prompt_parts.extend([
             "",
-            "Primary anchor recommendations, default to these:",
+            "## CRITICAL WRITING GUIDELINES:",
+            "**DO NOT:**",
+            "- Use phrases like 'Of course', 'Here are', or other unnecessary preambles",
+            "- Use headings like 'WHAT to do', 'WHY it matters', 'HOW to start'",
+            "- Show scores or tier levels to the user (e.g., '(Current Score: 0.50 - Building)')",
+            "- Use bullet points with • symbols",
+            "",
+            "**DO:**",
+            "- Start each functional area directly with the opening statement provided",
+            "- Write each recommendation as a cohesive 3-4 sentence paragraph",
+            "- Naturally integrate what to do, why it matters, and how to start within the paragraph flow",
+            "- Use plain, conversational language at 8th-grade reading level",
+            "- Define business terms in parentheses when first used",
+            "- If specific gaps are listed for an area, weave them directly and naturally into the advice",
+            "- Frame every recommendation through the lens of the business's current catalyst situation",
+            "",
+            "## FUNCTIONAL AREA RECOMMENDATIONS:",
+            "You must provide recommendations for the single functional area included in this prompt. Do not add any areas not listed below.",
+            "",
+            f"### {area_display}",
+            "",
+            f"**Opening Statement (use this exactly):** {intro}",
+            "",
+            f"**Catalyst Context:** This business is experiencing '{catalyst}' — {catalyst_definition} "
+            f"Frame all advice in this section specifically through that lens. "
+            f"What does {catalyst} mean for how they should approach {area_display} right now?",
+            f"**Actual Area Tier:** {tier}. Use this for framing, but do not reveal the tier label to the user.",
+            "",
+            "**Primary Anchor Recommendations (default to these):**",
             recommendations_text,
             "",
-            "Semantic alternate candidates from the wider library:",
+            "**Semantic Alternate Candidates from the Wider Library:**",
             semantic_candidates_text,
             weak_text,
             area_note_text,
             "",
-            "Writing requirements:",
-            f"- Start with the heading exactly: ### {area_display}",
-            "- Put the opening statement directly under the heading.",
-            "- Write exactly 3 numbered recommendations, restarting at 1.",
-            "- Each recommendation should be one cohesive 3-4 sentence paragraph.",
-            "- Naturally explain what to do, why it matters, and a concrete first step without using those as headings.",
-            "- Use plain, conversational language at an 8th-grade reading level.",
-            "- Do not show scores, tier labels, source IDs, similarity scores, original tiers, or original catalysts.",
-            "- Do not use bullet points in the user-visible report.",
+            "**Selection Instructions:** Expand three recommendations into 3-4 sentence paragraphs. "
+            "The three primary anchor recommendations are the default and should remain in place unless an alternate candidate more directly addresses what the owner's note describes. "
+            "You may substitute a semantic alternate only when it is clearly stronger for the note, specific gaps, and current catalyst/tier context. "
+            f"If you substitute, reframe the alternate for this business's actual catalyst ('{catalyst}') and actual area tier ('{tier}'), not the alternate's original catalyst or tier. "
+            "Do not mention source IDs, similarity scores, original tiers, or original catalysts to the user. "
+            "For each substitution, include an override object in the structured response explaining the reason; do not put the reason in the visible report.",
+            "**Writing Instructions:** "
+            "Each paragraph should naturally explain the specific action, its business impact, "
+            "and a concrete first step — without using those as headings. "
+            "If specific gaps are listed above, address them directly within the relevant paragraphs. "
+            "If additional context is provided above, incorporate it directly and concretely. "
+            "Write in a conversational but professional tone.",
+            f"{'─' * 80}",
+            "",
+            "## FORMATTING REQUIREMENTS:",
+            f"- Use this exact markdown heading for the functional area: '### {area_display}'",
+            "- Do not number the functional area heading",
+            "- Number your recommendations 1, 2, 3 within this area",
+            "- Write each recommendation as a cohesive paragraph, NOT bullet points",
+            "- Use **bold** sparingly for key terms only",
+            "- Do NOT show scores or tier information",
+            "",
+            "## LENGTH REQUIREMENT:",
+            "- Total response for this functional area: 250-300 words (roughly 3 paragraphs of 3-4 sentences each)",
+            "",
+            "## STRUCTURED RESPONSE REQUIREMENTS:",
             "- Return JSON with report_markdown and overrides.",
-            "- report_markdown must contain only this one user-visible section.",
-            "- overrides must be an empty array unless a semantic alternate replaces an anchor recommendation.",
+            "- report_markdown must contain only the user-visible recommendations for this one functional area, starting directly with the functional area heading.",
+            "- overrides must be an empty array if no semantic alternate candidates replace primary anchor recommendations.",
+            "- If an override happens, include the area, recommendation number, the anchor recommendation text that was replaced, the replacement source ID, and a brief reason.",
+            "",
+            "Begin now."
         ])
+
+        prompt = "\n".join(prompt_parts)
 
         try:
             response_text, finish_reason = self._generate_openrouter_text(
