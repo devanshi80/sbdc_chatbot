@@ -291,11 +291,60 @@ async def export_pdf(payload: Dict[str, Any]):
 
             return max(220, content_height + 16)
 
+        def normalize_priority_cards(raw_cards):
+            if not isinstance(raw_cards, list):
+                return []
+
+            normalized = []
+            for item in raw_cards:
+                if not isinstance(item, dict):
+                    continue
+
+                card_type = str(item.get("type", "key_area")).strip().lower().replace("-", "_").replace(" ", "_")
+                normalized.append({
+                    "type": "quick_win" if card_type == "quick_win" else "key_area",
+                    "label": item.get("label") or ("Quick Win" if card_type == "quick_win" else "Key Area to Consider"),
+                    "title": item.get("title") or item.get("area") or "Recommended Next Step",
+                    "summary": item.get("summary") or item.get("what_to_do") or item.get("recommendation") or "",
+                    "first_step": item.get("first_step") or item.get("next_step") or "",
+                })
+
+                if len(normalized) == 3:
+                    break
+
+            return normalized
+
+        def fallback_priority_cards_from_categories():
+            categories = payload.get("priority_categories", [])
+            if not isinstance(categories, list):
+                categories = []
+
+            cards = []
+            for area in categories[:2]:
+                cards.append({
+                    "type": "key_area",
+                    "label": "Key Area to Consider",
+                    "title": str(area or "Business Planning"),
+                    "summary": "Use the recommendations for this area as a starting point for your next advisor conversation.",
+                    "first_step": "Choose one recommendation in this area and write down the decision it would help you make.",
+                })
+
+            if len(cards) < 3:
+                cards.append({
+                    "type": "quick_win",
+                    "label": "Quick Win",
+                    "title": "Report Review Starter",
+                    "summary": "Start with the part of the report that feels most connected to your current business decision.",
+                    "first_step": "Note one recommendation you want to act on this week.",
+                })
+
+            return cards[:3]
+
         def draw_priority_cards(cards):
             nonlocal y
             card_gap = 12
             card_width = (width - 100 - (card_gap * 2)) / 3
-            visible_cards = [item for item in cards[:3] if isinstance(item, dict)]
+            visible_cards = normalize_priority_cards(cards)
             if not visible_cards:
                 return
 
@@ -311,6 +360,9 @@ async def export_pdf(payload: Dict[str, Any]):
                 accent_color = pdf_color("#c5050c" if is_quick_win else "#0c2848")
                 text_color = pdf_color("#334155")
                 muted_color = pdf_color("#64748b")
+
+                pdf.setFillColor(pdf_color("#e6edf4" if not is_quick_win else "#f7dfcb"))
+                pdf.roundRect(left + 2, card_top - card_height - 2, card_width, card_height, 8, fill=1, stroke=0)
 
                 pdf.setFillColor(fill_color)
                 pdf.setStrokeColor(border_color)
@@ -397,8 +449,11 @@ async def export_pdf(payload: Dict[str, Any]):
         pdf.drawString(x, y, f"Catalyst: {payload.get('catalyst', 'N/A')}")
         add_spacing(25)
 
-        priority_recommendations = payload.get("priority_recommendations", [])
-        if isinstance(priority_recommendations, list) and priority_recommendations:
+        priority_recommendations = normalize_priority_cards(payload.get("priority_recommendations", []))
+        if not priority_recommendations:
+            priority_recommendations = fallback_priority_cards_from_categories()
+
+        if priority_recommendations:
             pdf.setFont("Helvetica-Bold", 14)
             pdf.drawString(x, y, "Next Steps to Move Your Business Forward")
             add_spacing(15)
