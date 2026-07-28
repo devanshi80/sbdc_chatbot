@@ -263,6 +263,42 @@ class SemanticRecommendationRetrievalTests(unittest.TestCase):
         self.assertEqual(parsed["report_markdown"], "### Financials\n1. Do the useful thing.")
         self.assertEqual(parsed["overrides"][0]["replacement_source_id"], "Optimizing|Lifestyle_Change|Employees|1")
 
+    def test_priority_response_parser_keeps_rationale(self):
+        os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
+        services = importlib.import_module("services")
+        service = services.AssessmentService.__new__(services.AssessmentService)
+
+        parsed = service._parse_priority_response(json.dumps({
+            "cards": [
+                {
+                    "type": "key_area",
+                    "label": "Key Area to Consider",
+                    "title": "Cash Flow",
+                    "summary": "Build a weekly view.",
+                    "first_step": "List bills due.",
+                    "rationale": "Financial gaps and owner focus made cash visibility useful.",
+                },
+                {
+                    "type": "key_area",
+                    "label": "Key Area to Consider",
+                    "title": "Process Clarity",
+                    "summary": "Document repeated work.",
+                    "first_step": "Write one process.",
+                    "rationale": "Operations signals pointed to repeated work.",
+                },
+                {
+                    "type": "quick_win",
+                    "label": "Quick Win",
+                    "title": "One Question",
+                    "summary": "Prepare one advisor question.",
+                    "first_step": "Write the question.",
+                    "rationale": "This is a fast action tied to the report.",
+                },
+            ],
+        }))
+
+        self.assertEqual(parsed[0]["rationale"], "Financial gaps and owner focus made cash visibility useful.")
+
     def test_missing_recommendation_areas_detects_partial_report(self):
         os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
         services = importlib.import_module("services")
@@ -363,7 +399,7 @@ class AssessResponseShapeTests(unittest.TestCase):
                     },
                 )
 
-            def generate_priority_recommendations(self, result, catalyst, answers, area_notes):
+            def generate_priority_recommendations(self, result, catalyst, answers, area_notes, owner_focus_area=None):
                 return [
                     {"type": "key_area", "label": "Key Area to Consider", "title": "A", "summary": "B", "first_step": "C"},
                     {"type": "key_area", "label": "Key Area to Consider", "title": "D", "summary": "E", "first_step": "F"},
@@ -390,6 +426,7 @@ class AssessResponseShapeTests(unittest.TestCase):
 
         self.assertEqual(len(payload["priority_recommendations"]), 3)
         self.assertEqual(payload["priority_recommendations"][2]["type"], "quick_win")
+        self.assertEqual(payload["owner_focus_area"], "not_sure")
         self.assertIn("summary", payload["priority_recommendations"][0])
         self.assertNotIn("recommendations", payload)
         self.assertNotIn("recommendations_status", payload)
@@ -407,7 +444,7 @@ class AssessResponseShapeTests(unittest.TestCase):
                     category_scores={},
                 )
 
-            def generate_recommendations(self, result, catalyst, answers, area_notes, skipped_sections=None):
+            def generate_recommendations(self, result, catalyst, answers, area_notes, skipped_sections=None, owner_focus_area=None):
                 return "Full report"
 
         original_service = main.service

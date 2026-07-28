@@ -36,6 +36,15 @@ class AssessmentResponse(BaseModel):
     answers: List[Answer]
     area_notes: Dict[str, str] = {}
     skipped_sections: List[str] = []
+    owner_focus_area: Optional[Literal[
+        "Financials",
+        "Customers_Marketing",
+        "Products_Services",
+        "Operations",
+        "Employees",
+        "Leadership",
+        "not_sure",
+    ]] = "not_sure"
 
 
 # Per-category computed score

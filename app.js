@@ -11,6 +11,7 @@
     let lastAssessmentResult = null; 
     let lastAssessmentPayload = null;
     let fullRecommendationsLoading = false;
+    let fullRecommendationsReady = false;
     const lastVisitedIndexBySection = {};
     const assessmentFocusDefinitions = {
         "Economic Uncertainty": "The economy or market conditions are changing, and I’m unsure how it will impact my business.",
@@ -28,6 +29,15 @@
         Customers_Marketing: "How are customers currently finding and experiencing your business—and what seems to be working or not working?",
         Products_Services: "How well do your current (or planned) products or services align with customer demand right now?",
         Leadership: "What feels most challenging or important about your role as a business owner or decision-maker right now?"
+    };
+    const functionalAreaDefinitions = {
+        Financials: "Money, cash flow, budgeting, pricing, debt, and financial decision-making.",
+        Customers_Marketing: "Finding, keeping, understanding, and communicating with customers.",
+        Products_Services: "What you sell, how well it fits customer needs, and how you improve or deliver it.",
+        Operations: "Day-to-day systems, processes, vendors, tools, and how work gets done.",
+        Employees: "Staffing, roles, training, communication, accountability, and team capacity.",
+        Leadership: "Planning, decision-making, goals, ownership, delegation, and long-term direction.",
+        not_sure: "Use my survey answers to decide where recommendations should focus."
     };
     const sectionList = document.getElementById("sectionList");
     const questionArea = document.getElementById("questionArea");
@@ -173,7 +183,7 @@
     }
 
     function getSectionScorableItems(sec) {
-        return sec.items.filter((q) => q.id !== "CATALYST-001" && q.kind !== "area_note");
+        return sec.items.filter((q) => q.id !== "CATALYST-001" && q.id !== "OWNER-FOCUS-001" && q.kind !== "area_note");
     }
 
     function isQuestionInSection(q, sectionName) {
@@ -371,12 +381,13 @@
     function computeProgress() {
         const total = data.flat.filter((q) =>
             q.id !== "CATALYST-001" &&
+            q.id !== "OWNER-FOCUS-001" &&
             q.kind !== "area_note" &&
             !isQuestionHiddenBySkip(q)
         ).length;
         const done = Object.entries(answers).filter(([id, value]) => {
             const q = indexById.has(id) ? data.flat[indexById.get(id)] : null;
-            return id !== "CATALYST-001" && value !== "N/A" && q && !isQuestionHiddenBySkip(q);
+            return id !== "CATALYST-001" && id !== "OWNER-FOCUS-001" && value !== "N/A" && q && !isQuestionHiddenBySkip(q);
         }).length;
         const pct = total ? Math.round((done / total) * 100) : 0;
 
@@ -429,6 +440,50 @@
             question: areaNotePrompts[areaName] || "",
             helperText: areaNoteIntro
         };
+    }
+
+    function renderOwnerFocusQuestion(q) {
+        const selected = answers[q.id] || "not_sure";
+        const tiles = Object.entries(q.scoring_scale)
+            .map(([value, label]) => {
+                const isSel = selected === value;
+                const desc = functionalAreaDefinitions[value] || "";
+
+                return `<button class="tile ${isSel ? "selected" : ""}" data-value="${escapeHTML(value)}" aria-pressed="${isSel}">
+                    ${escapeHTML(label)}
+                    <p style="font-size:12px;color:#666;margin-top:4px;">${escapeHTML(desc)}</p>
+                </button>`;
+            })
+            .join("");
+
+        questionArea.innerHTML = `
+            <article class="question-card" data-qid="${q.id}">
+                <div class="question-text">${escapeHTML(q.question)}</div>
+                <div class="tile-grid" role="group" aria-label="Answer choices for ${q.id}">
+                    ${tiles}
+                </div>
+            </article>
+        `;
+
+        questionArea.querySelectorAll(".tile").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                answers[q.id] = btn.getAttribute("data-value") || "not_sure";
+                saveLocal();
+
+                questionArea.querySelectorAll(".tile").forEach((b) => {
+                    const sel = b === btn;
+                    b.classList.toggle("selected", sel);
+                    b.setAttribute("aria-pressed", sel ? "true" : "false");
+                });
+
+                if (currentIndex < data.flat.length - 1) {
+                    currentIndex += 1;
+                    updateUI();
+                } else {
+                    updateUI();
+                }
+            });
+        });
     }
 
     function rememberCurrentSectionIndex() {
@@ -512,6 +567,7 @@
             const formattedAnswers = Object.entries(answers)
                 .filter(([question_id, value]) =>
                     question_id !== "CATALYST-001" &&
+                    question_id !== "OWNER-FOCUS-001" &&
                     value !== "N/A" &&
                     !isAnswerInSkippedSection(question_id)
                 )
@@ -535,7 +591,8 @@
                 priority_recommendations: lastAssessmentResult.priority_recommendations || [],
                 recommendations: lastAssessmentResult.recommendations,
                 answers: formattedAnswers,
-                area_notes: formattedAreaNotes
+                area_notes: formattedAreaNotes,
+                owner_focus_area: answers["OWNER-FOCUS-001"] || "not_sure"
             };
 
             const response = await fetch("export-pdf", {
@@ -566,6 +623,80 @@
         }
     }
 
+    function formatFocusAreaName(value) {
+        if (!value || value === "not_sure") return "Not sure / use assessment results";
+        return cleanAreaName(value);
+    }
+
+    function downloadRecommendationRationale() {
+        if (!lastAssessmentResult) {
+            alert("No assessment results available. Please complete and submit the assessment first.");
+            return;
+        }
+        if (fullRecommendationsLoading || !fullRecommendationsReady) {
+            alert("Selection rationale will be available after the full recommendations finish generating.");
+            return;
+        }
+
+        const lines = [
+            "SBDC Assessment Recommendation Rationale",
+            "",
+            "This file summarizes the evidence and selection logic used for the generated recommendations. It does not include hidden model chain-of-thought.",
+            "",
+            `Catalyst: ${answers["CATALYST-001"] || "Steady Growth"}`,
+            `Owner priority functional area: ${formatFocusAreaName(lastAssessmentResult.owner_focus_area || answers["OWNER-FOCUS-001"])}`,
+            "",
+            "Priority Cards",
+        ];
+
+        const priorityItems = Array.isArray(lastAssessmentResult.priority_recommendations)
+            ? lastAssessmentResult.priority_recommendations.slice(0, 3)
+            : [];
+
+        if (priorityItems.length) {
+            priorityItems.forEach((item, index) => {
+                lines.push("");
+                lines.push(`${index + 1}. ${item.label || "Priority Card"}: ${item.title || "Untitled"}`);
+                lines.push(`Rationale: ${item.rationale || "Selected from assessment, catalyst, owner focus, and recommendation candidate signals."}`);
+            });
+        } else {
+            lines.push("");
+            lines.push("No priority-card rationale was returned.");
+        }
+
+        lines.push("");
+        lines.push("Full Recommendation Decisions");
+
+        const rationales = Array.isArray(lastAssessmentResult.recommendation_rationales)
+            ? lastAssessmentResult.recommendation_rationales
+            : [];
+
+        if (rationales.length) {
+            rationales.forEach((item, index) => {
+                lines.push("");
+                lines.push(`${index + 1}. ${item.area || "Recommendation"}${item.recommendation_number ? ` #${item.recommendation_number}` : ""}`);
+                lines.push(`Decision source: ${item.replacement_source_id || "expanded anchor"}`);
+                if (item.anchor_replaced) {
+                    lines.push(`Anchor/reference: ${item.anchor_replaced}`);
+                }
+                lines.push(`Rationale: ${item.reason || "The recommendation was selected based on fit with the assessment and owner context."}`);
+            });
+        } else {
+            lines.push("");
+            lines.push("No full-recommendation adaptations, replacements, or synthesized decisions were reported. The generated recommendations expanded the selected anchors directly.");
+        }
+
+        const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `SBDC_Recommendation_Rationale_${new Date().toISOString().split("T")[0]}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    }
+
     function setFullRecommendationsLoading(isLoading) {
         fullRecommendationsLoading = isLoading;
 
@@ -576,6 +707,12 @@
         if (downloadBtn) {
             downloadBtn.disabled = isLoading;
             downloadBtn.textContent = isLoading ? "Generating PDF Content..." : "Download PDF Results";
+        }
+
+        const rationaleBtn = document.getElementById("downloadRationaleBtn");
+        if (rationaleBtn) {
+            rationaleBtn.disabled = isLoading || !fullRecommendationsReady;
+            rationaleBtn.textContent = isLoading ? "Generating Rationale..." : "Download Selection Rationale";
         }
 
         if (showFullBtn) {
@@ -596,6 +733,7 @@
     async function loadFullRecommendations() {
         if (!lastAssessmentPayload) return;
 
+        fullRecommendationsReady = false;
         setFullRecommendationsLoading(true);
 
         try {
@@ -611,6 +749,10 @@
 
             const out = await response.json().catch(() => ({}));
             lastAssessmentResult.recommendations = out.recommendations || "";
+            lastAssessmentResult.recommendation_rationales = Array.isArray(out.recommendation_rationales)
+                ? out.recommendation_rationales
+                : [];
+            fullRecommendationsReady = true;
 
             const fullRecommendations = document.getElementById("fullRecommendations");
             if (fullRecommendations) {
@@ -622,6 +764,8 @@
         } catch (err) {
             console.error("Failed to load full recommendations:", err);
             lastAssessmentResult.recommendations = "";
+            lastAssessmentResult.recommendation_rationales = [];
+            fullRecommendationsReady = false;
 
             const fullRecommendations = document.getElementById("fullRecommendations");
             if (fullRecommendations) {
@@ -717,6 +861,11 @@
                 }
                 saveLocal();
             });
+            return;
+        }
+
+        if (q.id === "OWNER-FOCUS-001") {
+            renderOwnerFocusQuestion(q);
             return;
         }
 
@@ -820,6 +969,7 @@
         saveLocal();
         lastAssessmentResult = null;
         lastAssessmentPayload = null;
+        fullRecommendationsReady = false;
 
         setAssessmentDisabled(false);
         questionArea.classList.remove("hidden");
@@ -904,6 +1054,10 @@
             <button id="downloadPdfBtn" type="button">
                 Generating PDF Content...
             </button>
+
+            <button id="downloadRationaleBtn" type="button">
+                Generating Rationale...
+            </button>
     
             <button id="bookCall" type="button">
                 Request SBDC Consultation
@@ -942,6 +1096,7 @@
     `;
 
         document.getElementById("downloadPdfBtn").addEventListener("click", downloadPDF);
+        document.getElementById("downloadRationaleBtn").addEventListener("click", downloadRecommendationRationale);
         document.getElementById("showFullRecommendations").addEventListener("click", () => {
             const fullRecommendations = document.getElementById("fullRecommendations");
             fullRecommendations.classList.remove("hidden");
@@ -1015,6 +1170,7 @@
                 .filter(([question_id, value]) =>
                     value !== "N/A" &&
                     question_id !== "CATALYST-001" &&
+                    question_id !== "OWNER-FOCUS-001" &&
                     !isAnswerInSkippedSection(question_id)
                 )
                 .map(([question_id, value]) => ({
@@ -1029,7 +1185,8 @@
                 catalyst: answers["CATALYST-001"] || "Steady Growth",
                 answers: filteredAnswers,
                 area_notes: filteredAreaNotes,
-                skipped_sections: skippedSectionNames
+                skipped_sections: skippedSectionNames,
+                owner_focus_area: answers["OWNER-FOCUS-001"] || "not_sure"
             };
             lastAssessmentPayload = payload;
 
@@ -1084,10 +1241,25 @@
                 }
             };
 
+            const ownerFocusQuestion = {
+                id: "OWNER-FOCUS-001",
+                question: "Which part of your business feels most important to work on right now?",
+                type: "Owner Focus Selection",
+                scoring_scale: {
+                    Financials: "Financials",
+                    Customers_Marketing: "Customers & Marketing",
+                    Products_Services: "Products & Services",
+                    Operations: "Operations",
+                    Employees: "Employees",
+                    Leadership: "Leadership",
+                    not_sure: "I'm not sure"
+                }
+            };
+
             const employeeGateQuestion = questions.assessment.Employees.find((q) => q.id === "EMP-000");
             const productsGateQuestion = questions.assessment.Products_Services.find((q) => q.id === "PDS-000");
 
-            const assessmentFocusItems = [catalystQuestion, employeeGateQuestion, productsGateQuestion].filter(Boolean);
+            const assessmentFocusItems = [catalystQuestion, ownerFocusQuestion, employeeGateQuestion, productsGateQuestion].filter(Boolean);
 
             const sections = [{
                 name: "Assessment Focus",
@@ -1137,6 +1309,9 @@
             // Set default catalyst answer if not already set
             if (!answers["CATALYST-001"]) {
                 answers["CATALYST-001"] = "Steady Growth";
+            }
+            if (!answers["OWNER-FOCUS-001"]) {
+                answers["OWNER-FOCUS-001"] = "not_sure";
             }
 
             if (cfg.prefillUrl) {

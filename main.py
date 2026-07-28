@@ -48,7 +48,8 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
             result,
             response.catalyst,
             response.answers,
-            response.area_notes
+            response.area_notes,
+            response.owner_focus_area,
         )
         
         response_data = {
@@ -65,6 +66,7 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
                 for name, cs in result.category_scores.items()
             },
             "priority_recommendations": priority_recommendations,
+            "owner_focus_area": response.owner_focus_area,
             "tier_distribution": service_instance.get_tier_distribution(result),
             "skipped_sections": response.skipped_sections
         }
@@ -79,15 +81,19 @@ async def generate_full_recommendations(response: AssessmentResponse) -> Dict[st
         service_instance = service
         result: AssessmentReport = service_instance.calculate_scores(response)
 
-        recommendations = service_instance.generate_recommendations(
+        recommendation_result = service_instance.generate_recommendations(
             result,
             response.catalyst,
             response.answers,
             response.area_notes,
-            response.skipped_sections
+            response.skipped_sections,
+            response.owner_focus_area,
         )
 
-        return {"recommendations": recommendations}
+        if isinstance(recommendation_result, dict):
+            return recommendation_result
+
+        return {"recommendations": recommendation_result, "recommendation_rationales": []}
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
