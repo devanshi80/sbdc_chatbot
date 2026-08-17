@@ -12,6 +12,9 @@
     let lastAssessmentPayload = null;
     let fullRecommendationsLoading = false;
     let fullRecommendationsReady = false;
+    let surveyPromptTimer = null;
+    const surveyUrl = "https://uwmadison.co1.qualtrics.com/jfe/form/SV_3C8TWBh3zFHZNFc";
+    const surveyDismissedKey = "sbdc_survey_prompt_dismissed_v1";
     const lastVisitedIndexBySection = {};
     const assessmentFocusDefinitions = {
         "Economic Uncertainty": "The economy or market conditions are changing, and I’m unsure how it will impact my business.",
@@ -115,6 +118,62 @@
                 Additional recommendations are still being prepared.
             </div>
         `;
+    }
+
+    function hideSurveyPrompt() {
+        if (surveyPromptTimer) {
+            clearTimeout(surveyPromptTimer);
+            surveyPromptTimer = null;
+        }
+
+        const prompt = document.getElementById("surveyPrompt");
+        if (prompt) {
+            prompt.remove();
+        }
+    }
+
+    function showSurveyPrompt() {
+        if (sessionStorage.getItem(surveyDismissedKey) === "true") return;
+        if (document.getElementById("surveyPrompt")) return;
+
+        const prompt = document.createElement("aside");
+        prompt.id = "surveyPrompt";
+        prompt.className = "survey-prompt";
+        prompt.setAttribute("aria-label", "Feedback survey");
+        prompt.innerHTML = `
+            <div class="survey-prompt__body">
+                <strong>How was this report?</strong>
+                <span>Your feedback helps improve this tool.</span>
+            </div>
+            <div class="survey-prompt__actions">
+                <button id="takeSurveyBtn" class="survey-prompt__primary" type="button">Take Survey</button>
+                <button id="dismissSurveyBtn" class="survey-prompt__secondary" type="button">No thanks</button>
+            </div>
+        `;
+        document.body.appendChild(prompt);
+
+        document.getElementById("takeSurveyBtn").addEventListener("click", () => {
+            sessionStorage.setItem(surveyDismissedKey, "true");
+            window.open(surveyUrl, "_blank", "noopener");
+            hideSurveyPrompt();
+        });
+
+        document.getElementById("dismissSurveyBtn").addEventListener("click", () => {
+            sessionStorage.setItem(surveyDismissedKey, "true");
+            hideSurveyPrompt();
+        });
+    }
+
+    function scheduleSurveyPrompt() {
+        hideSurveyPrompt();
+        if (sessionStorage.getItem(surveyDismissedKey) === "true") return;
+
+        surveyPromptTimer = setTimeout(() => {
+            surveyPromptTimer = null;
+            if (fullRecommendationsReady && lastAssessmentResult) {
+                showSurveyPrompt();
+            }
+        }, 10000);
     }
 
     function sanitizeAreaNotesMap(notes) {
@@ -623,80 +682,6 @@
         }
     }
 
-    function formatFocusAreaName(value) {
-        if (!value || value === "not_sure") return "Not sure / use assessment results";
-        return cleanAreaName(value);
-    }
-
-    function downloadRecommendationRationale() {
-        if (!lastAssessmentResult) {
-            alert("No assessment results available. Please complete and submit the assessment first.");
-            return;
-        }
-        if (fullRecommendationsLoading || !fullRecommendationsReady) {
-            alert("Selection rationale will be available after the full recommendations finish generating.");
-            return;
-        }
-
-        const lines = [
-            "SBDC Assessment Recommendation Rationale",
-            "",
-            "This file summarizes the evidence and selection logic used for the generated recommendations. It does not include hidden model chain-of-thought.",
-            "",
-            `Catalyst: ${answers["CATALYST-001"] || "Steady Growth"}`,
-            `Owner priority functional area: ${formatFocusAreaName(lastAssessmentResult.owner_focus_area || answers["OWNER-FOCUS-001"])}`,
-            "",
-            "Priority Cards",
-        ];
-
-        const priorityItems = Array.isArray(lastAssessmentResult.priority_recommendations)
-            ? lastAssessmentResult.priority_recommendations.slice(0, 3)
-            : [];
-
-        if (priorityItems.length) {
-            priorityItems.forEach((item, index) => {
-                lines.push("");
-                lines.push(`${index + 1}. ${item.label || "Priority Card"}: ${item.title || "Untitled"}`);
-                lines.push(`Rationale: ${item.rationale || "Selected from assessment, catalyst, owner focus, and recommendation candidate signals."}`);
-            });
-        } else {
-            lines.push("");
-            lines.push("No priority-card rationale was returned.");
-        }
-
-        lines.push("");
-        lines.push("Full Recommendation Decisions");
-
-        const rationales = Array.isArray(lastAssessmentResult.recommendation_rationales)
-            ? lastAssessmentResult.recommendation_rationales
-            : [];
-
-        if (rationales.length) {
-            rationales.forEach((item, index) => {
-                lines.push("");
-                lines.push(`${index + 1}. ${item.area || "Recommendation"}${item.recommendation_number ? ` #${item.recommendation_number}` : ""}`);
-                lines.push(`Decision source: ${item.replacement_source_id || "expanded anchor"}`);
-                if (item.anchor_replaced) {
-                    lines.push(`Anchor/reference: ${item.anchor_replaced}`);
-                }
-                lines.push(`Rationale: ${item.reason || "The recommendation was selected based on fit with the assessment and owner context."}`);
-            });
-        } else {
-            lines.push("");
-            lines.push("No full-recommendation adaptations, replacements, or synthesized decisions were reported. The generated recommendations expanded the selected anchors directly.");
-        }
-
-        const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `SBDC_Recommendation_Rationale_${new Date().toISOString().split("T")[0]}.txt`;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        window.URL.revokeObjectURL(url);
-    }
-
     function setFullRecommendationsLoading(isLoading) {
         fullRecommendationsLoading = isLoading;
 
@@ -707,12 +692,6 @@
         if (downloadBtn) {
             downloadBtn.disabled = isLoading;
             downloadBtn.textContent = isLoading ? "Generating PDF Content..." : "Download PDF Results";
-        }
-
-        const rationaleBtn = document.getElementById("downloadRationaleBtn");
-        if (rationaleBtn) {
-            rationaleBtn.disabled = isLoading || !fullRecommendationsReady;
-            rationaleBtn.textContent = isLoading ? "Generating Rationale..." : "Download Selection Rationale";
         }
 
         if (showFullBtn) {
@@ -734,6 +713,7 @@
         if (!lastAssessmentPayload) return;
 
         fullRecommendationsReady = false;
+        hideSurveyPrompt();
         setFullRecommendationsLoading(true);
 
         try {
@@ -761,6 +741,7 @@
                     ${renderRecommendationsHTML(lastAssessmentResult.recommendations)}
                 `;
             }
+            scheduleSurveyPrompt();
         } catch (err) {
             console.error("Failed to load full recommendations:", err);
             lastAssessmentResult.recommendations = "";
@@ -970,6 +951,7 @@
         lastAssessmentResult = null;
         lastAssessmentPayload = null;
         fullRecommendationsReady = false;
+        hideSurveyPrompt();
 
         setAssessmentDisabled(false);
         questionArea.classList.remove("hidden");
@@ -1055,10 +1037,6 @@
                 Generating PDF Content...
             </button>
 
-            <button id="downloadRationaleBtn" type="button">
-                Generating Rationale...
-            </button>
-    
             <button id="bookCall" type="button">
                 Request SBDC Consultation
             </button>
@@ -1096,7 +1074,6 @@
     `;
 
         document.getElementById("downloadPdfBtn").addEventListener("click", downloadPDF);
-        document.getElementById("downloadRationaleBtn").addEventListener("click", downloadRecommendationRationale);
         document.getElementById("showFullRecommendations").addEventListener("click", () => {
             const fullRecommendations = document.getElementById("fullRecommendations");
             fullRecommendations.classList.remove("hidden");
