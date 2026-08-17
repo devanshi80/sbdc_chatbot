@@ -729,9 +729,6 @@
 
             const out = await response.json().catch(() => ({}));
             lastAssessmentResult.recommendations = out.recommendations || "";
-            lastAssessmentResult.recommendation_rationales = Array.isArray(out.recommendation_rationales)
-                ? out.recommendation_rationales
-                : [];
             fullRecommendationsReady = true;
 
             const fullRecommendations = document.getElementById("fullRecommendations");
@@ -745,7 +742,6 @@
         } catch (err) {
             console.error("Failed to load full recommendations:", err);
             lastAssessmentResult.recommendations = "";
-            lastAssessmentResult.recommendation_rationales = [];
             fullRecommendationsReady = false;
 
             const fullRecommendations = document.getElementById("fullRecommendations");

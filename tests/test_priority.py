@@ -242,28 +242,19 @@ class SemanticRecommendationRetrievalTests(unittest.TestCase):
 
         self.assertEqual(results["Financials"][0]["id"], "Optimizing|Lifestyle_Change|Employees|1")
 
-    def test_recommendation_response_parser_returns_markdown_and_overrides(self):
+    def test_recommendation_response_parser_returns_markdown_only(self):
         os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
         services = importlib.import_module("services")
         service = services.AssessmentService.__new__(services.AssessmentService)
 
         parsed = service._parse_recommendation_response(json.dumps({
             "report_markdown": "### Financials\n1. Do the useful thing.",
-            "overrides": [
-                {
-                    "area": "Financials",
-                    "recommendation_number": 2,
-                    "anchor_replaced": "Anchor",
-                    "replacement_source_id": "Optimizing|Lifestyle_Change|Employees|1",
-                    "reason": "The note described delegation.",
-                }
-            ],
         }))
 
         self.assertEqual(parsed["report_markdown"], "### Financials\n1. Do the useful thing.")
-        self.assertEqual(parsed["overrides"][0]["replacement_source_id"], "Optimizing|Lifestyle_Change|Employees|1")
+        self.assertNotIn("overrides", parsed)
 
-    def test_priority_response_parser_keeps_rationale(self):
+    def test_priority_response_parser_omits_rationale(self):
         os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
         services = importlib.import_module("services")
         service = services.AssessmentService.__new__(services.AssessmentService)
@@ -276,7 +267,6 @@ class SemanticRecommendationRetrievalTests(unittest.TestCase):
                     "title": "Cash Flow",
                     "summary": "Build a weekly view.",
                     "first_step": "List bills due.",
-                    "rationale": "Financial gaps and owner focus made cash visibility useful.",
                 },
                 {
                     "type": "key_area",
@@ -284,7 +274,6 @@ class SemanticRecommendationRetrievalTests(unittest.TestCase):
                     "title": "Process Clarity",
                     "summary": "Document repeated work.",
                     "first_step": "Write one process.",
-                    "rationale": "Operations signals pointed to repeated work.",
                 },
                 {
                     "type": "quick_win",
@@ -292,12 +281,11 @@ class SemanticRecommendationRetrievalTests(unittest.TestCase):
                     "title": "One Question",
                     "summary": "Prepare one advisor question.",
                     "first_step": "Write the question.",
-                    "rationale": "This is a fast action tied to the report.",
                 },
             ],
         }))
 
-        self.assertEqual(parsed[0]["rationale"], "Financial gaps and owner focus made cash visibility useful.")
+        self.assertNotIn("rationale", parsed[0])
 
     def test_missing_recommendation_areas_detects_partial_report(self):
         os.environ.setdefault("OPENROUTER_API_KEY", "test-key")

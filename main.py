@@ -93,7 +93,7 @@ async def generate_full_recommendations(response: AssessmentResponse) -> Dict[st
         if isinstance(recommendation_result, dict):
             return recommendation_result
 
-        return {"recommendations": recommendation_result, "recommendation_rationales": []}
+        return {"recommendations": recommendation_result}
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
