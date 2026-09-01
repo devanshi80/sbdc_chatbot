@@ -35,13 +35,13 @@ Required:
 
 Optional:
 
-- `OPENROUTER_MODEL`: default text model, currently `openai/gpt-4o-mini`
-- `OPENROUTER_PRIORITY_MODEL`: priority card model override
-- `OPENROUTER_RECOMMENDATION_MODEL`: full recommendation model override
-- `OPENROUTER_SIGNAL_MODEL`: area-note signal model override
-- `OPENROUTER_EMBEDDING_MODEL`: embedding model, currently `openai/text-embedding-3-small`
-- `OPENROUTER_HTTP_REFERER`: production URL for OpenRouter request metadata
-- `OPENROUTER_APP_TITLE`: display title for OpenRouter request metadata
+- `OPENROUTER_MODEL`: model used for all OpenRouter text generation, currently `openai/gpt-4o-mini`
+- `OPENROUTER_HTTP_REFERER`: production app URL sent to OpenRouter as an identification header
+- `OPENROUTER_APP_TITLE`: app name sent to OpenRouter as an identification header
+
+The app uses an internal embedding model, `openai/text-embedding-3-small`, for recommendation matching. SBDC does not need to configure this separately.
+
+The `OPENROUTER_HTTP_REFERER` and `OPENROUTER_APP_TITLE` values are not user data. They are optional request headers that identify which app is making OpenRouter calls, which can help with provider dashboards, attribution, and usage review.
 
 Do not put real secrets in GitHub. Use `.env.example` only as a template.
 

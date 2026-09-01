@@ -32,15 +32,11 @@ Do not paste real keys into GitHub, documentation, screenshots, issue comments, 
 
 ## Update Models
 
-Model names are controlled by environment variables:
+The app has one configurable text-generation model:
 
 - `OPENROUTER_MODEL`
-- `OPENROUTER_PRIORITY_MODEL`
-- `OPENROUTER_RECOMMENDATION_MODEL`
-- `OPENROUTER_SIGNAL_MODEL`
-- `OPENROUTER_EMBEDDING_MODEL`
 
-Use task-specific variables when only one part of the app should change. For example, update `OPENROUTER_RECOMMENDATION_MODEL` if full recommendations need a different model but priority cards should stay unchanged.
+This model is used for area-note signals, priority cards, and full recommendations. The embedding model used for internal recommendation matching is fixed in code as `openai/text-embedding-3-small`.
 
 ## Update Assessment Questions
 

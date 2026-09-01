@@ -40,10 +40,7 @@ class AssessmentService:
             raise ValueError("OPENROUTER_API_KEY environment variable not set.")
         self.openrouter_api_key = api_key
         self.openrouter_model = os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini")
-        self.openrouter_priority_model = os.getenv("OPENROUTER_PRIORITY_MODEL", self.openrouter_model)
-        self.openrouter_recommendation_model = os.getenv("OPENROUTER_RECOMMENDATION_MODEL", self.openrouter_model)
-        self.openrouter_signal_model = os.getenv("OPENROUTER_SIGNAL_MODEL", self.openrouter_priority_model)
-        self.openrouter_embedding_model = os.getenv("OPENROUTER_EMBEDDING_MODEL", "openai/text-embedding-3-small")
+        self.openrouter_embedding_model = "openai/text-embedding-3-small"
         self.openrouter_referer = os.getenv("OPENROUTER_HTTP_REFERER", "http://localhost:8000")
         self.openrouter_title = os.getenv("OPENROUTER_APP_TITLE", "SBDC Assessment")
         self._recommendation_library_items = self._build_recommendation_library()
@@ -380,7 +377,7 @@ class AssessmentService:
         try:
             response_text, _ = self._generate_openrouter_text(
                 prompt,
-                model=self.openrouter_signal_model,
+                model=self.openrouter_model,
                 temperature=0,
                 max_tokens=500,
                 response_format=self._signal_response_format(),
@@ -621,7 +618,7 @@ class AssessmentService:
         try:
             response_text, finish_reason = self._generate_openrouter_text(
                 prompt,
-                model=self.openrouter_priority_model,
+                model=self.openrouter_model,
                 temperature=0.35,
                 max_tokens=1500,
                 response_format=self._priority_response_format(),
@@ -1087,7 +1084,7 @@ class AssessmentService:
         try:
             response_text, finish_reason = self._generate_openrouter_text(
                 prompt,
-                model=self.openrouter_recommendation_model,
+                model=self.openrouter_model,
                 temperature=0.7,
                 max_tokens=4000,
                 response_format=self._recommendation_response_format(),

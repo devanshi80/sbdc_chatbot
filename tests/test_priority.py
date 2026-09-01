@@ -156,7 +156,7 @@ class SignalClassificationTests(unittest.TestCase):
         os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
         services = importlib.import_module("services")
         service = services.AssessmentService.__new__(services.AssessmentService)
-        service.openrouter_signal_model = "test-model"
+        service.openrouter_model = "test-model"
 
         def fake_generate(prompt, *, model, temperature, max_tokens, response_format=None):
             return (
@@ -183,7 +183,7 @@ class SignalClassificationTests(unittest.TestCase):
         os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
         services = importlib.import_module("services")
         service = services.AssessmentService.__new__(services.AssessmentService)
-        service.openrouter_signal_model = "test-model"
+        service.openrouter_model = "test-model"
 
         def fake_generate(prompt, *, model, temperature, max_tokens, response_format=None):
             raise RuntimeError("model unavailable")
