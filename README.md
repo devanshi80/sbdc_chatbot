@@ -112,6 +112,18 @@ Common maintenance tasks are documented in [docs/operations.md](docs/operations.
 - Updating questions, scoring, prompts, and recommendation anchors
 - Running local validation checks
 
+## Documentation For Handoff
+
+Recommended reading order for SBDC:
+
+1. [docs/start-here.md](docs/start-here.md)
+2. [docs/file-guide.md](docs/file-guide.md)
+3. [docs/content-editing-guide.md](docs/content-editing-guide.md)
+4. [docs/prompt-and-ai-guide.md](docs/prompt-and-ai-guide.md)
+5. [docs/deployment.md](docs/deployment.md)
+6. [docs/troubleshooting.md](docs/troubleshooting.md)
+7. [docs/handoff-checklist.md](docs/handoff-checklist.md)
+
 ## Handoff
 
 Use [docs/handoff-checklist.md](docs/handoff-checklist.md) to transfer ownership of:
