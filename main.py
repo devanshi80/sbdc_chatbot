@@ -1,20 +1,20 @@
-from fastapi import FastAPI, HTTPException
+from datetime import datetime
+from io import BytesIO
+from typing import Any, Dict
+import re
+
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from typing import Dict, Any
-from schema import AssessmentResponse, AssessmentReport
-from io import BytesIO
-from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-from fastapi import Response
-from services import AssessmentService
+from reportlab.pdfgen import canvas
+
 from config import config
-from datetime import datetime
-import re
+from schema import AssessmentReport, AssessmentResponse
+from services import AssessmentService
 
 app = FastAPI()
 
-# CORS setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -27,7 +27,6 @@ service = AssessmentService()
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint for Render"""
     return {"status": "ok", "message": "SBDC Assessment API is running"}
 
 @app.get("/questions")
@@ -51,7 +50,7 @@ async def assess_business(response: AssessmentResponse) -> Dict[str, Any]:
             response.area_notes,
             response.owner_focus_area,
         )
-        
+
         response_data = {
             "overall_score": result.overall_score,
             "overall_tier": result.overall_tier,
@@ -106,77 +105,66 @@ async def export_pdf(payload: Dict[str, Any]):
         pdf.setTitle("SBDC Assessment Results")
         width, height = letter
         x, y = 50, height - 10
-        
-        # Get user's answers from payload
+
         answers_dict = {}
         if "answers" in payload:
             for answer in payload["answers"]:
                 answers_dict[answer["question_id"]] = answer["score"]
         area_notes = payload.get("area_notes", {})
-        
+
         def parse_markdown_line(text: str):
-            """Parse a line and return segments with formatting info"""
             segments = []
-            
-            # Check if line starts with ### (heading)
+
             is_heading = text.strip().startswith("###")
             if is_heading:
                 text = text.strip()[3:].strip()
-                # Entire line is bold
                 segments.append({"text": text, "bold": True})
                 return segments, is_heading
-            
-            # Parse **bold** markers
+
             parts = re.split(r'(\*\*.*?\*\*)', text)
             for part in parts:
                 if part.startswith("**") and part.endswith("**"):
-                    # Bold text
                     segments.append({"text": part[2:-2], "bold": True})
                 elif part:
-                    # Regular text
                     segments.append({"text": part, "bold": False})
-            
+
             return segments, is_heading
-        
+
         def write_formatted_line(text: str, base_size=11, indent=0, force_bold=False):
-            """Write a line with inline bold formatting"""
             nonlocal y
-            
+
             segments, is_heading = parse_markdown_line(text)
-            
-            # Use larger font for headings
+
             size = base_size + 1 if is_heading else base_size
-            
+
             current_x = x + indent
-            
+
             for segment in segments:
                 content = segment["text"]
                 is_bold = segment["bold"] or force_bold
                 font = "Helvetica-Bold" if is_bold else "Helvetica"
-                
+
                 pdf.setFont(font, size)
-                
+
                 # Word wrap
                 words = content.split()
                 for word in words:
                     word_width = pdf.stringWidth(word + " ", font, size)
-                    
-                    # Check if we need to wrap
+
                     if current_x + word_width > width - 50:
-                        # Move to next line
                         y -= size + 4
                         current_x = x + indent
-                        
+
                         if y < 60:
                             pdf.showPage()
                             y = height - 60
                             current_x = x + indent
-                        
+
                         pdf.setFont(font, size)
-                    
+
                     pdf.drawString(current_x, y, word)
                     current_x += word_width
-            
+
             # Move to next line after finishing this one
             y -= size + 4
             if y < 60:
@@ -233,7 +221,7 @@ async def export_pdf(payload: Dict[str, Any]):
                 indent = 12 if re.match(r"^\d+[\.)]\s+", line) else 0
                 write_wrapped_text(line, size=10, indent=indent)
                 add_spacing(3)
-        
+
         def add_spacing(pixels=10):
             nonlocal y
             y -= pixels
@@ -431,25 +419,25 @@ async def export_pdf(payload: Dict[str, Any]):
             y = card_top - card_height - 18
             pdf.setFillColor(pdf_color("#000000"))
             pdf.setStrokeColor(pdf_color("#000000"))
-        
+
         # Header
         try:
             logo_width = 300
             logo_height = 150
-            logo_x = (width - logo_width) / 2  
+            logo_x = (width - logo_width) / 2
             pdf.drawImage("image3.png", logo_x, y - logo_height, width=logo_width, height=logo_height, preserveAspectRatio=True, mask='auto')
-        except:
-            pass  # If logo not found, skip silently
+        except Exception:
+            pass
 
         y -= 150
         pdf.setFont("Helvetica-Bold", 18)
         pdf.drawString(x, y, "SBDC Assessment Results")
         y -= 25
-        
+
         pdf.setLineWidth(1)
         pdf.line(50, y, width - 50, y)
         add_spacing(20)
-        
+
         # Overview Section
         pdf.setFont("Helvetica-Bold", 12)
         pdf.drawString(x, y, f"Catalyst: {payload.get('catalyst', 'N/A')}")
@@ -506,7 +494,6 @@ async def export_pdf(payload: Dict[str, Any]):
         if isinstance(recs_text, str) and recs_text:
             write_recommendations_section(recs_text)
 
-        # ── DISCLAIMER ───────────────────────────────────────────────────────
         add_spacing(20)
         pdf.setLineWidth(0.5)
         pdf.line(50, y, width - 50, y)
@@ -554,12 +541,12 @@ async def export_pdf(payload: Dict[str, Any]):
         pdf.showPage()
         y = height - 60
 
-        
+
         # Detailed Responses Section
         pdf.setFont("Helvetica-Bold", 14)
         pdf.drawString(x, y, "Your Responses by Category")
         add_spacing(15)
-        
+
         # Iterate through each functional area
         for area_name, questions in config.questions["assessment"].items():
             area_details = payload.get("category_details", {}).get(area_name, {})
@@ -576,57 +563,57 @@ async def export_pdf(payload: Dict[str, Any]):
                 write_formatted_line("**Additional context shared:**", base_size=10, indent=5)
                 write_formatted_line(area_note, base_size=10, indent=10)
                 add_spacing(8)
-            
+
             if area_details.get("questions_answered", 0) > 0:
                 # Questions for this area
                 for q in questions:
                     q_id = q["id"]
                     q_text = q["question"]
-                    
+
                     # Get user's answer
                     user_score = answers_dict.get(q_id, "N/A")
-                    
+
                     # Get the label for the score
                     score_label = "Not Answered"
                     if user_score != "N/A" and str(user_score) in q["scoring_scale"]:
                         score_label = q["scoring_scale"][str(user_score)]
-                    
+
                     # Question text (wrapped)
                     pdf.setFont("Helvetica", 10)
                     write_formatted_line(f"**{q_id}:** {q_text}", base_size=10, indent=5)
-                    
+
                     # Answer
                     pdf.setFont("Helvetica-Oblique", 10)
                     pdf.drawString(x + 10, y, f"Your answer: {user_score} - {score_label}")
                     add_spacing(18)
-                    
+
                     # Check if we need a new page
                     if y < 100:
                         pdf.showPage()
                         y = height - 60
-            
+
             # Add space between areas
             add_spacing(15)
-            
+
             # Check if we need a new page
             if y < 150:
                 pdf.showPage()
                 y = height - 60
-        
+
         # Footer
         y = 40
         pdf.setFont("Helvetica", 8)
         pdf.drawString(50, y, f"Generated {str(datetime.now().strftime('%B %d, %Y'))}")
-        
+
         pdf.save()
         buffer.seek(0)
-        
+
         return Response(
             content=buffer.getvalue(),
             media_type="application/pdf",
             headers={"Content-Disposition": "attachment; filename=SBDC_Assessment_Results.pdf"},
         )
-    
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
 

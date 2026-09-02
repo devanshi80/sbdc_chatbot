@@ -8,7 +8,7 @@
     let areaNotes = {};
     let skippedSections = {};
     let prefilled = null;
-    let lastAssessmentResult = null; 
+    let lastAssessmentResult = null;
     let lastAssessmentPayload = null;
     let fullRecommendationsLoading = false;
     let fullRecommendationsReady = false;
@@ -78,20 +78,20 @@
     }
 
     function sanitizeLLMHtml(markdown) {
-    const rendered = window.marked
-        ? marked.parse(String(markdown ?? ""))
-        : escapeHTML(String(markdown ?? ""));
+        const rendered = window.marked
+            ? marked.parse(String(markdown ?? ""))
+            : escapeHTML(String(markdown ?? ""));
 
-    if (window.DOMPurify) {
-        return window.DOMPurify.sanitize(rendered, {
-            ALLOWED_TAGS: ["p", "ul", "ol", "li", "strong", "em", "br", "a", "code", "pre", "blockquote"],
-            ALLOWED_ATTR: ["href", "target", "rel"],
-            FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
-            FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "style"]
-        });
-    }
+        if (window.DOMPurify) {
+            return window.DOMPurify.sanitize(rendered, {
+                ALLOWED_TAGS: ["p", "ul", "ol", "li", "strong", "em", "br", "a", "code", "pre", "blockquote"],
+                ALLOWED_ATTR: ["href", "target", "rel"],
+                FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
+                FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "style"]
+            });
+        }
 
-    return escapeHTML(String(markdown ?? ""));
+        return escapeHTML(String(markdown ?? ""));
     }
 
     function renderRecommendationsHTML(recommendations) {
@@ -210,11 +210,10 @@
         return Math.max(min, Math.min(max, n));
     }
 
-    // Define which questions act as conditional gates for sections
     const conditionalSections = {
         "Employees": {
-            gateQuestion: "EMP-000", // Employee count gate question
-            skipAnswers: ["0", "N/A"], // If they answer "I do not do this" or "Not Applicable"
+            gateQuestion: "EMP-000",
+            skipAnswers: ["0", "N/A"],
             skipMessage: "I don't have employees"
         }
     };
@@ -369,7 +368,6 @@
         const entries = Object.entries(q.scoring_scale);
         const selected = answers[q.id];
 
-        // Add special options for skipping the entire section
         const specialEntries = [...entries];
         if (!specialEntries.some(([value]) => value === "N/A")) {
             specialEntries.push(["SKIP_SECTION", section.skipMessage]);
@@ -403,22 +401,18 @@
                 const sectionToSkip = btn.getAttribute("data-section");
 
                 if (val === "SKIP_SECTION") {
-                    // Set the gate question to "N/A" and skip the section
                     answers[q.id] = "N/A";
                     skipSectionQuestions(sectionToSkip);
                 } else {
                     answers[q.id] = val;
 
-                    // If they chose a non-skip answer, clear any "N/A" answers in this section
                     if (!section.skipAnswers.includes(val)) {
                         clearSectionSkip(sectionName);
                     } else {
-                        // If they chose a skip answer, skip the section
                         skipSectionQuestions(sectionName);
                     }
                 }
 
-                console.log("Conditional answer saved:", q.id, "=", answers[q.id]);
                 saveLocal();
 
                 questionArea.querySelectorAll(".tile").forEach((b) => {
@@ -449,15 +443,6 @@
             return id !== "CATALYST-001" && id !== "OWNER-FOCUS-001" && value !== "N/A" && q && !isQuestionHiddenBySkip(q);
         }).length;
         const pct = total ? Math.round((done / total) * 100) : 0;
-
-        // Debug logging
-        console.log("Progress Debug:", {
-            totalQuestions: data.flat.length,
-            totalExcludingCatalyst: total,
-            answeredExcludingCatalyst: done,
-            allAnswers: Object.keys(answers),
-            percentage: pct
-        });
 
         progressBar.style.width = pct + "%";
         progressLabel.textContent = `${pct}% complete`;
@@ -573,7 +558,6 @@
             const doneInSec = scorableItems.filter((q) => answers[q.id] !== undefined && answers[q.id] !== "N/A").length;
             const pill = document.createElement("button");
 
-            // Check if this section is skipped
             const isSkipped = shouldSkipSection(sec.name);
             const skippedClass = isSkipped ? " skipped" : "";
             const isActive = sec.containsIndex(currentIndex);
@@ -581,7 +565,6 @@
             pill.className = "section-pill" + (isActive ? " active" : "") + skippedClass;
             pill.type = "button";
 
-            // Exclude catalyst section from showing counts
             let displayCount = "";
             if (sec.name !== "Assessment Focus") {
                 if (isSkipped) {
@@ -622,7 +605,6 @@
         try {
             const catalyst = answers["CATALYST-001"] || "Steady Growth";
 
-            // Prepare answers in the format needed for the PDF
             const formattedAnswers = Object.entries(answers)
                 .filter(([question_id, value]) =>
                     question_id !== "CATALYST-001" &&
@@ -639,7 +621,7 @@
                     .map(([area, note]) => [area, note.trim()])
                     .filter(([, note]) => note)
             );
-            
+
             const pdfData = {
                 catalyst: catalyst,
                 overall_score: lastAssessmentResult.overall_score,
@@ -794,9 +776,7 @@
 
         rememberCurrentSectionIndex();
 
-        // Check if this question belongs to a skipped section, including area notes
         if (isQuestionHiddenBySkip(q)) {
-            // This question is in a skipped section, auto-answer and move on
             if (q.kind !== "area_note" && answers[q.id] !== "N/A") {
                 answers[q.id] = "N/A";
                 saveLocal();
@@ -846,7 +826,6 @@
             return;
         }
 
-        // Check if this is a conditional section gate question
         if (isConditionalGateQuestion(q)) {
             renderConditionalQuestion(q);
             return;
@@ -886,7 +865,6 @@
             btn.addEventListener("click", () => {
                 const val = btn.getAttribute("data-value");
                 answers[q.id] = val;
-                console.log("Answer saved:", q.id, "=", val, "Total answers:", Object.keys(answers));
                 saveLocal();
                 questionArea.querySelectorAll(".tile").forEach((b) => {
                     const sel = b === btn;
@@ -897,7 +875,7 @@
                     currentIndex += 1;
                     updateUI();
                 } else {
-                    updateUI(); // Update everything including section counts
+                    updateUI();
                 }
             });
         });
@@ -977,14 +955,14 @@
         prevBtn.disabled = disabled;
         nextBtn.disabled = disabled;
         submitBtn.disabled = disabled;
-    
+
         sectionList.querySelectorAll("button").forEach(btn => {
             btn.disabled = disabled;
         });
     }
 
     function showResults(out) {
-        lastAssessmentResult = out; 
+        lastAssessmentResult = out;
         setAssessmentDisabled(true);
 
         const resultsEl = document.getElementById("results");
@@ -1025,10 +1003,10 @@
         <h2 style="text-align: center;">
             Next Steps to Move Your Business Forward
         </h2>
-    
+
         <div class="action-buttons"
              style="display: flex; justify-content: center; gap: 12px; margin: 16px 0;">
-            
+
             <button id="downloadPdfBtn" type="button">
                 Generating PDF Content...
             </button>
@@ -1036,13 +1014,13 @@
             <button id="bookCall" type="button">
                 Request SBDC Consultation
             </button>
-    
+
             <button id="viewResources" type="button">
                 View More Resources
             </button>
-            
+
         </div>
-    
+
         <section class="result-block priority-block">
             <p class="recommendations-intro">
                 In our many years of working with small businesses, we know that planning for your business' future can feel overwhelming or hard to prioritize.

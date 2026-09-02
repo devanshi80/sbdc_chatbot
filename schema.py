@@ -1,29 +1,28 @@
-from pydantic import BaseModel, validator
-from typing import Dict, List, Optional, Literal
 from enum import Enum
+from typing import Dict, List, Literal, Optional
+
+from pydantic import BaseModel, field_validator
 
 
-# Question types (optional, for frontend use or future validation)
 class QuestionType(str, Enum):
     FREQUENCY = "Frequency"
     PLANNING_STATUS = "Planning Status"
     CONFIDENCE = "Confidence"
 
 
-# User's response to one question
 class Answer(BaseModel):
     question_id: str
     score: int
     notes: Optional[str] = None
 
-    @validator("score")
+    @field_validator("score")
+    @classmethod
     def validate_score(cls, v):
         if not (0 <= v <= 4):
             raise ValueError("Score must be between 0 and 4")
         return v
 
 
-# Request body format for POST /assess
 class AssessmentResponse(BaseModel):
     catalyst: Literal[
         "Crisis",
@@ -47,7 +46,6 @@ class AssessmentResponse(BaseModel):
     ]] = "not_sure"
 
 
-# Per-category computed score
 class CategoryScore(BaseModel):
     name: str
     raw_score: float
@@ -57,7 +55,6 @@ class CategoryScore(BaseModel):
     total_questions: int
 
 
-# Final full response from calculate_scores()
 class AssessmentReport(BaseModel):
     category_scores: Dict[str, CategoryScore]
     overall_score: float

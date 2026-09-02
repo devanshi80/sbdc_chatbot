@@ -805,7 +805,7 @@ class AssessmentService:
         catalyst_info = config.catalysts.get(catalyst, {})
         catalyst_definition = catalyst_info.get("definition", "No definition available.")
         focus_areas = catalyst_info.get("primary_focus_areas", [])
-        
+
         # Business Summary
         diagnosis = config.rules["whole_business_summaries"].get(
             f"Mostly {result.overall_tier}", "Your business is evolving."
